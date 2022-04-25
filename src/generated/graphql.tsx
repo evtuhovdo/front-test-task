@@ -834,6 +834,14 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword?: { __typename?: 'UsersPermissionsLoginPayload', jwt?: string | null, user: { __typename?: 'UsersPermissionsMe', id: string, blocked?: boolean | null } } | null };
 
+export type GetCalendarEventsQueryVariables = Exact<{
+  gte: Scalars['DateTime'];
+  lte: Scalars['DateTime'];
+}>;
+
+
+export type GetCalendarEventsQuery = { __typename?: 'Query', calendarEvents?: { __typename?: 'CalendarEventEntityResponseCollection', data: Array<{ __typename?: 'CalendarEventEntity', id?: string | null, attributes?: { __typename?: 'CalendarEvent', dateTime: any, name: string, description?: string | null } | null }> } | null };
+
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -953,6 +961,49 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const GetCalendarEventsDocument = gql`
+    query getCalendarEvents($gte: DateTime!, $lte: DateTime!) {
+  calendarEvents(filters: {dateTime: {gte: $gte, lte: $lte}}) {
+    data {
+      id
+      attributes {
+        dateTime
+        name
+        description
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useGetCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCalendarEventsQuery({
+ *   variables: {
+ *      gte: // value for 'gte'
+ *      lte: // value for 'lte'
+ *   },
+ * });
+ */
+export function useGetCalendarEventsQuery(baseOptions: Apollo.QueryHookOptions<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>(GetCalendarEventsDocument, options);
+      }
+export function useGetCalendarEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>(GetCalendarEventsDocument, options);
+        }
+export type GetCalendarEventsQueryHookResult = ReturnType<typeof useGetCalendarEventsQuery>;
+export type GetCalendarEventsLazyQueryHookResult = ReturnType<typeof useGetCalendarEventsLazyQuery>;
+export type GetCalendarEventsQueryResult = Apollo.QueryResult<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>;
 export const GetMeDocument = gql`
     query getMe {
   me {
