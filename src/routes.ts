@@ -1,6 +1,9 @@
 // INDEX
 export const INDEX = '/';
 
+// EVENTS
+export const EVENTS = '/events';
+
 // AUTH
 export const LOGIN = '/login';
 export const ABOUT = '/about';
