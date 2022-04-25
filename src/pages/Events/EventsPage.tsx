@@ -27,7 +27,7 @@ const EventsPage: FC = () => {
   function onChangeDate(dateNew: moment.Moment, modeNew: CalendarMode = 'month') {
     const dateString = dateNew.format('YYYY-MM');
     if (date !== dateString || mode !== modeNew) {
-      refetch(getMonthRange(date))
+      refetch(getMonthRange(dateString));
       setSearchParams(`date=${dateString}&mode=${modeNew}`);
     }
   }
