@@ -28,6 +28,10 @@ import ruRU from 'antd/lib/locale/ru_RU';
 
 import EventsPage from './pages/Events/EventsPage';
 
+import moment from 'moment';
+import 'moment/locale/ru';
+moment.locale('ru');
+
 const App: FC = () => {
   const store = useInstance(Store);
   const { hydrated, auth } = store;
@@ -54,7 +58,6 @@ const App: FC = () => {
                   <Route path={LOGIN} element={<LoginPage/>}/>
                   <Route path={FORGET_PASSWORD} element={<ForgetPasswordPage/>}/>
                   <Route path={RESET_PASSWORD} element={<ResetPasswordPage/>}/>
-                  <Route path={EVENTS} element={<EventsPage/>}/>
                   <Route path="*" element={<Navigate to={LOGIN}/>}/>
                 </React.Fragment>
               )}
@@ -64,6 +67,7 @@ const App: FC = () => {
                   <Route path={INDEX} element={<IndexPage/>}/>
 
                   <Route path={LOGOUT} element={<LogoutPage/>}/>
+                  <Route path={EVENTS} element={<EventsPage/>}/>
                   <Route path="*" element={<Navigate to={INDEX}/>}/>
                   <Route path={NOT_FOUND} element={<NotFound/>}/>
                 </React.Fragment>
