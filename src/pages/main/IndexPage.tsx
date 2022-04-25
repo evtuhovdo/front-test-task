@@ -3,24 +3,10 @@ import { observer } from 'mobx-react-lite';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { LOGOUT } from '../../routes';
-import { gql, useQuery } from '@apollo/client';
-
-const GET_ME = gql`
-    query getMe {
-        me {
-            id
-            email
-            username
-            role {
-                id
-                name
-            }
-        }
-    }
-`;
+import { useGetMeQuery } from '../../generated/graphql';
 
 const IndexPage: FC = () => {
-  const { loading, error, data } = useQuery(GET_ME, {fetchPolicy: 'network-only'});
+  const { loading, error, data} = useGetMeQuery({fetchPolicy: 'network-only'});
 
   return (
     <div>

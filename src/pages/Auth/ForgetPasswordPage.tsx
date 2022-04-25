@@ -7,14 +7,15 @@ import { LeftOutlined } from '@ant-design/icons';
 import Spinner from '../../components/common/Spinner';
 import { observer } from 'mobx-react-lite';
 import { LOGIN } from '../../routes';
-import useForgotPasswordMutation from '../../model/hooks/useForgotPasswordMutation';
 import { validateEmail } from '../../utils';
+import { useForgotPasswordMutation } from '../../generated/graphql';
 
 const ForgetPasswordPage: FC = () => {
   const [ loading, setLoading ] = useState(false);
   const [ email, setEmail ] = useState('');
-  const forgotPasswordMutation = useForgotPasswordMutation();
   const navigate = useNavigate();
+
+  const [ forgotPasswordMutation ] = useForgotPasswordMutation();
 
   const onSubmit = async () => {
     const isValidEmail = validateEmail(email);
@@ -26,7 +27,11 @@ const ForgetPasswordPage: FC = () => {
 
     setLoading(true);
     try {
-      const res = await forgotPasswordMutation(email);
+      const res = await forgotPasswordMutation({
+        variables: {
+          email,
+        },
+      });
 
       if (res.data?.forgotPassword?.ok) {
         message.success(`Откройте письмо отправленное на почту ${email} и следуйте инструкциям.`);
@@ -41,11 +46,11 @@ const ForgetPasswordPage: FC = () => {
       message.error('Пользователя с таким email не существует.');
       setLoading(false);
     }
-  }
+  };
 
   const onEmailChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
-  }, [setEmail]);
+  }, [ setEmail ]);
 
   return (
     <div className="crm-login-layout dissolved">
@@ -59,7 +64,7 @@ const ForgetPasswordPage: FC = () => {
           на&nbsp;указанную почту.
 
           <Space direction="vertical" size={10} style={{ width: '100%' }}>
-            <div style={{ textAlign: 'left'}}>Email</div>
+            <div style={{ textAlign: 'left' }}>Email</div>
             <Input
               disabled={loading}
               onChange={onEmailChange}

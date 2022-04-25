@@ -1,0 +1,25 @@
+mutation login ($input: UsersPermissionsLoginInput!) {
+    login(input: $input) {
+        jwt
+        user {
+            id
+            blocked
+        }
+    }
+}
+
+mutation forgotPassword ($email: String!) {
+    forgotPassword(email: $email) {
+        ok
+    }
+}
+
+mutation resetPassword($code: String!, $password: String!, $passwordConfirmation: String!) {
+    resetPassword(code: $code, password: $password, passwordConfirmation: $passwordConfirmation) {
+        jwt
+        user {
+            id
+            blocked
+        }
+    }
+}
