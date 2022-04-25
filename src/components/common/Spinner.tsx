@@ -11,7 +11,7 @@ interface IProps {
 const Spinner: FC<IProps> = (
   {
     spinning = false,
-    children
+    children,
   },
 ) => {
   if (spinning) {
@@ -22,7 +22,7 @@ const Spinner: FC<IProps> = (
     );
   }
 
-  return <React.Fragment>{children}</React.Fragment>
+  return <React.Fragment>{children}</React.Fragment>;
 };
 
 export default Spinner;

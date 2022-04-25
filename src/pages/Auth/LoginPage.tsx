@@ -9,8 +9,8 @@ import * as yup from 'yup';
 import { useInstance } from 'react-ioc';
 import { Store } from '../../model/store/Store';
 import { FORGET_PASSWORD, INDEX } from '../../routes';
-import useLoginMutation from '../../model/hooks/useLoginMutation';
 import { observer } from 'mobx-react-lite';
+import { useLoginMutation } from '../../generated/graphql';
 
 const schema = yup.object({
   login: yup.string().email().required(),
@@ -19,11 +19,6 @@ const schema = yup.object({
 
 
 const LoginPage: FC = () => {
-  const loginMutation = useLoginMutation();
-  const store = useInstance(Store);
-
-  const navigate = useNavigate();
-
   const { handleSubmit, control, getValues, formState: { isSubmitting, isValid } } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -34,17 +29,26 @@ const LoginPage: FC = () => {
     mode: 'all',
   });
 
+  const [ loginMutation ] = useLoginMutation();
+
+  const store = useInstance(Store);
+  const navigate = useNavigate();
+
   const onSubmit = async () => {
     const values = getValues();
     try {
       const res = await loginMutation({
-        identifier: values.login,
-        password: values.password,
+        variables: {
+          input: {
+            identifier: values.login,
+            password: values.password,
+          },
+        },
       });
       const jwt = res.data?.login.jwt;
       const userId = res.data?.login.user.id;
       if (!jwt || !userId) {
-        message.error('Ошибка при авториазции');
+        message.error('Ошибка при авторизации');
         return;
       }
 
@@ -64,11 +68,11 @@ const LoginPage: FC = () => {
   return (
     <div className="crm-login-layout dissolved">
       <div className="crm-login-logo">
-      {/*  <img src={logo} className="App-logo" alt="logo"/>*/}
+        {/*  <img src={logo} className="App-logo" alt="logo"/>*/}
       </div>
       <Space direction="vertical" size={20} style={{ width: '100%' }}>
         <Space direction="vertical" size={10} style={{ width: '100%' }}>
-          <div style={{ textAlign: 'left'}}>Логин/Email</div>
+          <div style={{ textAlign: 'left' }}>Логин/Email</div>
           <Controller
             name="login"
             control={control}
@@ -85,7 +89,7 @@ const LoginPage: FC = () => {
         </Space>
 
         <Space direction="vertical" size={10} style={{ width: '100%' }}>
-          <div style={{ textAlign: 'left'}}>Пароль</div>
+          <div style={{ textAlign: 'left' }}>Пароль</div>
           <Controller
             name="password"
             control={control}
