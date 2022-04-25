@@ -5,28 +5,27 @@ schema {
     mutation: Mutation
 }
 
-union GenericMorph = EmailToParse | I18NLocale | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = CalendarEvent | I18NLocale | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
-type EmailToParse {
+type CalendarEvent {
     createdAt: DateTime
-    files(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileRelationResponseCollection
-    from: String
-    publishedAt: DateTime
-    status: ENUM_EMAILTOPARSE_STATUS
+    dateTime: DateTime!
+    description: String
+    name: String!
     updatedAt: DateTime
 }
 
-type EmailToParseEntity {
-    attributes: EmailToParse
+type CalendarEventEntity {
+    attributes: CalendarEvent
     id: ID
 }
 
-type EmailToParseEntityResponse {
-    data: EmailToParseEntity
+type CalendarEventEntityResponse {
+    data: CalendarEventEntity
 }
 
-type EmailToParseEntityResponseCollection {
-    data: [EmailToParseEntity!]!
+type CalendarEventEntityResponseCollection {
+    data: [CalendarEventEntity!]!
     meta: ResponseCollectionMeta!
 }
 
@@ -52,13 +51,13 @@ type I18NLocaleEntityResponseCollection {
 }
 
 type Mutation {
-    createEmailToParse(data: EmailToParseInput!): EmailToParseEntityResponse
+    createCalendarEvent(data: CalendarEventInput!): CalendarEventEntityResponse
     createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
     "Create a new role"
     createUsersPermissionsRole(data: UsersPermissionsRoleInput!): UsersPermissionsCreateRolePayload
     "Create a new user"
     createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
-    deleteEmailToParse(id: ID!): EmailToParseEntityResponse
+    deleteCalendarEvent(id: ID!): CalendarEventEntityResponse
     deleteUploadFile(id: ID!): UploadFileEntityResponse
     "Delete an existing role"
     deleteUsersPermissionsRole(id: ID!): UsersPermissionsDeleteRolePayload
@@ -75,7 +74,7 @@ type Mutation {
     removeFile(id: ID!): UploadFileEntityResponse
     "Reset user password. Confirm with a code (resetToken from forgotPassword)"
     resetPassword(code: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
-    updateEmailToParse(data: EmailToParseInput!, id: ID!): EmailToParseEntityResponse
+    updateCalendarEvent(data: CalendarEventInput!, id: ID!): CalendarEventEntityResponse
     updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
     updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
     "Update an existing role"
@@ -93,8 +92,8 @@ type Pagination {
 }
 
 type Query {
-    emailToParse(id: ID): EmailToParseEntityResponse
-    emailToParses(filters: EmailToParseFiltersInput, pagination: PaginationArg = {}, publicationState: PublicationState = LIVE, sort: [String] = []): EmailToParseEntityResponseCollection
+    calendarEvent(id: ID): CalendarEventEntityResponse
+    calendarEvents(filters: CalendarEventFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): CalendarEventEntityResponseCollection
     i18NLocale(id: ID): I18NLocaleEntityResponse
     i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
     me: UsersPermissionsMe
@@ -142,10 +141,6 @@ type UploadFileEntityResponse {
 type UploadFileEntityResponseCollection {
     data: [UploadFileEntity!]!
     meta: ResponseCollectionMeta!
-}
-
-type UploadFileRelationResponseCollection {
-    data: [UploadFileEntity!]!
 }
 
 type UsersPermissionsCreateRolePayload {
@@ -254,17 +249,6 @@ type UsersPermissionsUserRelationResponseCollection {
     data: [UsersPermissionsUserEntity!]!
 }
 
-enum ENUM_EMAILTOPARSE_STATUS {
-    AWAITING_PARSE
-    PARSE_DONE
-    PARSE_IN_WORK
-}
-
-enum PublicationState {
-    LIVE
-    PREVIEW
-}
-
 "A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar."
 scalar DateTime
 
@@ -297,6 +281,24 @@ input BooleanFilterInput {
     startsWith: Boolean
 }
 
+input CalendarEventFiltersInput {
+    and: [CalendarEventFiltersInput]
+    createdAt: DateTimeFilterInput
+    dateTime: DateTimeFilterInput
+    description: StringFilterInput
+    id: IDFilterInput
+    name: StringFilterInput
+    not: CalendarEventFiltersInput
+    or: [CalendarEventFiltersInput]
+    updatedAt: DateTimeFilterInput
+}
+
+input CalendarEventInput {
+    dateTime: DateTime
+    description: String
+    name: String
+}
+
 input DateTimeFilterInput {
     and: [DateTime]
     between: [DateTime]
@@ -318,25 +320,6 @@ input DateTimeFilterInput {
     null: Boolean
     or: [DateTime]
     startsWith: DateTime
-}
-
-input EmailToParseFiltersInput {
-    and: [EmailToParseFiltersInput]
-    createdAt: DateTimeFilterInput
-    from: StringFilterInput
-    id: IDFilterInput
-    not: EmailToParseFiltersInput
-    or: [EmailToParseFiltersInput]
-    publishedAt: DateTimeFilterInput
-    status: StringFilterInput
-    updatedAt: DateTimeFilterInput
-}
-
-input EmailToParseInput {
-    files: [ID]
-    from: String
-    publishedAt: DateTime
-    status: ENUM_EMAILTOPARSE_STATUS
 }
 
 input FileInfoInput {
