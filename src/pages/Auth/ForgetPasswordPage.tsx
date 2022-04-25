@@ -1,7 +1,6 @@
 import React, { ChangeEvent, FC, useCallback, useState } from 'react';
 import { Button, Input, Space, message } from 'antd';
 
-import logo from '../../images/Logo.svg';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { LeftOutlined } from '@ant-design/icons';
@@ -51,7 +50,7 @@ const ForgetPasswordPage: FC = () => {
   return (
     <div className="crm-login-layout dissolved">
       <div className="crm-login-logo">
-        <img src={logo} className="App-logo" alt="logo"/>
+        {/*<img src={logo} className="App-logo" alt="logo"/>*/}
       </div>
       <Spinner spinning={loading}>
         <Space direction="vertical" size={20} style={{ width: '100%' }}>

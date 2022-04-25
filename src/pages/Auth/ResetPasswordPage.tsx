@@ -6,7 +6,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import logo from '../../images/Logo.svg';
 import { useInstance } from 'react-ioc';
 import { Store } from '../../model/store/Store';
 import { FORGET_PASSWORD, INDEX, LOGIN } from '../../routes';
@@ -74,7 +73,7 @@ const ResetPasswordPage: FC = () => {
   return (
     <div className="crm-login-layout dissolved">
       <div className="crm-login-logo">
-        <img src={logo} className="App-logo" alt="logo"/>
+        {/*<img src={logo} className="App-logo" alt="logo"/>*/}
       </div>
       <Space direction="vertical" size={20} style={{ width: '100%' }}>
         <Space direction="vertical" size={10} style={{ width: '100%' }}>
