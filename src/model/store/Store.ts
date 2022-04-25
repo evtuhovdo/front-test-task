@@ -2,7 +2,7 @@ import { IRootStoreModel, RootStore } from './RootStore';
 import persist from 'mst-persist';
 import { Instance } from 'mobx-state-tree';
 
-const STORE_IN_LOCAL_STORAGE_KEY = 'sk-consult-store';
+const STORE_IN_LOCAL_STORAGE_KEY = 'lms-store';
 
 export class Store {
   static create(): IRootStoreModel {
