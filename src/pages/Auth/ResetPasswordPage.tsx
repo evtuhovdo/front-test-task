@@ -10,8 +10,8 @@ import { useInstance } from 'react-ioc';
 import { Store } from '../../model/store/Store';
 import { FORGET_PASSWORD, INDEX, LOGIN } from '../../routes';
 import { observer } from 'mobx-react-lite';
-import useResetPasswordMutation from '../../model/hooks/useResetPasswordMutation';
 import useQueryParams from '../../hooks/useQueryParams';
+import { useResetPasswordMutation } from '../../generated/graphql';
 
 const schema = yup.object({
   password: yup.string().min(8, 'Минимальная длинна пароля 8 символов').required('Введите пароль'),
@@ -19,7 +19,8 @@ const schema = yup.object({
 }).required();
 
 const ResetPasswordPage: FC = () => {
-  const resetPasswordMutation = useResetPasswordMutation();
+
+  // const resetPasswordMutation = useResetPasswordMutation();
   const store = useInstance(Store);
 
   const queryParams = useQueryParams();
@@ -36,10 +37,18 @@ const ResetPasswordPage: FC = () => {
     mode: 'all',
   });
 
+  const [ resetPasswordMutation ] = useResetPasswordMutation();
+
   const onSubmit = async () => {
     const values = getValues();
     try {
-      const res = await resetPasswordMutation(code, values.password, values.passwordConfirmation);
+      const res = await resetPasswordMutation({
+        variables: {
+          code,
+          password: values.password,
+          passwordConfirmation: values.passwordConfirmation,
+        },
+      });
       const jwt = res.data?.resetPassword?.jwt;
       const userId = res.data?.resetPassword?.user.id;
       if (!jwt || !userId) {
@@ -77,7 +86,7 @@ const ResetPasswordPage: FC = () => {
       </div>
       <Space direction="vertical" size={20} style={{ width: '100%' }}>
         <Space direction="vertical" size={10} style={{ width: '100%' }}>
-          <div style={{ textAlign: 'left'}}>Новый пароль</div>
+          <div style={{ textAlign: 'left' }}>Новый пароль</div>
           <Controller
             name="password"
             control={control}
@@ -97,7 +106,7 @@ const ResetPasswordPage: FC = () => {
         </Space>
 
         <Space direction="vertical" size={10} style={{ width: '100%' }}>
-          <div style={{ textAlign: 'left'}}>Новый пароль ещё раз</div>
+          <div style={{ textAlign: 'left' }}>Новый пароль ещё раз</div>
           <Controller
             name="passwordConfirmation"
             control={control}
