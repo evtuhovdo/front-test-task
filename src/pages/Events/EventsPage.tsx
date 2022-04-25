@@ -25,12 +25,11 @@ import { CalendarMode } from 'antd/lib/calendar/generateCalendar';
 const EventsPage: FC = () => {
   // const { loading, error, data } = useQuery(GET_ME, {fetchPolicy: 'network-only'});
   const [params, setSearchParams] = useSearchParams();
-  const date = params.get('date');
+  const date = params.get('date') || moment().format('YYYY-MM');
   const mode: CalendarMode = (params.get('mode') as any) || 'month';
 
   function onChangeDate(dateNew: moment.Moment, modeNew: CalendarMode = 'month') {
     const dateString = dateNew.format('YYYY-MM');
-    console.log(dateNew, modeNew);
     if (date !== dateString || mode !== modeNew) {
       setSearchParams(`date=${dateString}&mode=${modeNew}`);
     }
@@ -38,7 +37,7 @@ const EventsPage: FC = () => {
 
   return (
     <div style={{ padding: 60 }}>
-      <Typography.Title>Events Page</Typography.Title>
+      <Typography.Title>События</Typography.Title>
 
       <Calendar
         validRange={[moment('2021-04'), moment('2099-01')]}
