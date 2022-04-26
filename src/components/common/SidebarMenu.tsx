@@ -11,16 +11,17 @@ export const SidebarMenu: FC<IProps> = () => {
     <Menu
       mode="inline"
       style={{ height: '100%' }}
+      defaultOpenKeys={['learning_plan']}
     >
-      <Menu.SubMenu title="Учебный план">
+      <Menu.SubMenu title="Учебный план" key="learning_plan">
         <Menu.Item>Задачи</Menu.Item>
         <Menu.Item>Календарь</Menu.Item>
         <Menu.Item>Материалы</Menu.Item>
       </Menu.SubMenu>
-      <Menu.Item>Лента</Menu.Item>
+      {/* <Menu.Item>Лента</Menu.Item>
       <Menu.Item>Пользователи</Menu.Item>
       <Menu.Item>Звонки</Menu.Item>
-      <Menu.Item>Мои настройки</Menu.Item>
+      <Menu.Item>Мои настройки</Menu.Item> */}
     </Menu>
   )
 };
