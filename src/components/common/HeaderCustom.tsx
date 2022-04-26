@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import { Header } from 'antd/lib/layout/layout';
+import { useGetMeQuery } from '../../generated/graphql';
 
 
-interface IProps {
-
-}
+interface IProps {}
 
 export const HeaderCustom: FC<IProps> = () => {
+  const { loading, data} = useGetMeQuery({fetchPolicy: 'network-only'});
+
   return (
     <Header style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ backgroundColor: 'gray', flexBasis: 120, height: 48 }} />
@@ -18,7 +19,7 @@ export const HeaderCustom: FC<IProps> = () => {
           color: 'white',
         }}
       >
-        <div>Имя Пользователя</div>
+        <div>{loading ? 'Loading' : data?.me?.username}</div>
         <div
           style={{
             width: 32,
