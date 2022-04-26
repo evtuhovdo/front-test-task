@@ -19,10 +19,10 @@ const EventsPage: FC = () => {
   const date = params.get('date') || moment().format('YYYY-MM');
   const mode: CalendarMode = params.get('mode') === 'year' ? 'year' : 'month';
 
-  const { loading, error, data, refetch } = useGetCalendarEventsQuery({
+  const { loading, data, refetch } = useGetCalendarEventsQuery({
     fetchPolicy: 'network-only',
     variables: getMonthRange(date),
-    onError: () => message.error('Something went wrong.')
+    onError: () => message.error('Something went wrong.'),
   });
 
   function onChangeDate(dateNew: moment.Moment, modeNew: CalendarMode = 'month') {
