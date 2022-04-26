@@ -15,13 +15,22 @@ import StoreDI from './model/store/StoreDI';
 import ApolloClientDI from './model/graphql/ApolloClientDI';
 import { Store } from './model/store/Store';
 import ScrollToTop from './components/common/ScrollToTop';
-import { FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, NOT_FOUND, RESET_PASSWORD } from './routes';
+import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, NOT_FOUND, RESET_PASSWORD } from './routes';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
 import IndexPage from './pages/main/IndexPage';
 import LogoutPage from './pages/Auth/LogoutPage';
 import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
+
+import { ConfigProvider } from 'antd';
+import ruRU from 'antd/lib/locale/ru_RU';
+
+import EventsPage from './pages/Events/EventsPage';
+
+import moment from 'moment';
+import 'moment/locale/ru';
+moment.locale('ru');
 
 const App: FC = () => {
   const store = useInstance(Store);
@@ -38,33 +47,36 @@ const App: FC = () => {
   }
 
   return (
-    <ApolloProvider client={apolloClient}>
-      <Router>
-        <ScrollToTop/>
-        <Routes>
-          <React.Fragment>
-            {!hasAuthToken && (
-              <React.Fragment>
-                <Route path={LOGIN} element={<LoginPage/>}/>
-                <Route path={FORGET_PASSWORD} element={<ForgetPasswordPage/>}/>
-                <Route path={RESET_PASSWORD} element={<ResetPasswordPage/>}/>
-                <Route path="*" element={<Navigate to={LOGIN}/>}/>
-              </React.Fragment>
-            )}
+    <ConfigProvider locale={ruRU}>
+      <ApolloProvider client={apolloClient}>
+        <Router>
+          <ScrollToTop/>
+          <Routes>
+            <React.Fragment>
+              {!hasAuthToken && (
+                <React.Fragment>
+                  <Route path={LOGIN} element={<LoginPage/>}/>
+                  <Route path={FORGET_PASSWORD} element={<ForgetPasswordPage/>}/>
+                  <Route path={RESET_PASSWORD} element={<ResetPasswordPage/>}/>
+                  <Route path="*" element={<Navigate to={LOGIN}/>}/>
+                </React.Fragment>
+              )}
 
-            {hasAuthToken && (
-              <React.Fragment>
-                <Route path={INDEX} element={<IndexPage/>}/>
+              {hasAuthToken && (
+                <React.Fragment>
+                  <Route path={INDEX} element={<IndexPage/>}/>
 
-                <Route path={LOGOUT} element={<LogoutPage/>}/>
-                <Route path="*" element={<Navigate to={INDEX}/>}/>
-                <Route path={NOT_FOUND} element={<NotFound/>}/>
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        </Routes>
-      </Router>
-    </ApolloProvider>
+                  <Route path={LOGOUT} element={<LogoutPage/>}/>
+                  <Route path={EVENTS} element={<EventsPage/>}/>
+                  <Route path="*" element={<Navigate to={INDEX}/>}/>
+                  <Route path={NOT_FOUND} element={<NotFound/>}/>
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          </Routes>
+        </Router>
+      </ApolloProvider>
+    </ConfigProvider>
   );
 };
 

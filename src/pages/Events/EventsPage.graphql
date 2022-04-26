@@ -1,0 +1,12 @@
+query getCalendarEvents ($gte: DateTime!, $lte: DateTime!) {
+    calendarEvents (filters: { dateTime: { gte: $gte, lte: $lte } }) {
+        data {
+            id
+            attributes {
+                dateTime
+                name
+                description
+            }
+        }
+    }
+}
