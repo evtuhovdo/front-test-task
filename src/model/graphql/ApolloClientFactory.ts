@@ -4,12 +4,15 @@ import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 import { IRootStoreModel } from '../store/RootStore';
 import { onError } from '@apollo/client/link/error';
+import { message } from 'antd';
 
 const API_BASE = getApiBase();
 
 const ApiClientFactory = (store: IRootStoreModel) => {
   const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
     const { response } = operation.getContext();
+
+    message.error('Что то пошло не так.');
 
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message, locations, path }) =>
