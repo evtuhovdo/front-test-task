@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Calendar, Spin, Typography } from 'antd';
+import { Calendar, message, Spin, Typography } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import { CalendarMode } from 'antd/lib/calendar/generateCalendar';
@@ -22,6 +22,7 @@ const EventsPage: FC = () => {
   const { loading, error, data, refetch } = useGetCalendarEventsQuery({
     fetchPolicy: 'network-only',
     variables: getMonthRange(date),
+    onError: () => message.error('Something went wrong.')
   });
 
   function onChangeDate(dateNew: moment.Moment, modeNew: CalendarMode = 'month') {
