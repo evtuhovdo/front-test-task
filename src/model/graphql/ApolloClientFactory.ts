@@ -1,5 +1,5 @@
 import { getApiBase } from '../../env';
-import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 import { IRootStoreModel } from '../store/RootStore';
@@ -9,6 +9,8 @@ import { message } from 'antd';
 const API_BASE = getApiBase();
 
 const ApiClientFactory = (store: IRootStoreModel) => {
+  let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
+
   const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
     const { response } = operation.getContext();
 
@@ -27,6 +29,7 @@ const ApiClientFactory = (store: IRootStoreModel) => {
     } else if (response && response.status === 401) {
       // Если токен сдох, то разлогиниваем пользователя
       store.auth.clearState();
+      apolloClient?.resetStore();
     }
   });
 
@@ -48,10 +51,12 @@ const ApiClientFactory = (store: IRootStoreModel) => {
     uri: `${API_BASE}/graphql`,
   });
 
-  return new ApolloClient({
+  apolloClient = new ApolloClient({
     link: ApolloLink.from([ errorLink, authLink, uploadLink ]),
     cache: new InMemoryCache(),
   });
+
+  return apolloClient;
 };
 
 export default ApiClientFactory;
