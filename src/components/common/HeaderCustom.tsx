@@ -23,7 +23,7 @@ export const HeaderCustom: FC<IProps> = () => {
           color: 'white',
         }}
       >
-        <div>{loading ? 'Loading' : data?.me?.username}</div>
+        <div>{loading ? 'Загрузка...' : data?.me?.username}</div>
         <Dropdown
           overlay={
             <Menu>
