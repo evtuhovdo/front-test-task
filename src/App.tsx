@@ -15,7 +15,7 @@ import StoreDI from './model/store/StoreDI';
 import ApolloClientDI from './model/graphql/ApolloClientDI';
 import { Store } from './model/store/Store';
 import ScrollToTop from './components/common/ScrollToTop';
-import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, NOT_FOUND, RESET_PASSWORD } from './routes';
+import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, MATERIALS, NOT_FOUND, RESET_PASSWORD } from './routes';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
@@ -30,6 +30,7 @@ import EventsPage from './pages/Events/EventsPage';
 
 import moment from 'moment';
 import 'moment/locale/ru';
+import MaterialsPage from './pages/Materials/MaterialsPage';
 moment.locale('ru');
 
 const App: FC = () => {
@@ -67,6 +68,7 @@ const App: FC = () => {
                   {/* <Route path={INDEX} element={<IndexPage/>}/> */}
                   <Route path={INDEX} element={<EventsPage/>}/>
 
+                  <Route path={MATERIALS} element={<MaterialsPage/>}/>
                   <Route path={LOGOUT} element={<LogoutPage/>}/>
                   <Route path={EVENTS} element={<EventsPage/>}/>
                   <Route path="*" element={<Navigate to={EVENTS}/>}/>

@@ -1,0 +1,29 @@
+query getMaterials {
+    materials {
+        data {
+            id
+            attributes {
+                createdAt
+                title
+                content
+            }
+        }
+    }
+}
+
+
+mutation createMaterial ($title: String!, $content: JSON!) {
+  createMaterial(
+    data: {
+      title: $title
+      content: $content
+    }
+  ) {
+    data {
+      attributes {
+        title
+        content
+      }
+    }
+  }
+}

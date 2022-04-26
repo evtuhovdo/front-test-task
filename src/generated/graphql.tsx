@@ -140,7 +140,7 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = CalendarEvent | I18NLocale | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = CalendarEvent | I18NLocale | Material | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
 
 export type I18NLocale = {
   __typename?: 'I18NLocale';
@@ -247,15 +247,58 @@ export type JsonFilterInput = {
   startsWith?: InputMaybe<Scalars['JSON']>;
 };
 
+export type Material = {
+  __typename?: 'Material';
+  content: Scalars['JSON'];
+  createdAt?: Maybe<Scalars['DateTime']>;
+  title: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type MaterialEntity = {
+  __typename?: 'MaterialEntity';
+  attributes?: Maybe<Material>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type MaterialEntityResponse = {
+  __typename?: 'MaterialEntityResponse';
+  data?: Maybe<MaterialEntity>;
+};
+
+export type MaterialEntityResponseCollection = {
+  __typename?: 'MaterialEntityResponseCollection';
+  data: Array<MaterialEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type MaterialFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MaterialFiltersInput>>>;
+  content?: InputMaybe<JsonFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  not?: InputMaybe<MaterialFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<MaterialFiltersInput>>>;
+  title?: InputMaybe<StringFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type MaterialInput = {
+  content?: InputMaybe<Scalars['JSON']>;
+  title?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  createMaterial?: Maybe<MaterialEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
   deleteCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  deleteMaterial?: Maybe<MaterialEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
@@ -274,6 +317,7 @@ export type Mutation = {
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
   updateCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   updateFileInfo: UploadFileEntityResponse;
+  updateMaterial?: Maybe<MaterialEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
@@ -285,6 +329,11 @@ export type Mutation = {
 
 export type MutationCreateCalendarEventArgs = {
   data: CalendarEventInput;
+};
+
+
+export type MutationCreateMaterialArgs = {
+  data: MaterialInput;
 };
 
 
@@ -304,6 +353,11 @@ export type MutationCreateUsersPermissionsUserArgs = {
 
 
 export type MutationDeleteCalendarEventArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteMaterialArgs = {
   id: Scalars['ID'];
 };
 
@@ -375,6 +429,12 @@ export type MutationUpdateFileInfoArgs = {
 };
 
 
+export type MutationUpdateMaterialArgs = {
+  data: MaterialInput;
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpdateUploadFileArgs = {
   data: UploadFileInput;
   id: Scalars['ID'];
@@ -422,6 +482,8 @@ export type Query = {
   calendarEvents?: Maybe<CalendarEventEntityResponseCollection>;
   i18NLocale?: Maybe<I18NLocaleEntityResponse>;
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
+  material?: Maybe<MaterialEntityResponse>;
+  materials?: Maybe<MaterialEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
   uploadFile?: Maybe<UploadFileEntityResponse>;
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>;
@@ -451,6 +513,18 @@ export type QueryI18NLocaleArgs = {
 
 export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryMaterialArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryMaterialsArgs = {
+  filters?: InputMaybe<MaterialFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -842,6 +916,19 @@ export type GetCalendarEventsQueryVariables = Exact<{
 
 export type GetCalendarEventsQuery = { __typename?: 'Query', calendarEvents?: { __typename?: 'CalendarEventEntityResponseCollection', data: Array<{ __typename?: 'CalendarEventEntity', id?: string | null, attributes?: { __typename?: 'CalendarEvent', dateTime: any, name: string, description?: string | null } | null }> } | null };
 
+export type GetMaterialsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialEntityResponseCollection', data: Array<{ __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any } | null }> } | null };
+
+export type CreateMaterialMutationVariables = Exact<{
+  title: Scalars['String'];
+  content: Scalars['JSON'];
+}>;
+
+
+export type CreateMaterialMutation = { __typename?: 'Mutation', createMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', attributes?: { __typename?: 'Material', title: string, content: any } | null } | null } | null };
+
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1004,6 +1091,86 @@ export function useGetCalendarEventsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetCalendarEventsQueryHookResult = ReturnType<typeof useGetCalendarEventsQuery>;
 export type GetCalendarEventsLazyQueryHookResult = ReturnType<typeof useGetCalendarEventsLazyQuery>;
 export type GetCalendarEventsQueryResult = Apollo.QueryResult<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>;
+export const GetMaterialsDocument = gql`
+    query getMaterials {
+  materials {
+    data {
+      id
+      attributes {
+        createdAt
+        title
+        content
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMaterialsQuery__
+ *
+ * To run a query within a React component, call `useGetMaterialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMaterialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMaterialsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMaterialsQuery(baseOptions?: Apollo.QueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+      }
+export function useGetMaterialsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+        }
+export type GetMaterialsQueryHookResult = ReturnType<typeof useGetMaterialsQuery>;
+export type GetMaterialsLazyQueryHookResult = ReturnType<typeof useGetMaterialsLazyQuery>;
+export type GetMaterialsQueryResult = Apollo.QueryResult<GetMaterialsQuery, GetMaterialsQueryVariables>;
+export const CreateMaterialDocument = gql`
+    mutation createMaterial($title: String!, $content: JSON!) {
+  createMaterial(data: {title: $title, content: $content}) {
+    data {
+      attributes {
+        title
+        content
+      }
+    }
+  }
+}
+    `;
+export type CreateMaterialMutationFn = Apollo.MutationFunction<CreateMaterialMutation, CreateMaterialMutationVariables>;
+
+/**
+ * __useCreateMaterialMutation__
+ *
+ * To run a mutation, you first call `useCreateMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMaterialMutation, { data, loading, error }] = useCreateMaterialMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      content: // value for 'content'
+ *   },
+ * });
+ */
+export function useCreateMaterialMutation(baseOptions?: Apollo.MutationHookOptions<CreateMaterialMutation, CreateMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMaterialMutation, CreateMaterialMutationVariables>(CreateMaterialDocument, options);
+      }
+export type CreateMaterialMutationHookResult = ReturnType<typeof useCreateMaterialMutation>;
+export type CreateMaterialMutationResult = Apollo.MutationResult<CreateMaterialMutation>;
+export type CreateMaterialMutationOptions = Apollo.BaseMutationOptions<CreateMaterialMutation, CreateMaterialMutationVariables>;
 export const GetMeDocument = gql`
     query getMe {
   me {
