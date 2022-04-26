@@ -1,11 +1,13 @@
-FROM mhart/alpine-node:14.17.3 as build-stage
+FROM mhart/alpine-node:16.4.2 as build-stage
 
 RUN apk add --update --no-cache nano openssl curl
 RUN curl -o- -L https://yarnpkg.com/install.sh | sh
 RUN mkdir /app
-COPY ./ /app
+ADD package.json /app/package.json
+ADD yarn.lock /app/yarn.lock
 WORKDIR /app
 RUN yarn install --no-cache --frozen-lockfile
+COPY ./ /app
 RUN yarn build
 
 FROM nginx:1.15.9-alpine
