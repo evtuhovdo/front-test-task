@@ -66,7 +66,7 @@ const App: FC = () => {
               {hasAuthToken && (
                 <React.Fragment>
                   {/* <Route path={INDEX} element={<IndexPage/>}/> */}
-                  <Route path={INDEX} element={<EventsPage/>}/>
+                  <Route path={INDEX} element={<IndexPage/>}/>
 
                   <Route path={MATERIALS} element={<MaterialsPage/>}/>
                   <Route path={LOGOUT} element={<LogoutPage/>}/>
