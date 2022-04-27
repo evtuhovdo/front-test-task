@@ -1,11 +1,15 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Calendar, message, Spin, Typography } from 'antd';
+import { Calendar, Layout, Spin, Typography } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import { CalendarMode } from 'antd/lib/calendar/generateCalendar';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useGetCalendarEventsQuery } from '../../generated/graphql';
+import { HeaderCustom } from '../../components/common/HeaderCustom';
+import { Content } from 'antd/lib/layout/layout';
+import Sider from 'antd/lib/layout/Sider';
+import SidebarMenu from '../../components/common/SidebarMenu';
 
 function getMonthlyRange(date: moment.MomentInput) {
   return {
@@ -47,24 +51,32 @@ const EventsPage: FC = () => {
   const defaultValue = useMemo(() => moment(date), [date]);
 
   return (
-    <div style={{ padding: 60 }}>
-      {loading && (
-        <Spin
-          style={{ position: 'absolute', top: '50%', left: '50%', zIndex: 100 }}
-          indicator={<LoadingOutlined style={{ fontSize: 96 }} spin />}
-        />
-      )}
+    <Layout>
+      <HeaderCustom />
+      <Layout style={{ flexDirection: 'row' }}>
+        <Sider>
+          <SidebarMenu />
+        </Sider>
+        <Content style={{ padding: 60 }}>
+          <Typography.Title>События</Typography.Title>
 
-      <Typography.Title>События</Typography.Title>
+          {loading && (
+            <Spin
+              style={{ position: 'absolute', top: '50%', left: '50%', zIndex: 100 }}
+              indicator={<LoadingOutlined style={{ fontSize: 96 }} spin />}
+            />
+          )}
 
-      <Calendar
-        validRange={validRange}
-        defaultValue={defaultValue}
-        mode={mode}
-        onPanelChange={onChangeDate}
-        dateCellRender={dateCellRender}
-      />
-    </div>
+          <Calendar
+            validRange={validRange}
+            defaultValue={defaultValue}
+            mode={mode}
+            onPanelChange={onChangeDate}
+            dateCellRender={dateCellRender}
+          />
+        </Content>
+      </Layout>
+    </Layout>
   )
 };
 
