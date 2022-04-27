@@ -112,10 +112,6 @@ export const EDITOR_JS_TOOLS = {
   // }
 };
 
-
-const initialDataJson = '{"time":1650974341866,"blocks":[{"id":"BBHa20-5CK","type":"header","data":{"text":"Заголовок","level":1}},{"id":"0WU7jTvjuC","type":"paragraph","data":{"text":"Укажите время, с точностью до десятилетия, когда в России произошел Соляной бунт. "}},{"id":"kLH99TtKyv","type":"header","data":{"text":"Укажите одно любое событие из истории зарубежных стран, относящееся к этому же веку и десятилетию. Не следует указывать событие из истории международных отношений, одной из сторон которого была Россия.","level":2}},{"id":"1ihhzhMWxN","type":"quote","data":{"text":"Укажите одно любое событие из истории зарубежных стран, относящееся к этому же веку и десятилетию. Не следует указывать событие из истории международных отношений, одной из сторон которого была Россия.","caption":"Denis Evtukhov","alignment":"left"}},{"id":"kxItAEMTzV","type":"delimiter","data":{}},{"id":"vi-Ol0b1IB","type":"simpleImage","data":{"url":"https://www.tesla.com/tesla_theme/assets/img/_vehicle_redesign/roadster_and_semi/roadster/hero.jpg","caption":"","withBorder":false,"withBackground":false,"stretched":false}},{"id":"z9eO2ae-M-","type":"code","data":{"code":"asdasd\\nasdasd\\nasd"}}],"version":"2.23.2"}';
-const initialData = JSON.parse(initialDataJson);
-
 interface IEditorProps {
   readOnly?: boolean,
   data?: OutputData,
@@ -125,7 +121,7 @@ interface IEditorProps {
 
 export const Editor: FC<IEditorProps> = ({
   readOnly = false,
-  data = initialData,
+  data ,
   onChange = d => {},
   // onSave,
 }) => {
