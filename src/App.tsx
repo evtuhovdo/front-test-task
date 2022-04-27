@@ -19,7 +19,6 @@ import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, MATERIAL, MATERIALS, NOT
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
-import IndexPage from './pages/main/IndexPage';
 import LogoutPage from './pages/Auth/LogoutPage';
 import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
 
