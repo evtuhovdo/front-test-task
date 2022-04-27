@@ -1,0 +1,15 @@
+.center-layout {
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.center-content {
+  max-width: 400px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}

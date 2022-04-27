@@ -1,3 +1,9 @@
 @import "./custom_antd.css";
 
+html, body, #root {
+  height: 100%;
+}
 
+.ant-layout {
+  background: #fff;
+}

@@ -40,6 +40,7 @@ import AttachesTool from '@editorjs/attaches';
 
 import { useInstance } from 'react-ioc';
 import { Store } from '../../model/store/Store';
+import { getApiBase } from '../../env';
 
 const additionalRequestHeaders = { Authorization: '' };
 
@@ -86,8 +87,8 @@ export const EDITOR_JS_TOOLS = {
       //   uploadByFile,
       // },
       endpoints: {
-        byFile: 'http://localhost:1337/api/editorjs/uploadImage', // Your backend file uploader endpoint
-        byUrl: 'http://localhost:1337/api/editorjs/fetchUrl', // Your endpoint that provides uploading by Url
+        byFile: `${getApiBase()}/api/editorjs/uploadImage`, // Your backend file uploader endpoint
+        byUrl: `${getApiBase()}/api/editorjs/fetchUrl`, // Your endpoint that provides uploading by Url
       }
     }
   },
@@ -107,7 +108,7 @@ export const EDITOR_JS_TOOLS = {
   //     // uploader: {
   //     //   uploadByFile,
   //     // },
-  //     endpoint: 'http://localhost:1337/api/editorjs/uploadFile',
+  //     endpoint: `${getApiBase()}/api/editorjs/uploadFile`,
   //   },
   // }
 };
@@ -162,6 +163,13 @@ export const Editor: FC<IEditorProps> = ({
         save();
       },
     });
+
+    return () => {
+      // https://www.walkthrough.so/pblc/snKICMzxzedr/codelab-integrating-editor-js-into-your-react-application?sn=2
+      editorCore.current?.destroy();
+      // @ts-ignore
+      editorCore.current = null;
+    }
   }, []);
 
   return <div id="editorjs"/>;
