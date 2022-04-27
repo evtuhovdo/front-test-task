@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Layout, Spin, Typography } from 'antd';
+import { Button, Layout, Typography } from 'antd';
 import { useGetMaterialQuery, useGetMeQuery, useUpdateMaterialMutation } from '../../generated/graphql';
 import { HeaderCustom } from '../../components/common/HeaderCustom';
 import { Content } from 'antd/lib/layout/layout';
@@ -29,8 +29,6 @@ const MaterialsPage: FC = () => {
   function onChange({ content, title }: { content?: OutputData, title?: string }) {
     updateMaterial({
       variables: { id, title, content },
-      // onCompleted: () => {
-      // }
     });
   }
 
