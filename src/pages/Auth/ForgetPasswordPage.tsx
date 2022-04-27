@@ -1,14 +1,15 @@
 import React, { ChangeEvent, FC, useCallback, useState } from 'react';
 import { Button, Input, Space, message } from 'antd';
-
 import { Link, useNavigate } from 'react-router-dom';
-
-import { LeftOutlined } from '@ant-design/icons';
-import Spinner from '../../components/common/Spinner';
 import { observer } from 'mobx-react-lite';
+import { LeftOutlined } from '@ant-design/icons';
+
+import Spinner from '../../components/common/Spinner';
 import { LOGIN } from '../../routes';
 import { validateEmail } from '../../utils';
 import { useForgotPasswordMutation } from '../../generated/graphql';
+import CenterLayout from '../../components/layout/center/CenterLayout';
+
 
 const ForgetPasswordPage: FC = () => {
   const [ loading, setLoading ] = useState(false);
@@ -53,10 +54,7 @@ const ForgetPasswordPage: FC = () => {
   }, [ setEmail ]);
 
   return (
-    <div className="crm-login-layout dissolved">
-      <div className="crm-login-logo">
-        {/*<img src={logo} className="App-logo" alt="logo"/>*/}
-      </div>
+    <CenterLayout>
       <Spinner spinning={loading}>
         <Space direction="vertical" size={20} style={{ width: '100%' }}>
 
@@ -82,7 +80,7 @@ const ForgetPasswordPage: FC = () => {
 
         </Space>
       </Spinner>
-    </div>
+    </CenterLayout>
   );
 };
 

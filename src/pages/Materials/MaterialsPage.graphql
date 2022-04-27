@@ -1,0 +1,30 @@
+query getMaterials {
+    materials (sort: ["createdAt:desc"], pagination: { limit: 1000000000 }) {
+        data {
+            id
+            attributes {
+                createdAt
+                title
+                content
+            }
+        }
+    }
+}
+
+
+mutation createMaterial ($title: String!, $content: JSON!) {
+  createMaterial(
+    data: {
+      title: $title
+      content: $content
+    }
+  ) {
+    data {
+      id
+      attributes {
+        title
+        content
+      }
+    }
+  }
+}

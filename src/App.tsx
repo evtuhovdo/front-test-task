@@ -15,11 +15,10 @@ import StoreDI from './model/store/StoreDI';
 import ApolloClientDI from './model/graphql/ApolloClientDI';
 import { Store } from './model/store/Store';
 import ScrollToTop from './components/common/ScrollToTop';
-import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, NOT_FOUND, RESET_PASSWORD } from './routes';
+import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, MATERIAL, MATERIALS, NOT_FOUND, RESET_PASSWORD } from './routes';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
-import IndexPage from './pages/main/IndexPage';
 import LogoutPage from './pages/Auth/LogoutPage';
 import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
 
@@ -30,6 +29,8 @@ import EventsPage from './pages/Events/EventsPage';
 
 import moment from 'moment';
 import 'moment/locale/ru';
+import MaterialsPage from './pages/Materials/MaterialsPage';
+import MaterialPage from './pages/Materials/MaterialPage';
 moment.locale('ru');
 
 const App: FC = () => {
@@ -64,12 +65,12 @@ const App: FC = () => {
 
               {hasAuthToken && (
                 <React.Fragment>
-                  {/* <Route path={INDEX} element={<IndexPage/>}/> */}
-                  <Route path={INDEX} element={<EventsPage/>}/>
-
+                  <Route path={INDEX} element={<Navigate to={EVENTS}/>}/>
+                  <Route path={MATERIALS} element={<MaterialsPage/>}/>
+                  <Route path={MATERIAL} element={<MaterialPage/>}/>
                   <Route path={LOGOUT} element={<LogoutPage/>}/>
                   <Route path={EVENTS} element={<EventsPage/>}/>
-                  <Route path="*" element={<Navigate to={EVENTS}/>}/>
+                  <Route path="*" element={<Navigate to={INDEX}/>}/>
                   <Route path={NOT_FOUND} element={<NotFound/>}/>
                 </React.Fragment>
               )}

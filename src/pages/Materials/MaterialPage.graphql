@@ -1,0 +1,33 @@
+query getMaterial  ($id: ID!) {
+    material (id: $id) {
+        data {
+            id
+            attributes {
+                createdAt
+                title
+                content
+            }
+        }
+    }
+}
+
+
+
+
+mutation updateMaterial ($id: ID!, $title: String, $content: JSON) {
+  updateMaterial(
+    id: $id
+    data: {
+      title: $title
+      content: $content
+    }
+  ) {
+    data {
+      id
+      attributes {
+        title
+        content
+      }
+    }
+  }
+}
