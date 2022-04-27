@@ -6,6 +6,8 @@ export const EVENTS = '/events';
 
 // MATERIALS
 export const MATERIALS = '/materials';
+export const MATERIAL = '/materials/:id';
+export const makeMaterialLink = (id: string) => `/materials/${id}`;
 
 // AUTH
 export const LOGIN = '/login';

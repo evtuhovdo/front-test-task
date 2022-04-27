@@ -916,6 +916,22 @@ export type GetCalendarEventsQueryVariables = Exact<{
 
 export type GetCalendarEventsQuery = { __typename?: 'Query', calendarEvents?: { __typename?: 'CalendarEventEntityResponseCollection', data: Array<{ __typename?: 'CalendarEventEntity', id?: string | null, attributes?: { __typename?: 'CalendarEvent', dateTime: any, name: string, description?: string | null } | null }> } | null };
 
+export type GetMaterialQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetMaterialQuery = { __typename?: 'Query', material?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any } | null } | null } | null };
+
+export type UpdateMaterialMutationVariables = Exact<{
+  id: Scalars['ID'];
+  title?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['JSON']>;
+}>;
+
+
+export type UpdateMaterialMutation = { __typename?: 'Mutation', updateMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', title: string, content: any } | null } | null } | null };
+
 export type GetMaterialsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -927,7 +943,7 @@ export type CreateMaterialMutationVariables = Exact<{
 }>;
 
 
-export type CreateMaterialMutation = { __typename?: 'Mutation', createMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', attributes?: { __typename?: 'Material', title: string, content: any } | null } | null } | null };
+export type CreateMaterialMutation = { __typename?: 'Mutation', createMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', title: string, content: any } | null } | null } | null };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1091,9 +1107,92 @@ export function useGetCalendarEventsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetCalendarEventsQueryHookResult = ReturnType<typeof useGetCalendarEventsQuery>;
 export type GetCalendarEventsLazyQueryHookResult = ReturnType<typeof useGetCalendarEventsLazyQuery>;
 export type GetCalendarEventsQueryResult = Apollo.QueryResult<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>;
+export const GetMaterialDocument = gql`
+    query getMaterial($id: ID!) {
+  material(id: $id) {
+    data {
+      id
+      attributes {
+        createdAt
+        title
+        content
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMaterialQuery__
+ *
+ * To run a query within a React component, call `useGetMaterialQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMaterialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMaterialQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetMaterialQuery(baseOptions: Apollo.QueryHookOptions<GetMaterialQuery, GetMaterialQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMaterialQuery, GetMaterialQueryVariables>(GetMaterialDocument, options);
+      }
+export function useGetMaterialLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialQuery, GetMaterialQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMaterialQuery, GetMaterialQueryVariables>(GetMaterialDocument, options);
+        }
+export type GetMaterialQueryHookResult = ReturnType<typeof useGetMaterialQuery>;
+export type GetMaterialLazyQueryHookResult = ReturnType<typeof useGetMaterialLazyQuery>;
+export type GetMaterialQueryResult = Apollo.QueryResult<GetMaterialQuery, GetMaterialQueryVariables>;
+export const UpdateMaterialDocument = gql`
+    mutation updateMaterial($id: ID!, $title: String, $content: JSON) {
+  updateMaterial(id: $id, data: {title: $title, content: $content}) {
+    data {
+      id
+      attributes {
+        title
+        content
+      }
+    }
+  }
+}
+    `;
+export type UpdateMaterialMutationFn = Apollo.MutationFunction<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
+
+/**
+ * __useUpdateMaterialMutation__
+ *
+ * To run a mutation, you first call `useUpdateMaterialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMaterialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMaterialMutation, { data, loading, error }] = useUpdateMaterialMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      content: // value for 'content'
+ *   },
+ * });
+ */
+export function useUpdateMaterialMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMaterialMutation, UpdateMaterialMutationVariables>(UpdateMaterialDocument, options);
+      }
+export type UpdateMaterialMutationHookResult = ReturnType<typeof useUpdateMaterialMutation>;
+export type UpdateMaterialMutationResult = Apollo.MutationResult<UpdateMaterialMutation>;
+export type UpdateMaterialMutationOptions = Apollo.BaseMutationOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
 export const GetMaterialsDocument = gql`
     query getMaterials {
-  materials {
+  materials(sort: ["createdAt:desc"]) {
     data {
       id
       attributes {
@@ -1136,6 +1235,7 @@ export const CreateMaterialDocument = gql`
     mutation createMaterial($title: String!, $content: JSON!) {
   createMaterial(data: {title: $title, content: $content}) {
     data {
+      id
       attributes {
         title
         content

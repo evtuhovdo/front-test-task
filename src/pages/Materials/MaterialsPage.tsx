@@ -6,27 +6,29 @@ import { HeaderCustom } from '../../components/common/HeaderCustom';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import SidebarMenu from '../../components/common/SidebarMenu';
-import { LoadingOutlined } from '@ant-design/icons';
-import AddMaterialModal from './AddMaterialModal';
+import { useNavigate } from 'react-router';
+import { makeMaterialLink } from '../../routes';
+import Loading from '../../components/common/Loading';
 
 const MaterialsPage: FC = () => {
   const { loading: loadingUser, data: userData } = useGetMeQuery();
-  const { loading, data, refetch } = useGetMaterialsQuery();
+  const { loading, data } = useGetMaterialsQuery();
   const [createMaterial, createMaterialStatus] = useCreateMaterialMutation({});
-  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const navigate = useNavigate();
 
-  function onClickAdd({ title, content }: { title: string, content: string }) {
+  function onClickAddMaterial() {
     createMaterial({
-      variables: { title, content: { content } },
-      onCompleted: () => {
-        setModalIsVisible(false);
-        refetch();
+      variables: { title: '', content: {} },
+      onCompleted: r => {
+        const id = r.createMaterial?.data?.id;
+        if (id) navigate(makeMaterialLink(id));
       }
     });
   }
 
   return (
     <Layout>
+      <Loading loading={loading || loadingUser || createMaterialStatus.loading} />
       <HeaderCustom />
       <Layout style={{ flexDirection: 'row' }}>
         <Sider>
@@ -36,36 +38,28 @@ const MaterialsPage: FC = () => {
           <Typography.Title>Материалы</Typography.Title>
 
           {userData?.me?.role?.name === 'Teacher' ? (
-            <Button onClick={() => setModalIsVisible(true)}>
+            <Button onClick={() => onClickAddMaterial()}>
               Добавить материал
             </Button>
           ) : null}
-
-          {(loading || createMaterialStatus.loading) && (
-            <Spin
-              style={{ position: 'absolute', top: '50%', left: '50%', zIndex: 100 }}
-              indicator={<LoadingOutlined style={{ fontSize: 96 }} spin />}
-            />
-          )}
 
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {data?.materials?.data.map(m => (
               <Card
                 key={m.id}
-                title={m.attributes?.title}
-                style={{ flexBasis: '45%', margin: '2.5%' }}
+                style={{ flexBasis: '45%', margin: '2.5%', cursor: 'pointer' }}
+                onClick={() => {
+                  if (m.id) navigate(makeMaterialLink(m.id));
+                }}
               >
-                {m.attributes?.content?.content}
+                <Typography.Title level={2}>
+                  {m.attributes?.title}
+                </Typography.Title>
               </Card>
             ))}
           </div>
         </Content>
       </Layout>
-      <AddMaterialModal
-        onCancel={() => setModalIsVisible(false)}
-        onClickAdd={onClickAdd}
-        isVisible={modalIsVisible}
-      />
     </Layout>
   )
 };

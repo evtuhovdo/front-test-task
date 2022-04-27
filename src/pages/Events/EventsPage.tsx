@@ -4,9 +4,9 @@ import { Calendar, Layout, Spin, Typography } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import { CalendarMode } from 'antd/lib/calendar/generateCalendar';
-import { LoadingOutlined } from '@ant-design/icons';
 import { useGetCalendarEventsQuery } from '../../generated/graphql';
 import { HeaderCustom } from '../../components/common/HeaderCustom';
+import { Loading } from '../../components/common/Loading';
 import { Content } from 'antd/lib/layout/layout';
 import Sider from 'antd/lib/layout/Sider';
 import SidebarMenu from '../../components/common/SidebarMenu';
@@ -52,6 +52,7 @@ const EventsPage: FC = () => {
 
   return (
     <Layout>
+      <Loading loading={loading} />
       <HeaderCustom />
       <Layout style={{ flexDirection: 'row' }}>
         <Sider>
@@ -59,13 +60,6 @@ const EventsPage: FC = () => {
         </Sider>
         <Content style={{ padding: 60 }}>
           <Typography.Title>События</Typography.Title>
-
-          {loading && (
-            <Spin
-              style={{ position: 'absolute', top: '50%', left: '50%', zIndex: 100 }}
-              indicator={<LoadingOutlined style={{ fontSize: 96 }} spin />}
-            />
-          )}
 
           <Calendar
             validRange={validRange}

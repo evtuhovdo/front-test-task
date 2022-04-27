@@ -1,5 +1,5 @@
-query getMaterials {
-    materials (sort: ["createdAt:desc"]) {
+query getMaterial  ($id: ID!) {
+    material (id: $id) {
         data {
             id
             attributes {
@@ -12,8 +12,11 @@ query getMaterials {
 }
 
 
-mutation createMaterial ($title: String!, $content: JSON!) {
-  createMaterial(
+
+
+mutation updateMaterial ($id: ID!, $title: String, $content: JSON) {
+  updateMaterial(
+    id: $id
     data: {
       title: $title
       content: $content
