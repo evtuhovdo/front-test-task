@@ -25,7 +25,6 @@ const MaterialsPage: FC = () => {
     onCompleted: m => setTitle(m.material?.data?.attributes?.title || ''),
   });
   const content = data?.material?.data?.attributes?.content;
-  const titleLoaded = data?.material?.data?.attributes?.title;
 
   function onChange({ content, title }: { content?: OutputData, title?: string }) {
     updateMaterial({
@@ -41,8 +40,7 @@ const MaterialsPage: FC = () => {
   );
 
   useEffect(() => {
-    console.log(title);
-    onChangeDebounced({ title });
+    if (isTeacher) onChangeDebounced({ title });
   }, [title, onChangeDebounced]);
 
 
