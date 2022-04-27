@@ -20,9 +20,9 @@ const CommonLayout: FC<IProps> = (
   },
 ) => {
   return (
-    <Layout>
+    <Layout className={styles.main}>
       <HeaderCustom/>
-      <Layout className={styles.rightContent}>
+      <Layout className={styles.right}>
         <Sider>
           <SidebarMenu/>
         </Sider>
