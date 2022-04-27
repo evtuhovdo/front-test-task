@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Card, Layout, Spin, Typography } from 'antd';
+import { Button, Card, Layout, Typography } from 'antd';
 import { useCreateMaterialMutation, useGetMaterialsQuery, useGetMeQuery } from '../../generated/graphql';
 import { HeaderCustom } from '../../components/common/HeaderCustom';
 import { Content } from 'antd/lib/layout/layout';
