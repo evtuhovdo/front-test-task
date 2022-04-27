@@ -49,7 +49,7 @@ const MaterialsPage: FC = () => {
           </Button>
 
           <Typography.Title
-            editable={{
+            editable={isTeacher && {
               onChange: title => onChange({ title }),
               triggerType: ['text', 'icon'],
             }}
