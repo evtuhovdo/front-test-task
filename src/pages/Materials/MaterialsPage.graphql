@@ -1,5 +1,5 @@
 query getMaterials {
-    materials (sort: ["createdAt:desc"]) {
+    materials (sort: ["createdAt:desc"], pagination: { limit: 1000000000 }) {
         data {
             id
             attributes {

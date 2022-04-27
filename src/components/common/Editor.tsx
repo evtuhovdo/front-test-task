@@ -99,16 +99,17 @@ export const EDITOR_JS_TOOLS = {
   delimiter: Delimiter,
   inlineCode: InlineCode,
   simpleImage: SimpleImage,
-  attaches: {
-    class: AttachesTool,
-    config: {
-      additionalRequestHeaders,
-      // uploader: {
-      //   uploadByFile,
-      // },
-      endpoint: 'http://localhost:1337/api/editorjs/uploadFile',
-    },
-  }
+  // TODO: решить проблему с аттачами в ридонли
+  // attaches: {
+  //   class: AttachesTool,
+  //   config: {
+  //     additionalRequestHeaders,
+  //     // uploader: {
+  //     //   uploadByFile,
+  //     // },
+  //     endpoint: 'http://localhost:1337/api/editorjs/uploadFile',
+  //   },
+  // }
 };
 
 
@@ -140,7 +141,7 @@ export const Editor: FC<IEditorProps> = ({
       .save()
       .then((outputData) => {
         onChange(outputData)
-        console.log('Article data: ', outputData);
+        // console.log('Article data: ', outputData);
       })
       .catch((error) => {
         console.log('Saving failed: ', error);
@@ -161,7 +162,7 @@ export const Editor: FC<IEditorProps> = ({
         messages: {},
       },
       onChange: (api) => {
-        console.log('change', api.blocks)
+        // console.log('change', api.blocks)
         save();
       },
     });

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Button, Layout, Spin, Typography } from 'antd';
 import { useGetMaterialQuery, useGetMeQuery, useUpdateMaterialMutation } from '../../generated/graphql';
@@ -16,23 +16,35 @@ import Loading from '../../components/common/Loading';
 const MaterialsPage: FC = () => {
   let { id = '' } = useParams();
   const { loading: loadingUser, data: userData } = useGetMeQuery();
-  const { loading, data } = useGetMaterialQuery({ variables: { id } });
   const [updateMaterial, updateMaterialStatus] = useUpdateMaterialMutation();
   const isTeacher = userData?.me?.role?.name === 'Teacher';
   const navigate = useNavigate();
+  const [title, setTitle] = useState('');
+  const { loading, data } = useGetMaterialQuery({
+    variables: { id },
+    onCompleted: m => setTitle(m.material?.data?.attributes?.title || ''),
+  });
   const content = data?.material?.data?.attributes?.content;
+  const titleLoaded = data?.material?.data?.attributes?.title;
 
+  function onChange({ content, title }: { content?: OutputData, title?: string }) {
+    updateMaterial({
+      variables: { id, title, content },
+      // onCompleted: () => {
+      // }
+    });
+  }
 
-  const onChange = useCallback(
-    debounce(({ content, title }: { content?: OutputData, title?: string }) => {
-      updateMaterial({
-        variables: { id, title, content },
-        // onCompleted: () => {
-        // }
-      });
-    }, 1000, { maxWait: 10000 }),
+  const onChangeDebounced = useCallback(
+    debounce(onChange, 500, { maxWait: 10000 }),
     []
   );
+
+  useEffect(() => {
+    console.log(title);
+    onChangeDebounced({ title });
+  }, [title, onChangeDebounced]);
+
 
   return (
     <Layout>
@@ -50,17 +62,17 @@ const MaterialsPage: FC = () => {
 
           <Typography.Title
             editable={isTeacher && {
-              onChange: title => onChange({ title }),
+              onChange: title => setTitle(title),
               triggerType: ['text', 'icon'],
             }}
           >
-            {data?.material?.data?.attributes?.title}
+            {title}
           </Typography.Title>
 
-          {(!loading && content) && (
+          {content && (
             <Editor
               readOnly={!isTeacher}
-              onChange={content => onChange({ content })}
+              onChange={content => onChangeDebounced({ content, title })}
               data={content}
             />
           )}

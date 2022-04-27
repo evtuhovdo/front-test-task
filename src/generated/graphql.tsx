@@ -1192,7 +1192,7 @@ export type UpdateMaterialMutationResult = Apollo.MutationResult<UpdateMaterialM
 export type UpdateMaterialMutationOptions = Apollo.BaseMutationOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
 export const GetMaterialsDocument = gql`
     query getMaterials {
-  materials(sort: ["createdAt:desc"]) {
+  materials(sort: ["createdAt:desc"], pagination: {limit: 1000000000}) {
     data {
       id
       attributes {
