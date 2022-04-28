@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  background-color: gray;
+  flex-basis: 120px;
+  height: 48px
+}
+
+.content {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.avatar {
+  margin-left: 10px;
+}

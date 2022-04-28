@@ -5,13 +5,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
 import { useInstance } from 'react-ioc';
+import { observer } from 'mobx-react-lite';
+import { useSearchParams } from 'react-router-dom';
+
 import { Store } from '../../model/store/Store';
 import { FORGET_PASSWORD, INDEX, LOGIN } from '../../routes';
-import { observer } from 'mobx-react-lite';
-import useQueryParams from '../../hooks/useQueryParams';
 import { useResetPasswordMutation } from '../../generated/graphql';
+import CenterLayout from '../../components/layout/center/CenterLayout';
 
 const schema = yup.object({
   password: yup.string().min(8, 'Минимальная длинна пароля 8 символов').required('Введите пароль'),
@@ -19,11 +20,9 @@ const schema = yup.object({
 }).required();
 
 const ResetPasswordPage: FC = () => {
-
-  // const resetPasswordMutation = useResetPasswordMutation();
   const store = useInstance(Store);
 
-  const queryParams = useQueryParams();
+  const [ queryParams ] = useSearchParams();
   const code = queryParams.get('code') || '';
 
   const navigate = useNavigate();
@@ -56,7 +55,7 @@ const ResetPasswordPage: FC = () => {
         return;
       }
 
-      store.auth.setTokenAndId(jwt, userId);
+      store.auth.setToken(jwt);
 
       navigate(INDEX);
     } catch (error: any) {
@@ -80,10 +79,7 @@ const ResetPasswordPage: FC = () => {
   }, [ code, navigate ]);
 
   return (
-    <div className="crm-login-layout dissolved">
-      <div className="crm-login-logo">
-        {/*<img src={logo} className="App-logo" alt="logo"/>*/}
-      </div>
+    <CenterLayout>
       <Space direction="vertical" size={20} style={{ width: '100%' }}>
         <Space direction="vertical" size={10} style={{ width: '100%' }}>
           <div style={{ textAlign: 'left' }}>Новый пароль</div>
@@ -141,7 +137,7 @@ const ResetPasswordPage: FC = () => {
         </Link>
 
       </Space>
-    </div>
+    </CenterLayout>
   );
 };
 

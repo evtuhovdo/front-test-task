@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
-const antIcon = <LoadingOutlined spin/>;
+const antIcon = <LoadingOutlined spin size={40}/>;
 
 interface IProps {
   spinning?: boolean;

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Menu } from 'antd';
-import { useNavigate } from 'react-router';
-import { EVENTS, MATERIALS } from '../../routes';
-import { useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
+import { EVENTS, MATERIALS } from '../../../routes';
+import styles from './SidebarMenu.module.scss';
 
 interface IProps {
 
@@ -16,7 +16,7 @@ export const SidebarMenu: FC<IProps> = () => {
   return (
     <Menu
       mode="inline"
-      style={{ height: '100%' }}
+      className={styles.menu}
       defaultOpenKeys={['learning_plan']}
       selectedKeys={[location.pathname]}
     >
@@ -31,12 +31,8 @@ export const SidebarMenu: FC<IProps> = () => {
           Материалы
         </Menu.Item>
       </Menu.SubMenu>
-      {/* <Menu.Item>Лента</Menu.Item>
-      <Menu.Item>Пользователи</Menu.Item>
-      <Menu.Item>Звонки</Menu.Item>
-      <Menu.Item>Мои настройки</Menu.Item> */}
     </Menu>
   )
 };
 
-export default SidebarMenu;
+export default React.memo(SidebarMenu);

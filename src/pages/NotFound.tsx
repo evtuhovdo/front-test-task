@@ -3,12 +3,14 @@ import { Button, Space } from 'antd';
 import { INDEX } from '../routes';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import CenterLayout from '../components/layout/center/CenterLayout';
 
+// TODO: Незабыть поугарать на 404 странице
 const NotFound: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className={'crm-not-found-layout'}>
+    <CenterLayout>
       <h1>
         404
       </h1>
@@ -20,8 +22,7 @@ const NotFound: FC = () => {
                 icon={<ArrowLeftOutlined/>}>Назад</Button>
         <Button size={'large'} onClick={() => navigate(INDEX)}>Вернуться на главную</Button>
       </Space>
-    </div>
-
+    </CenterLayout>
   );
 };
 

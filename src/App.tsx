@@ -19,7 +19,6 @@ import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, MATERIAL, MATERIALS, NOT
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
-import IndexPage from './pages/main/IndexPage';
 import LogoutPage from './pages/Auth/LogoutPage';
 import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
 
@@ -66,14 +65,12 @@ const App: FC = () => {
 
               {hasAuthToken && (
                 <React.Fragment>
-                  {/* <Route path={INDEX} element={<IndexPage/>}/> */}
-                  <Route path={INDEX} element={<IndexPage/>}/>
-
+                  <Route path={INDEX} element={<Navigate to={EVENTS}/>}/>
                   <Route path={MATERIALS} element={<MaterialsPage/>}/>
                   <Route path={MATERIAL} element={<MaterialPage/>}/>
                   <Route path={LOGOUT} element={<LogoutPage/>}/>
                   <Route path={EVENTS} element={<EventsPage/>}/>
-                  <Route path="*" element={<Navigate to={EVENTS}/>}/>
+                  <Route path="*" element={<Navigate to={INDEX}/>}/>
                   <Route path={NOT_FOUND} element={<NotFound/>}/>
                 </React.Fragment>
               )}

@@ -1,5 +1,5 @@
 import { Instance, SnapshotIn, SnapshotOut, types as t } from 'mobx-state-tree';
-import {AuthStore} from './AuthStore';
+import { AuthStore } from './AuthStore';
 
 export const RootStore = t
   .model({
