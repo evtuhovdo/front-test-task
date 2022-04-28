@@ -14,7 +14,7 @@ import { MATERIALS } from '../../routes';
 import Loading from '../../components/common/Loading';
 
 const MaterialsPage: FC = () => {
-  let { id = '' } = useParams();
+  const { id = '' } = useParams();
   const { loading: loadingUser, data: userData } = useGetMeQuery();
   const [updateMaterial, updateMaterialStatus] = useUpdateMaterialMutation();
   const isTeacher = userData?.me?.role?.name === 'Teacher';

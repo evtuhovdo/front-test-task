@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Calendar, Layout, Spin, Typography } from 'antd';
+import { Calendar, Layout, Typography } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import moment, { Moment } from 'moment';
 import { CalendarMode } from 'antd/lib/calendar/generateCalendar';
