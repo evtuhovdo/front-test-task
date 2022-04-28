@@ -1,18 +1,25 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Card, Typography } from 'antd';
+import { Button, Card, Switch, Typography } from 'antd';
 import { useNavigate } from 'react-router';
 
-import { useCreateMaterialMutation, useGetMaterialsQuery, useGetMeQuery } from '../../generated/graphql';
+import { PublicationState, useCreateMaterialMutation, useGetMaterialsQuery, useGetMeQuery } from '../../generated/graphql';
 import { makeMaterialUrl } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
+import styles from './MaterialsPage.module.scss';
+import { useSearchParams } from 'react-router-dom';
 
 
 const MaterialsPage: FC = () => {
   const { loading: loadingUser, data: userData } = useGetMeQuery();
-  const { loading, data } = useGetMaterialsQuery({ fetchPolicy: 'cache-and-network' });
+  const isTeacher = userData?.me?.role?.name === 'Teacher';
+  const [ params, setSearchParams ] = useSearchParams();
+  const { loading, data, refetch } = useGetMaterialsQuery({
+    fetchPolicy: 'cache-and-network',
+  });
   const [ createMaterial, createMaterialStatus ] = useCreateMaterialMutation({});
   const navigate = useNavigate();
+  const [onlyPublished, setOnlyPublished] = useState(params.get('onlyPublished') !== 'false');
 
   function onClickAddMaterial() {
     createMaterial({
@@ -26,14 +33,34 @@ const MaterialsPage: FC = () => {
     });
   }
 
+  useEffect(() => {
+    refetch({
+      publicationState: (!isTeacher || onlyPublished)
+        ? PublicationState.Live
+        : PublicationState.Preview
+    });
+    setSearchParams(onlyPublished ? '' : `onlyPublished=false`);
+  }, [onlyPublished, refetch, setSearchParams]);
+
   return (
     <CommonLayout contentLoading={loading || loadingUser || createMaterialStatus.loading}>
       <Typography.Title>Материалы</Typography.Title>
 
-      {userData?.me?.role?.name === 'Teacher' && (
-        <Button onClick={() => onClickAddMaterial()}>
-          Добавить материал
-        </Button>
+      {isTeacher && (
+        <div className={styles.topPanel}>
+          <Button onClick={() => onClickAddMaterial()}>
+            Добавить материал
+          </Button>
+          <div className={styles.publishingContainer}>
+            Только опубликованные: 
+            <Switch
+              defaultChecked
+              checked={onlyPublished}
+              className={styles.publishingSwitch}
+              onChange={setOnlyPublished}
+            />
+          </div>
+        </div>
       )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>

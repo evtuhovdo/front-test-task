@@ -1,4 +1,4 @@
-query getMaterial  ($id: ID!) {
+query getMaterial ($id: ID!) {
     material (id: $id) {
         data {
             id
@@ -6,6 +6,7 @@ query getMaterial  ($id: ID!) {
                 createdAt
                 title
                 content
+                publishedAt
             }
         }
     }
@@ -14,12 +15,13 @@ query getMaterial  ($id: ID!) {
 
 
 
-mutation updateMaterial ($id: ID!, $title: String, $content: JSON) {
+mutation updateMaterial ($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
   updateMaterial(
     id: $id
     data: {
       title: $title
       content: $content
+      publishedAt: $publishedAt
     }
   ) {
     data {
@@ -27,6 +29,7 @@ mutation updateMaterial ($id: ID!, $title: String, $content: JSON) {
       attributes {
         title
         content
+        publishedAt
       }
     }
   }

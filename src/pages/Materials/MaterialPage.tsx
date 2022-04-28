@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Typography, Breadcrumb } from 'antd';
+import { Typography, Breadcrumb, Switch } from 'antd';
 import { OutputData } from '@editorjs/editorjs';
 import { useNavigate, useParams } from 'react-router';
 import { debounce } from 'lodash';
@@ -10,6 +10,8 @@ import Editor from '../../components/common/Editor';
 import { MATERIALS } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
 import { Link } from 'react-router-dom';
+import styles from './MaterialPage.module.scss';
+import moment from 'moment';
 
 
 const MaterialsPage: FC = () => {
@@ -17,17 +19,27 @@ const MaterialsPage: FC = () => {
   const { loading: loadingUser, data: userData } = useGetMeQuery();
   const [ updateMaterial, updateMaterialStatus ] = useUpdateMaterialMutation();
   const isTeacher = userData?.me?.role?.name === 'Teacher';
-  const navigate = useNavigate();
   const [ title, setTitle ] = useState('');
+  const [isPublished, setIsPublished] = useState(false);
   const { loading, data } = useGetMaterialQuery({
     variables: { id },
-    onCompleted: m => setTitle(m.material?.data?.attributes?.title || ''),
+    onCompleted: m => {
+      const attributes = m.material?.data?.attributes;
+      setTitle(attributes?.title || '');
+      setIsPublished(!!attributes?.publishedAt);
+    },
   });
   const content = data?.material?.data?.attributes?.content;
 
-  function onChange({ content, title }: { content?: OutputData, title?: string }) {
+  function onChange(
+    vars: {
+      content?: OutputData,
+      title?: string,
+      publishedAt?: string | null
+    }
+  ) {
     updateMaterial({
-      variables: { id, title, content },
+      variables: { id, ...vars },
     });
   }
 
@@ -37,10 +49,15 @@ const MaterialsPage: FC = () => {
   );
 
   useEffect(() => {
-    if (isTeacher) {
-      onChangeDebounced({ title });
-    }
-  }, [ title, onChangeDebounced, isTeacher ]);
+    if (isTeacher && !loading) onChange({ title });
+  }, [title, onChangeDebounced, isTeacher]);
+
+  function onCheckPublish(checked: Boolean) {
+    const publishedAt = checked ? moment().format() : null;
+    setIsPublished(true);
+    onChange({ publishedAt })
+  }
+
 
   return (
     <CommonLayout contentLoading={loading}>
@@ -49,19 +66,30 @@ const MaterialsPage: FC = () => {
         <Breadcrumb.Item>{title}</Breadcrumb.Item>
       </Breadcrumb>
 
-      <Typography.Title
-        editable={isTeacher && {
-          onChange: title => setTitle(title),
-          triggerType: [ 'text', 'icon' ],
-        }}
-      >
-        {title}
-      </Typography.Title>
+      <div className={styles.topPanel}>
+        <Typography.Title
+          className={styles.heading}
+          editable={isTeacher && {
+            onChange: title => setTitle(title),
+            triggerType: [ 'text', 'icon' ],
+          }}
+        >
+          {title}
+        </Typography.Title>
+        <div className={styles.publishingContainer}>
+          Опубликовать: 
+          <Switch
+            checked={isPublished}
+            onChange={onCheckPublish}
+            className={styles.publishingSwitch}
+          />
+        </div>
+      </div>
 
       {content && (
         <Editor
           readOnly={!isTeacher}
-          onChange={content => onChangeDebounced({ content, title })}
+          onChange={content => onChangeDebounced({ content })}
           data={content}
         />
       )}
