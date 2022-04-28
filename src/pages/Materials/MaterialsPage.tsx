@@ -11,19 +11,31 @@ import { useSearchParams } from 'react-router-dom';
 
 
 const MaterialsPage: FC = () => {
+  const navigate = useNavigate();
+  const [ params, setSearchParams ] = useSearchParams();
+
   const { loading: loadingUser, data: userData } = useGetMeQuery();
   const isTeacher = userData?.me?.role?.name === 'Teacher';
-  const [ params, setSearchParams ] = useSearchParams();
+
+  const [onlyPublished, setOnlyPublished] = useState(params.get('onlyPublished') !== 'false');
+  const publicationState = (!isTeacher || onlyPublished)
+    ? PublicationState.Live
+    : PublicationState.Preview;
+
   const { loading, data, refetch } = useGetMaterialsQuery({
     fetchPolicy: 'cache-and-network',
+    variables: {
+      publicationState
+    }
   });
   const [ createMaterial, createMaterialStatus ] = useCreateMaterialMutation({});
-  const navigate = useNavigate();
-  const [onlyPublished, setOnlyPublished] = useState(params.get('onlyPublished') !== 'false');
 
   function onClickAddMaterial() {
     createMaterial({
-      variables: { title: 'Новый материал', content: {} },
+      variables: {
+        title: 'Новый материал',
+        content: {},
+      },
       onCompleted: r => {
         const id = r.createMaterial?.data?.id;
         if (id) {
@@ -34,11 +46,7 @@ const MaterialsPage: FC = () => {
   }
 
   useEffect(() => {
-    refetch({
-      publicationState: (!isTeacher || onlyPublished)
-        ? PublicationState.Live
-        : PublicationState.Preview
-    });
+    refetch({ publicationState });
     setSearchParams(onlyPublished ? '' : `onlyPublished=false`);
   }, [onlyPublished, refetch, setSearchParams]);
 
