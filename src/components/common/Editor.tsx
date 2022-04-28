@@ -20,8 +20,6 @@ import LinkTool from '@editorjs/link';
 // @ts-ignore
 import Image from '@editorjs/image';
 // @ts-ignore
-import Raw from '@editorjs/raw';
-// @ts-ignore
 import Header from '@editorjs/header';
 // @ts-ignore
 import Quote from '@editorjs/quote';
@@ -31,8 +29,6 @@ import Marker from '@editorjs/marker';
 import CheckList from '@editorjs/checklist';
 // @ts-ignore
 import Delimiter from '@editorjs/delimiter';
-// @ts-ignore
-import InlineCode from '@editorjs/inline-code';
 // @ts-ignore
 import SimpleImage from '@editorjs/simple-image';
 // @ts-ignore
@@ -77,37 +73,29 @@ export const EDITOR_JS_TOOLS = {
   table: Table,
   list: List,
   warning: Warning,
-  code: Code,
   linkTool: LinkTool,
   image: {
     class: Image,
     config: {
+      types: '*/*',
       additionalRequestHeaders,
-      // uploader: {
-      //   uploadByFile,
-      // },
       endpoints: {
-        byFile: `${getApiBase()}/api/editorjs/uploadImage`, // Your backend file uploader endpoint
-        byUrl: `${getApiBase()}/api/editorjs/fetchUrl`, // Your endpoint that provides uploading by Url
-      }
+        byFile: `${getApiBase()}/api/editorjs/uploadImage`,
+        byUrl: `${getApiBase()}/api/editorjs/fetchUrl`,
+      },
     }
   },
-  raw: Raw,
   header: Header,
   quote: Quote,
   marker: Marker,
   checklist: CheckList,
   delimiter: Delimiter,
-  inlineCode: InlineCode,
   simpleImage: SimpleImage,
   // TODO: решить проблему с аттачами в ридонли
   // attaches: {
   //   class: AttachesTool,
   //   config: {
   //     additionalRequestHeaders,
-  //     // uploader: {
-  //     //   uploadByFile,
-  //     // },
   //     endpoint: `${getApiBase()}/api/editorjs/uploadFile`,
   //   },
   // }
