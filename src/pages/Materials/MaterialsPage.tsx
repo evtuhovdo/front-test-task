@@ -14,7 +14,7 @@ const MaterialsPage: FC = () => {
   const navigate = useNavigate();
   const [ params, setSearchParams ] = useSearchParams();
 
-  const { loading: loadingUser, data: userData } = useGetMeQuery();
+  const { loading: loadingUser, data: userData } = useGetMeQuery({ fetchPolicy: 'cache-and-network' });
   const isTeacher = userData?.me?.role?.name === 'Teacher';
 
   const [onlyPublished, setOnlyPublished] = useState(params.get('onlyPublished') !== 'false');

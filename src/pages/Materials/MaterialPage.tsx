@@ -16,7 +16,7 @@ import moment from 'moment';
 
 const MaterialsPage: FC = () => {
   const { id = '' } = useParams();
-  const { loading: loadingUser, data: userData } = useGetMeQuery();
+  const { loading: loadingUser, data: userData } = useGetMeQuery({ fetchPolicy: 'cache-and-network' });
   const [ updateMaterial, updateMaterialStatus ] = useUpdateMaterialMutation();
   const isTeacher = userData?.me?.role?.name === 'Teacher';
   const [ title, setTitle ] = useState('');
