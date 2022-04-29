@@ -14,8 +14,6 @@ import List from '@editorjs/list';
 // @ts-ignore
 import Warning from '@editorjs/warning';
 // @ts-ignore
-import Code from '@editorjs/code';
-// @ts-ignore
 import LinkTool from '@editorjs/link';
 // @ts-ignore
 import Image from '@editorjs/image';
@@ -32,42 +30,15 @@ import Delimiter from '@editorjs/delimiter';
 // @ts-ignore
 import SimpleImage from '@editorjs/simple-image';
 // @ts-ignore
-import AttachesTool from '@editorjs/attaches';
+import AttachesTool from './attaches-feature-add-readonly-mode/dist/bundle';
 
 import { useInstance } from 'react-ioc';
-import { Store } from '../../model/store/Store';
-import { getApiBase } from '../../env';
+import { Store } from '../../../model/store/Store';
+import { getApiBase } from '../../../env';
 
 const additionalRequestHeaders = { Authorization: '' };
 
-// const filesToUpload = [];
-// function uploadByFile(file: File) {
-//   return new Promise((res, rej) => {
-//     const reader = new FileReader();
-//     reader.readAsDataURL(file);
-//     reader.onload = function () {
-//       filesToUpload.push({
-//         file,
-//         base64: reader.result,
-//       })
-//       console.log('file', file, reader.result);
-//       res({
-//         success: 1,
-//         file: {
-//           url: reader.result,
-//           name: file.name,
-//           title: file.name,
-//           size: file.size,
-//           extension: file.type.split('/')[1],
-//         },
-//       });
-//     };
-//   });
-// };
-
-
 export const EDITOR_JS_TOOLS = {
-  // NOTE: Paragraph is default tool. Declare only when you want to change paragraph option.
   // paragraph: Paragraph,
   embed: Embed,
   table: Table,
@@ -91,14 +62,13 @@ export const EDITOR_JS_TOOLS = {
   checklist: CheckList,
   delimiter: Delimiter,
   simpleImage: SimpleImage,
-  // TODO: решить проблему с аттачами в ридонли
-  // attaches: {
-  //   class: AttachesTool,
-  //   config: {
-  //     additionalRequestHeaders,
-  //     endpoint: `${getApiBase()}/api/editorjs/uploadFile`,
-  //   },
-  // }
+  attaches: {
+    class: AttachesTool,
+    config: {
+      additionalRequestHeaders,
+      endpoint: `${getApiBase()}/api/editorjs/uploadFile`,
+    },
+  }
 };
 
 interface IEditorProps {
@@ -108,10 +78,10 @@ interface IEditorProps {
   // onSave: (data: OutputData) => void,
 }
 
-export const Editor: FC<IEditorProps> = ({
+export const Editor: FC<IEditorProps> = observer(({
   readOnly = false,
   data ,
-  onChange = d => {},
+  onChange = (d: any) => {},
   // onSave,
 }) => {
   const editorCore = React.useRef<EditorJS>(null);
@@ -126,7 +96,6 @@ export const Editor: FC<IEditorProps> = ({
       .save()
       .then((outputData) => {
         onChange(outputData)
-        // console.log('Article data: ', outputData);
       })
       .catch((error) => {
         console.log('Saving failed: ', error);
@@ -149,6 +118,11 @@ export const Editor: FC<IEditorProps> = ({
       onChange: (api) => {
         // console.log('change', api.blocks)
         save();
+        window.document // включает контролы у всех добавленных видео
+          .querySelectorAll('#editorjs video')
+          .forEach(e => {
+            if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
+          });
       },
     });
 
@@ -161,9 +135,9 @@ export const Editor: FC<IEditorProps> = ({
   }, []);
 
   return <div id="editorjs"/>;
-};
+});
 
-export default observer(Editor);
+export default Editor;
 
 
 

@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.5",
-    "@editorjs/attaches": "^1.2.1",
     "@editorjs/checklist": "^1.3.0",
     "@editorjs/code": "^2.7.0",
     "@editorjs/delimiter": "^1.2.0",
@@ -54,12 +53,16 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "postinstall": "cd src/components/common/Editor/attaches-feature-add-readonly-mode && yarn && yarn build"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignorePatterns": [
+      "src/components/common/Editor/attaches-feature-add-readonly-mode/dist/*"
     ]
   },
   "browserslist": {
