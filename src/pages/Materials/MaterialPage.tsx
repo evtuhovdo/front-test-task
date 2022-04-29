@@ -76,14 +76,16 @@ const MaterialsPage: FC = () => {
         >
           {title}
         </Typography.Title>
-        <div className={styles.publishingContainer}>
-          Опубликовать: 
-          <Switch
-            checked={isPublished}
-            onChange={onCheckPublish}
-            className={styles.publishingSwitch}
-          />
-        </div>
+        {isTeacher && (
+          <div className={styles.publishingContainer}>
+            Опубликовать: 
+            <Switch
+              checked={isPublished}
+              onChange={onCheckPublish}
+              className={styles.publishingSwitch}
+            />
+          </div>
+        )}
       </div>
 
       {content && (

@@ -30,11 +30,11 @@ import Delimiter from '@editorjs/delimiter';
 // @ts-ignore
 import SimpleImage from '@editorjs/simple-image';
 // @ts-ignore
-import AttachesTool from './attaches-feature-add-readonly-mode/dist/bundle';
+import AttachesTool from '@editorjs/attaches';
 
 import { useInstance } from 'react-ioc';
-import { Store } from '../../../model/store/Store';
-import { getApiBase } from '../../../env';
+import { Store } from '../../model/store/Store';
+import { getApiBase } from '../../env';
 
 const additionalRequestHeaders = { Authorization: '' };
 
@@ -102,6 +102,14 @@ export const Editor: FC<IEditorProps> = observer(({
       });
   };
 
+  function enableVideoControls() {
+    window.document
+      .querySelectorAll('#editorjs video')
+      .forEach(e => {
+        if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
+      });
+  } 
+
   useEffect(() => {
     additionalRequestHeaders.Authorization = `Bearer ${auth.token}`;
 
@@ -118,12 +126,9 @@ export const Editor: FC<IEditorProps> = observer(({
       onChange: (api) => {
         // console.log('change', api.blocks)
         save();
-        window.document // включает контролы у всех добавленных видео
-          .querySelectorAll('#editorjs video')
-          .forEach(e => {
-            if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
-          });
+        enableVideoControls();
       },
+      onReady: enableVideoControls,
     });
 
     return () => {
