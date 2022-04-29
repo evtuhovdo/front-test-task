@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Typography, Breadcrumb, Switch } from 'antd';
 import { OutputData } from '@editorjs/editorjs';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { debounce } from 'lodash';
 
 import { useGetMaterialQuery, useGetMeQuery, useUpdateMaterialMutation } from '../../generated/graphql';

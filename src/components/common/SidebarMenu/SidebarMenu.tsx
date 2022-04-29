@@ -9,7 +9,7 @@ interface IProps {
 
 }
 
-export const SidebarMenu: FC<IProps> = () => {
+export const SidebarMenu: FC<IProps> = React.memo(() => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,6 +33,6 @@ export const SidebarMenu: FC<IProps> = () => {
       </Menu.SubMenu>
     </Menu>
   )
-};
+});
 
-export default React.memo(SidebarMenu);
+export default SidebarMenu;

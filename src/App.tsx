@@ -31,6 +31,8 @@ import moment from 'moment';
 import 'moment/locale/ru';
 import MaterialsPage from './pages/Materials/MaterialsPage';
 import MaterialPage from './pages/Materials/MaterialPage';
+import GlobalActionsDI from './model/actions/ActionsDI';
+
 moment.locale('ru');
 
 const App: FC = () => {
@@ -39,13 +41,7 @@ const App: FC = () => {
   const { hasAuthToken } = auth;
   const apolloClient = useInstance(ApolloClient);
 
-  if (!hydrated) {
-    return (
-      <div>
-        Loading...
-      </div>
-    );
-  }
+  if (!hydrated) return <div>Загрузка...</div>;
 
   return (
     <ConfigProvider locale={ruRU}>
@@ -85,4 +81,5 @@ const App: FC = () => {
 export default provider(
   StoreDI(),
   ApolloClientDI(),
+  GlobalActionsDI(),
 )(observer(App));
