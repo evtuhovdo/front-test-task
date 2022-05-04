@@ -165,14 +165,17 @@ export const Editor: FC<IEditorProps> = observer(({
         },
       },
       onChange: (api) => {
-        // console.log('change', api.blocks)
+        console.log('change', api.blocks)
         save();
         enableVideoControls();
       },
       onReady: () => {
         enableVideoControls();
-        new Undo({ editor });
-        new DragDrop(editor);
+        if (!readOnly) {
+          const undo = new Undo({ editor, maxLength: 100 });
+          new DragDrop(editor);
+          undo.initialize(data);
+        }
       },
     });
 

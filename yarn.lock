@@ -5198,11 +5198,9 @@ editorjs-drag-drop@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/editorjs-drag-drop/-/editorjs-drag-drop-1.0.3.tgz#fd61d38e953b52031e490130072b56ff29132d8f"
 
-editorjs-undo@^2.0.0-rc.3:
-  version "2.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/editorjs-undo/-/editorjs-undo-2.0.0-rc.3.tgz#ff9dfe5ee352b4c5e632798247ae7c9c97afba68"
-  dependencies:
-    vanilla-caret-js "^1.0.1"
+editorjs-undo@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/editorjs-undo/-/editorjs-undo-1.0.1.tgz#e59d4eb99b5839860395d663523a237251c71ade"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -11709,10 +11707,6 @@ validate-npm-package-license@^3.0.1:
 value-or-promise@1.0.11, value-or-promise@^1.0.11:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/value-or-promise/-/value-or-promise-1.0.11.tgz#3e90299af31dd014fe843fe309cefa7c1d94b140"
-
-vanilla-caret-js@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/vanilla-caret-js/-/vanilla-caret-js-1.0.1.tgz#96cf4e6ee154ca87c813bb4604c90a24555abc35"
 
 vary@~1.1.2:
   version "1.1.2"
