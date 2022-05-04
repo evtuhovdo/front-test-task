@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router';
 
-import { EVENTS, MATERIALS } from '../../../routes';
+import { EVENTS, MARKS, MATERIALS } from '../../../routes';
 import styles from './SidebarMenu.module.scss';
 
 interface IProps {
@@ -29,6 +29,9 @@ export const SidebarMenu: FC<IProps> = React.memo(() => {
         </Menu.Item>
         <Menu.Item key={MATERIALS} onClick={() => navigate(MATERIALS)}>
           Материалы
+        </Menu.Item>
+        <Menu.Item key={MARKS} onClick={() => navigate(MARKS)}>
+          Оценки
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>

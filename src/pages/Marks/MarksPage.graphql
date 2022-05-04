@@ -1,0 +1,48 @@
+query getMarks (
+  sort: [String]
+  $page: Integer
+  $pageSize: Integer
+  $gte: DateTime
+  $lte: DateTime
+) {
+  marks (
+    filters: { createdAt: { gte: $gte, lte: $lte } }
+    pagination: { page: $page, pageSize: $pageSize }
+  ) {
+    meta {
+      pagination {
+        total
+        page
+        pageSize
+        pageCount
+      }
+    }
+    data {
+      id
+      attributes {
+        discipline {
+          data {
+            id
+            attributes { name }
+          }
+        }
+        teacher {
+          data{
+            id
+            attributes {
+              firstname
+              lastname
+            }
+          }
+        }
+        mark
+        schoolyear
+        septima
+        class
+        classLetter
+        criterion
+        comment
+      }
+    }
+  }
+}

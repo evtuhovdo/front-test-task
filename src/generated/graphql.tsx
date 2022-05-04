@@ -111,6 +111,47 @@ export type DateTimeFilterInput = {
   startsWith?: InputMaybe<Scalars['DateTime']>;
 };
 
+export type Discipline = {
+  __typename?: 'Discipline';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  relevantClasses?: Maybe<Scalars['JSON']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type DisciplineEntity = {
+  __typename?: 'DisciplineEntity';
+  attributes?: Maybe<Discipline>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type DisciplineEntityResponse = {
+  __typename?: 'DisciplineEntityResponse';
+  data?: Maybe<DisciplineEntity>;
+};
+
+export type DisciplineEntityResponseCollection = {
+  __typename?: 'DisciplineEntityResponseCollection';
+  data: Array<DisciplineEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type DisciplineFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<DisciplineFiltersInput>>>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<DisciplineFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<DisciplineFiltersInput>>>;
+  relevantClasses?: InputMaybe<JsonFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type DisciplineInput = {
+  name?: InputMaybe<Scalars['String']>;
+  relevantClasses?: InputMaybe<Scalars['JSON']>;
+};
+
 export type FileInfoInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   caption?: InputMaybe<Scalars['String']>;
@@ -140,7 +181,7 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = CalendarEvent | I18NLocale | Material | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Material | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
 
 export type I18NLocale = {
   __typename?: 'I18NLocale';
@@ -247,6 +288,71 @@ export type JsonFilterInput = {
   startsWith?: InputMaybe<Scalars['JSON']>;
 };
 
+export type Mark = {
+  __typename?: 'Mark';
+  class: Scalars['Int'];
+  classLetter?: Maybe<Scalars['String']>;
+  comment?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  criterion?: Maybe<Scalars['String']>;
+  discipline?: Maybe<DisciplineEntityResponse>;
+  mark: Scalars['Int'];
+  schoolyear: Scalars['Int'];
+  septima: Scalars['Int'];
+  student?: Maybe<UsersPermissionsUserEntityResponse>;
+  teacher?: Maybe<UsersPermissionsUserEntityResponse>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type MarkEntity = {
+  __typename?: 'MarkEntity';
+  attributes?: Maybe<Mark>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type MarkEntityResponse = {
+  __typename?: 'MarkEntityResponse';
+  data?: Maybe<MarkEntity>;
+};
+
+export type MarkEntityResponseCollection = {
+  __typename?: 'MarkEntityResponseCollection';
+  data: Array<MarkEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type MarkFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MarkFiltersInput>>>;
+  class?: InputMaybe<IntFilterInput>;
+  classLetter?: InputMaybe<StringFilterInput>;
+  comment?: InputMaybe<StringFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  criterion?: InputMaybe<StringFilterInput>;
+  discipline?: InputMaybe<DisciplineFiltersInput>;
+  id?: InputMaybe<IdFilterInput>;
+  mark?: InputMaybe<IntFilterInput>;
+  not?: InputMaybe<MarkFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<MarkFiltersInput>>>;
+  schoolyear?: InputMaybe<IntFilterInput>;
+  septima?: InputMaybe<IntFilterInput>;
+  student?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  teacher?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type MarkInput = {
+  class?: InputMaybe<Scalars['Int']>;
+  classLetter?: InputMaybe<Scalars['String']>;
+  comment?: InputMaybe<Scalars['String']>;
+  criterion?: InputMaybe<Scalars['String']>;
+  discipline?: InputMaybe<Scalars['ID']>;
+  mark?: InputMaybe<Scalars['Int']>;
+  schoolyear?: InputMaybe<Scalars['Int']>;
+  septima?: InputMaybe<Scalars['Int']>;
+  student?: InputMaybe<Scalars['ID']>;
+  teacher?: InputMaybe<Scalars['ID']>;
+};
+
 export type Material = {
   __typename?: 'Material';
   content: Scalars['JSON'];
@@ -294,6 +400,8 @@ export type MaterialInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  createDiscipline?: Maybe<DisciplineEntityResponse>;
+  createMark?: Maybe<MarkEntityResponse>;
   createMaterial?: Maybe<MaterialEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Create a new role */
@@ -301,6 +409,8 @@ export type Mutation = {
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
   deleteCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  deleteDiscipline?: Maybe<DisciplineEntityResponse>;
+  deleteMark?: Maybe<MarkEntityResponse>;
   deleteMaterial?: Maybe<MaterialEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Delete an existing role */
@@ -319,7 +429,9 @@ export type Mutation = {
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
   updateCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  updateDiscipline?: Maybe<DisciplineEntityResponse>;
   updateFileInfo: UploadFileEntityResponse;
+  updateMark?: Maybe<MarkEntityResponse>;
   updateMaterial?: Maybe<MaterialEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Update an existing role */
@@ -332,6 +444,16 @@ export type Mutation = {
 
 export type MutationCreateCalendarEventArgs = {
   data: CalendarEventInput;
+};
+
+
+export type MutationCreateDisciplineArgs = {
+  data: DisciplineInput;
+};
+
+
+export type MutationCreateMarkArgs = {
+  data: MarkInput;
 };
 
 
@@ -356,6 +478,16 @@ export type MutationCreateUsersPermissionsUserArgs = {
 
 
 export type MutationDeleteCalendarEventArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteDisciplineArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteMarkArgs = {
   id: Scalars['ID'];
 };
 
@@ -426,9 +558,21 @@ export type MutationUpdateCalendarEventArgs = {
 };
 
 
+export type MutationUpdateDisciplineArgs = {
+  data: DisciplineInput;
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpdateFileInfoArgs = {
   id: Scalars['ID'];
   info?: InputMaybe<FileInfoInput>;
+};
+
+
+export type MutationUpdateMarkArgs = {
+  data: MarkInput;
+  id: Scalars['ID'];
 };
 
 
@@ -488,8 +632,12 @@ export type Query = {
   __typename?: 'Query';
   calendarEvent?: Maybe<CalendarEventEntityResponse>;
   calendarEvents?: Maybe<CalendarEventEntityResponseCollection>;
+  discipline?: Maybe<DisciplineEntityResponse>;
+  disciplines?: Maybe<DisciplineEntityResponseCollection>;
   i18NLocale?: Maybe<I18NLocaleEntityResponse>;
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
+  mark?: Maybe<MarkEntityResponse>;
+  marks?: Maybe<MarkEntityResponseCollection>;
   material?: Maybe<MaterialEntityResponse>;
   materials?: Maybe<MaterialEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
@@ -514,6 +662,18 @@ export type QueryCalendarEventsArgs = {
 };
 
 
+export type QueryDisciplineArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryDisciplinesArgs = {
+  filters?: InputMaybe<DisciplineFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
 export type QueryI18NLocaleArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
@@ -521,6 +681,18 @@ export type QueryI18NLocaleArgs = {
 
 export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryMarkArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryMarksArgs = {
+  filters?: InputMaybe<MarkFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -836,6 +1008,8 @@ export type UsersPermissionsUser = {
   confirmed?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
+  firstname: Scalars['String'];
+  lastname: Scalars['String'];
   provider?: Maybe<Scalars['String']>;
   role?: Maybe<UsersPermissionsRoleEntityResponse>;
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -866,7 +1040,9 @@ export type UsersPermissionsUserFiltersInput = {
   confirmed?: InputMaybe<BooleanFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   email?: InputMaybe<StringFilterInput>;
+  firstname?: InputMaybe<StringFilterInput>;
   id?: InputMaybe<IdFilterInput>;
+  lastname?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<UsersPermissionsUserFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<UsersPermissionsUserFiltersInput>>>;
   password?: InputMaybe<StringFilterInput>;
@@ -882,6 +1058,8 @@ export type UsersPermissionsUserInput = {
   confirmationToken?: InputMaybe<Scalars['String']>;
   confirmed?: InputMaybe<Scalars['Boolean']>;
   email?: InputMaybe<Scalars['String']>;
+  firstname?: InputMaybe<Scalars['String']>;
+  lastname?: InputMaybe<Scalars['String']>;
   password?: InputMaybe<Scalars['String']>;
   provider?: InputMaybe<Scalars['String']>;
   resetPasswordToken?: InputMaybe<Scalars['String']>;
@@ -929,6 +1107,14 @@ export type GetCalendarEventsQueryVariables = Exact<{
 
 
 export type GetCalendarEventsQuery = { __typename?: 'Query', calendarEvents?: { __typename?: 'CalendarEventEntityResponseCollection', data: Array<{ __typename?: 'CalendarEventEntity', id?: string | null, attributes?: { __typename?: 'CalendarEvent', dateTime: any, name: string, description?: string | null } | null }> } | null };
+
+export type GetMarksQueryVariables = Exact<{
+  gte?: InputMaybe<Scalars['DateTime']>;
+  lte?: InputMaybe<Scalars['DateTime']>;
+}>;
+
+
+export type GetMarksQuery = { __typename?: 'Query', marks?: { __typename?: 'MarkEntityResponseCollection', data: Array<{ __typename?: 'MarkEntity', id?: string | null, attributes?: { __typename?: 'Mark', mark: number, schoolyear: number, septima: number, class: number, classLetter?: string | null, criterion?: string | null, comment?: string | null, discipline?: { __typename?: 'DisciplineEntityResponse', data?: { __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null } | null } | null, teacher?: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', firstname: string, lastname: string } | null } | null } | null } | null }> } | null };
 
 export type GetMaterialQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1160,6 +1346,70 @@ export function useGetCalendarEventsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetCalendarEventsQueryHookResult = ReturnType<typeof useGetCalendarEventsQuery>;
 export type GetCalendarEventsLazyQueryHookResult = ReturnType<typeof useGetCalendarEventsLazyQuery>;
 export type GetCalendarEventsQueryResult = Apollo.QueryResult<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>;
+export const GetMarksDocument = gql`
+    query getMarks($gte: DateTime, $lte: DateTime) {
+  marks(filters: {createdAt: {gte: $gte, lte: $lte}}) {
+    data {
+      id
+      attributes {
+        discipline {
+          data {
+            id
+            attributes {
+              name
+            }
+          }
+        }
+        teacher {
+          data {
+            id
+            attributes {
+              firstname
+              lastname
+            }
+          }
+        }
+        mark
+        schoolyear
+        septima
+        class
+        classLetter
+        criterion
+        comment
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMarksQuery__
+ *
+ * To run a query within a React component, call `useGetMarksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMarksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMarksQuery({
+ *   variables: {
+ *      gte: // value for 'gte'
+ *      lte: // value for 'lte'
+ *   },
+ * });
+ */
+export function useGetMarksQuery(baseOptions?: Apollo.QueryHookOptions<GetMarksQuery, GetMarksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMarksQuery, GetMarksQueryVariables>(GetMarksDocument, options);
+      }
+export function useGetMarksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMarksQuery, GetMarksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMarksQuery, GetMarksQueryVariables>(GetMarksDocument, options);
+        }
+export type GetMarksQueryHookResult = ReturnType<typeof useGetMarksQuery>;
+export type GetMarksLazyQueryHookResult = ReturnType<typeof useGetMarksLazyQuery>;
+export type GetMarksQueryResult = Apollo.QueryResult<GetMarksQuery, GetMarksQueryVariables>;
 export const GetMaterialDocument = gql`
     query getMaterial($id: ID!) {
   material(id: $id) {
