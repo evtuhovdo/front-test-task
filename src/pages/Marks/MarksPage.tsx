@@ -27,7 +27,7 @@ const MarksPage: FC = () => {
       getMarks({
         variables: {
           studentId: d.me?.id,
-          pageSize: 10,
+          pageSize: 100,
         }
       });
     }
