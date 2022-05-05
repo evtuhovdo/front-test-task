@@ -1109,12 +1109,23 @@ export type GetCalendarEventsQueryVariables = Exact<{
 export type GetCalendarEventsQuery = { __typename?: 'Query', calendarEvents?: { __typename?: 'CalendarEventEntityResponseCollection', data: Array<{ __typename?: 'CalendarEventEntity', id?: string | null, attributes?: { __typename?: 'CalendarEvent', dateTime: any, name: string, description?: string | null } | null }> } | null };
 
 export type GetMarksQueryVariables = Exact<{
-  gte?: InputMaybe<Scalars['DateTime']>;
-  lte?: InputMaybe<Scalars['DateTime']>;
+  studentId?: InputMaybe<Scalars['ID']>;
+  createdAtBetween?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>> | InputMaybe<Scalars['DateTime']>>;
+  mark?: InputMaybe<Array<InputMaybe<Scalars['Int']>> | InputMaybe<Scalars['Int']>>;
+  septima?: InputMaybe<Array<InputMaybe<Scalars['Int']>> | InputMaybe<Scalars['Int']>>;
+  disciplineId?: InputMaybe<Array<InputMaybe<Scalars['ID']>> | InputMaybe<Scalars['ID']>>;
+  page?: InputMaybe<Scalars['Int']>;
+  pageSize?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
 }>;
 
 
-export type GetMarksQuery = { __typename?: 'Query', marks?: { __typename?: 'MarkEntityResponseCollection', data: Array<{ __typename?: 'MarkEntity', id?: string | null, attributes?: { __typename?: 'Mark', mark: number, schoolyear: number, septima: number, class: number, classLetter?: string | null, criterion?: string | null, comment?: string | null, discipline?: { __typename?: 'DisciplineEntityResponse', data?: { __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null } | null } | null, teacher?: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', firstname: string, lastname: string } | null } | null } | null } | null }> } | null };
+export type GetMarksQuery = { __typename?: 'Query', marks?: { __typename?: 'MarkEntityResponseCollection', meta: { __typename?: 'ResponseCollectionMeta', pagination: { __typename?: 'Pagination', total: number, page: number, pageSize: number, pageCount: number } }, data: Array<{ __typename?: 'MarkEntity', id?: string | null, attributes?: { __typename?: 'Mark', mark: number, schoolyear: number, septima: number, class: number, classLetter?: string | null, criterion?: string | null, comment?: string | null, discipline?: { __typename?: 'DisciplineEntityResponse', data?: { __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null } | null } | null, teacher?: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', firstname: string, lastname: string } | null } | null } | null } | null }> } | null };
+
+export type GetDisciplinesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDisciplinesQuery = { __typename?: 'Query', disciplines?: { __typename?: 'DisciplineEntityResponseCollection', data: Array<{ __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null }> } | null };
 
 export type GetMaterialQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1347,8 +1358,20 @@ export type GetCalendarEventsQueryHookResult = ReturnType<typeof useGetCalendarE
 export type GetCalendarEventsLazyQueryHookResult = ReturnType<typeof useGetCalendarEventsLazyQuery>;
 export type GetCalendarEventsQueryResult = Apollo.QueryResult<GetCalendarEventsQuery, GetCalendarEventsQueryVariables>;
 export const GetMarksDocument = gql`
-    query getMarks($gte: DateTime, $lte: DateTime) {
-  marks(filters: {createdAt: {gte: $gte, lte: $lte}}) {
+    query getMarks($studentId: ID, $createdAtBetween: [DateTime], $mark: [Int], $septima: [Int], $disciplineId: [ID], $page: Int, $pageSize: Int, $sort: [String]) {
+  marks(
+    sort: $sort
+    filters: {createdAt: {between: $createdAtBetween}, mark: {in: $mark}, septima: {in: $septima}, student: {id: {eq: $studentId}}, discipline: {id: {in: $disciplineId}}}
+    pagination: {page: $page, pageSize: $pageSize}
+  ) {
+    meta {
+      pagination {
+        total
+        page
+        pageSize
+        pageCount
+      }
+    }
     data {
       id
       attributes {
@@ -1394,8 +1417,14 @@ export const GetMarksDocument = gql`
  * @example
  * const { data, loading, error } = useGetMarksQuery({
  *   variables: {
- *      gte: // value for 'gte'
- *      lte: // value for 'lte'
+ *      studentId: // value for 'studentId'
+ *      createdAtBetween: // value for 'createdAtBetween'
+ *      mark: // value for 'mark'
+ *      septima: // value for 'septima'
+ *      disciplineId: // value for 'disciplineId'
+ *      page: // value for 'page'
+ *      pageSize: // value for 'pageSize'
+ *      sort: // value for 'sort'
  *   },
  * });
  */
@@ -1410,6 +1439,45 @@ export function useGetMarksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetMarksQueryHookResult = ReturnType<typeof useGetMarksQuery>;
 export type GetMarksLazyQueryHookResult = ReturnType<typeof useGetMarksLazyQuery>;
 export type GetMarksQueryResult = Apollo.QueryResult<GetMarksQuery, GetMarksQueryVariables>;
+export const GetDisciplinesDocument = gql`
+    query getDisciplines {
+  disciplines {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDisciplinesQuery__
+ *
+ * To run a query within a React component, call `useGetDisciplinesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDisciplinesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDisciplinesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDisciplinesQuery(baseOptions?: Apollo.QueryHookOptions<GetDisciplinesQuery, GetDisciplinesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDisciplinesQuery, GetDisciplinesQueryVariables>(GetDisciplinesDocument, options);
+      }
+export function useGetDisciplinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDisciplinesQuery, GetDisciplinesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDisciplinesQuery, GetDisciplinesQueryVariables>(GetDisciplinesDocument, options);
+        }
+export type GetDisciplinesQueryHookResult = ReturnType<typeof useGetDisciplinesQuery>;
+export type GetDisciplinesLazyQueryHookResult = ReturnType<typeof useGetDisciplinesLazyQuery>;
+export type GetDisciplinesQueryResult = Apollo.QueryResult<GetDisciplinesQuery, GetDisciplinesQueryVariables>;
 export const GetMaterialDocument = gql`
     query getMaterial($id: ID!) {
   material(id: $id) {
