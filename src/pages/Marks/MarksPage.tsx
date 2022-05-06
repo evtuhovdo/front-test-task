@@ -38,8 +38,6 @@ const MarksPage: FC = () => {
     filters: Record<string, FilterValue | null>,
     sorting: SorterResult<MarkEntity>[] | SorterResult<MarkEntity>
   ) => {
-    console.log(pagination, filters, sorting);
-
     const { columnKey, order, column } = Array.isArray(sorting) ? sorting[0] : sorting;
     let sortPath = columnKey;
     if (columnKey === 'teacher') sortPath = 'teacher.firstname';
@@ -59,8 +57,6 @@ const MarksPage: FC = () => {
       pageSize: pagination.pageSize,
       sort,
     };
-
-    console.log(variables)
     
     getMarks({ variables });
 
@@ -108,7 +104,6 @@ const MarksPage: FC = () => {
                     !end ? null : moment(end),
                   ]}
                   onChange={e => {
-                    console.log(e);
                     if (e) setSelectedKeys([
                       moment(e[0]).startOf('date').format(),
                       moment(e[1]).endOf('date').format()
