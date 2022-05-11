@@ -1,0 +1,75 @@
+query getMarks (
+  $studentId: ID
+  $createdAtBetween: [DateTime]
+  $mark: [Int]
+  $septima: [Int]
+  $disciplineId: [ID]
+
+  $page: Int
+  $pageSize: Int
+
+  $sort: [String]
+) {
+  marks (
+    sort: $sort
+    filters: {
+      createdAt: { between: $createdAtBetween }
+      mark: { in: $mark }
+      septima: { in: $septima }
+      student: {
+        id: { eq: $studentId }
+      }
+      discipline: {
+        id: { in: $disciplineId }
+      }
+    }
+    pagination: { page: $page, pageSize: $pageSize }
+  ) {
+    meta {
+      pagination {
+        total
+        page
+        pageSize
+        pageCount
+      }
+    }
+    data {
+      id
+      attributes {
+        discipline {
+          data {
+            id
+            attributes { name }
+          }
+        }
+        teacher {
+          data{
+            id
+            attributes {
+              firstname
+              lastname
+            }
+          }
+        }
+        mark
+        schoolyear
+        septima
+        class
+        classLetter
+        criterion
+        comment
+      }
+    }
+  }
+}
+
+query getDisciplines {
+  disciplines {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
