@@ -5,7 +5,7 @@ schema {
     mutation: Mutation
 }
 
-union GenericMorph = CalendarEvent | I18NLocale | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Material | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type CalendarEvent {
     createdAt: DateTime
@@ -26,6 +26,27 @@ type CalendarEventEntityResponse {
 
 type CalendarEventEntityResponseCollection {
     data: [CalendarEventEntity!]!
+    meta: ResponseCollectionMeta!
+}
+
+type Discipline {
+    createdAt: DateTime
+    name: String!
+    relevantClasses: JSON
+    updatedAt: DateTime
+}
+
+type DisciplineEntity {
+    attributes: Discipline
+    id: ID
+}
+
+type DisciplineEntityResponse {
+    data: DisciplineEntity
+}
+
+type DisciplineEntityResponseCollection {
+    data: [DisciplineEntity!]!
     meta: ResponseCollectionMeta!
 }
 
@@ -50,14 +71,71 @@ type I18NLocaleEntityResponseCollection {
     meta: ResponseCollectionMeta!
 }
 
+type Mark {
+    class: Int!
+    classLetter: String
+    comment: String
+    createdAt: DateTime
+    criterion: String
+    discipline: DisciplineEntityResponse
+    mark: Int!
+    schoolyear: Int!
+    septima: Int!
+    student: UsersPermissionsUserEntityResponse
+    teacher: UsersPermissionsUserEntityResponse
+    updatedAt: DateTime
+}
+
+type MarkEntity {
+    attributes: Mark
+    id: ID
+}
+
+type MarkEntityResponse {
+    data: MarkEntity
+}
+
+type MarkEntityResponseCollection {
+    data: [MarkEntity!]!
+    meta: ResponseCollectionMeta!
+}
+
+type Material {
+    content: JSON!
+    createdAt: DateTime
+    publishedAt: DateTime
+    title: String!
+    updatedAt: DateTime
+}
+
+type MaterialEntity {
+    attributes: Material
+    id: ID
+}
+
+type MaterialEntityResponse {
+    data: MaterialEntity
+}
+
+type MaterialEntityResponseCollection {
+    data: [MaterialEntity!]!
+    meta: ResponseCollectionMeta!
+}
+
 type Mutation {
     createCalendarEvent(data: CalendarEventInput!): CalendarEventEntityResponse
+    createDiscipline(data: DisciplineInput!): DisciplineEntityResponse
+    createMark(data: MarkInput!): MarkEntityResponse
+    createMaterial(data: MaterialInput!): MaterialEntityResponse
     createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
     "Create a new role"
     createUsersPermissionsRole(data: UsersPermissionsRoleInput!): UsersPermissionsCreateRolePayload
     "Create a new user"
     createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
     deleteCalendarEvent(id: ID!): CalendarEventEntityResponse
+    deleteDiscipline(id: ID!): DisciplineEntityResponse
+    deleteMark(id: ID!): MarkEntityResponse
+    deleteMaterial(id: ID!): MaterialEntityResponse
     deleteUploadFile(id: ID!): UploadFileEntityResponse
     "Delete an existing role"
     deleteUsersPermissionsRole(id: ID!): UsersPermissionsDeleteRolePayload
@@ -75,7 +153,10 @@ type Mutation {
     "Reset user password. Confirm with a code (resetToken from forgotPassword)"
     resetPassword(code: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
     updateCalendarEvent(data: CalendarEventInput!, id: ID!): CalendarEventEntityResponse
+    updateDiscipline(data: DisciplineInput!, id: ID!): DisciplineEntityResponse
     updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
+    updateMark(data: MarkInput!, id: ID!): MarkEntityResponse
+    updateMaterial(data: MaterialInput!, id: ID!): MaterialEntityResponse
     updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
     "Update an existing role"
     updateUsersPermissionsRole(data: UsersPermissionsRoleInput!, id: ID!): UsersPermissionsUpdateRolePayload
@@ -94,8 +175,14 @@ type Pagination {
 type Query {
     calendarEvent(id: ID): CalendarEventEntityResponse
     calendarEvents(filters: CalendarEventFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): CalendarEventEntityResponseCollection
+    discipline(id: ID): DisciplineEntityResponse
+    disciplines(filters: DisciplineFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): DisciplineEntityResponseCollection
     i18NLocale(id: ID): I18NLocaleEntityResponse
     i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
+    mark(id: ID): MarkEntityResponse
+    marks(filters: MarkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MarkEntityResponseCollection
+    material(id: ID): MaterialEntityResponse
+    materials(filters: MaterialFiltersInput, pagination: PaginationArg = {}, publicationState: PublicationState = LIVE, sort: [String] = []): MaterialEntityResponseCollection
     me: UsersPermissionsMe
     uploadFile(id: ID): UploadFileEntityResponse
     uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
@@ -222,11 +309,16 @@ type UsersPermissionsUpdateRolePayload {
 
 type UsersPermissionsUser {
     blocked: Boolean
+    class: Int
+    classLetter: String
     confirmed: Boolean
     createdAt: DateTime
     email: String!
+    firstname: String!
+    lastname: String!
     provider: String
     role: UsersPermissionsRoleEntityResponse
+    tutors(filters: UsersPermissionsUserFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UsersPermissionsUserRelationResponseCollection
     updatedAt: DateTime
     username: String!
 }
@@ -247,6 +339,11 @@ type UsersPermissionsUserEntityResponseCollection {
 
 type UsersPermissionsUserRelationResponseCollection {
     data: [UsersPermissionsUserEntity!]!
+}
+
+enum PublicationState {
+    LIVE
+    PREVIEW
 }
 
 "A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar."
@@ -320,6 +417,22 @@ input DateTimeFilterInput {
     null: Boolean
     or: [DateTime]
     startsWith: DateTime
+}
+
+input DisciplineFiltersInput {
+    and: [DisciplineFiltersInput]
+    createdAt: DateTimeFilterInput
+    id: IDFilterInput
+    name: StringFilterInput
+    not: DisciplineFiltersInput
+    or: [DisciplineFiltersInput]
+    relevantClasses: JSONFilterInput
+    updatedAt: DateTimeFilterInput
+}
+
+input DisciplineInput {
+    name: String
+    relevantClasses: JSON
 }
 
 input FileInfoInput {
@@ -429,6 +542,56 @@ input JSONFilterInput {
     null: Boolean
     or: [JSON]
     startsWith: JSON
+}
+
+input MarkFiltersInput {
+    and: [MarkFiltersInput]
+    class: IntFilterInput
+    classLetter: StringFilterInput
+    comment: StringFilterInput
+    createdAt: DateTimeFilterInput
+    criterion: StringFilterInput
+    discipline: DisciplineFiltersInput
+    id: IDFilterInput
+    mark: IntFilterInput
+    not: MarkFiltersInput
+    or: [MarkFiltersInput]
+    schoolyear: IntFilterInput
+    septima: IntFilterInput
+    student: UsersPermissionsUserFiltersInput
+    teacher: UsersPermissionsUserFiltersInput
+    updatedAt: DateTimeFilterInput
+}
+
+input MarkInput {
+    class: Int
+    classLetter: String
+    comment: String
+    criterion: String
+    discipline: ID
+    mark: Int
+    schoolyear: Int
+    septima: Int
+    student: ID
+    teacher: ID
+}
+
+input MaterialFiltersInput {
+    and: [MaterialFiltersInput]
+    content: JSONFilterInput
+    createdAt: DateTimeFilterInput
+    id: IDFilterInput
+    not: MaterialFiltersInput
+    or: [MaterialFiltersInput]
+    publishedAt: DateTimeFilterInput
+    title: StringFilterInput
+    updatedAt: DateTimeFilterInput
+}
+
+input MaterialInput {
+    content: JSON
+    publishedAt: DateTime
+    title: String
 }
 
 input PaginationArg {
@@ -549,29 +712,39 @@ input UsersPermissionsRoleInput {
 input UsersPermissionsUserFiltersInput {
     and: [UsersPermissionsUserFiltersInput]
     blocked: BooleanFilterInput
+    class: IntFilterInput
+    classLetter: StringFilterInput
     confirmationToken: StringFilterInput
     confirmed: BooleanFilterInput
     createdAt: DateTimeFilterInput
     email: StringFilterInput
+    firstname: StringFilterInput
     id: IDFilterInput
+    lastname: StringFilterInput
     not: UsersPermissionsUserFiltersInput
     or: [UsersPermissionsUserFiltersInput]
     password: StringFilterInput
     provider: StringFilterInput
     resetPasswordToken: StringFilterInput
     role: UsersPermissionsRoleFiltersInput
+    tutors: UsersPermissionsUserFiltersInput
     updatedAt: DateTimeFilterInput
     username: StringFilterInput
 }
 
 input UsersPermissionsUserInput {
     blocked: Boolean
+    class: Int
+    classLetter: String
     confirmationToken: String
     confirmed: Boolean
     email: String
+    firstname: String
+    lastname: String
     password: String
     provider: String
     resetPasswordToken: String
     role: ID
+    tutors: [ID]
     username: String
 }

@@ -46,7 +46,7 @@ const MarksPage: FC = () => {
     const sort = column
       ? [`${sortPath}${sortOrderPostfix}`]
       : null;
-    
+
     const variables = {
       studentId: userData?.me?.id,
       createdAtBetween: filters.createdAt ? filters.createdAt : undefined,
@@ -57,7 +57,7 @@ const MarksPage: FC = () => {
       pageSize: pagination.pageSize,
       sort,
     };
-    
+
     getMarks({ variables });
 
     // const dateString = dateNew.format('YYYY-MM');
@@ -136,7 +136,7 @@ const MarksPage: FC = () => {
                 </Space>
               </div>
             )
-          }, 
+          },
           {
             title: 'Класс',
             dataIndex: ['attributes'],
@@ -190,7 +190,7 @@ const MarksPage: FC = () => {
           },
           {
             title: 'Комментарий',
-            dataIndex: ['attributes', 'septima'],
+            dataIndex: ['attributes', 'comment'],
             key: 'comment',
             sorter: true,
           },
