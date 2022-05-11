@@ -1,5 +1,14 @@
-query getMaterials {
-    materials (sort: ["createdAt:desc"], pagination: { limit: 1000000000 }) {
+enum PublicationState {
+  PREVIEW
+  LIVE
+}
+
+query getMaterials ($publicationState: PublicationState) {
+    materials (
+      sort: ["createdAt:desc"]
+      pagination: { limit: 1000000000 }
+      publicationState: $publicationState
+    ) {
         data {
             id
             attributes {

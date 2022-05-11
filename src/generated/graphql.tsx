@@ -251,6 +251,7 @@ export type Material = {
   __typename?: 'Material';
   content: Scalars['JSON'];
   createdAt?: Maybe<Scalars['DateTime']>;
+  publishedAt?: Maybe<Scalars['DateTime']>;
   title: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -279,12 +280,14 @@ export type MaterialFiltersInput = {
   id?: InputMaybe<IdFilterInput>;
   not?: InputMaybe<MaterialFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<MaterialFiltersInput>>>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
   title?: InputMaybe<StringFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type MaterialInput = {
   content?: InputMaybe<Scalars['JSON']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
   title?: InputMaybe<Scalars['String']>;
 };
 
@@ -476,6 +479,11 @@ export type PaginationArg = {
   start?: InputMaybe<Scalars['Int']>;
 };
 
+export enum PublicationState {
+  Live = 'LIVE',
+  Preview = 'PREVIEW'
+}
+
 export type Query = {
   __typename?: 'Query';
   calendarEvent?: Maybe<CalendarEventEntityResponse>;
@@ -526,6 +534,7 @@ export type QueryMaterialArgs = {
 export type QueryMaterialsArgs = {
   filters?: InputMaybe<MaterialFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
+  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
@@ -888,7 +897,7 @@ export type UsersPermissionsUserRelationResponseCollection = {
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'UsersPermissionsMe', id: string, email?: string | null, username: string, role?: { __typename?: 'UsersPermissionsMeRole', id: string, name: string, type?: string | null, description?: string | null } | null } | null };
+export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'UsersPermissionsMe', id: string, email?: string | null, username: string, role?: { __typename?: 'UsersPermissionsMeRole', id: string, name: string, description?: string | null } | null } | null };
 
 export type LoginMutationVariables = Exact<{
   input: UsersPermissionsLoginInput;
@@ -926,18 +935,21 @@ export type GetMaterialQueryVariables = Exact<{
 }>;
 
 
-export type GetMaterialQuery = { __typename?: 'Query', material?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any } | null } | null } | null };
+export type GetMaterialQuery = { __typename?: 'Query', material?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any, publishedAt?: any | null } | null } | null } | null };
 
 export type UpdateMaterialMutationVariables = Exact<{
   id: Scalars['ID'];
   title?: InputMaybe<Scalars['String']>;
   content?: InputMaybe<Scalars['JSON']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
 }>;
 
 
-export type UpdateMaterialMutation = { __typename?: 'Mutation', updateMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', title: string, content: any } | null } | null } | null };
+export type UpdateMaterialMutation = { __typename?: 'Mutation', updateMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', title: string, content: any, publishedAt?: any | null } | null } | null } | null };
 
-export type GetMaterialsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetMaterialsQueryVariables = Exact<{
+  publicationState?: InputMaybe<PublicationState>;
+}>;
 
 
 export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialEntityResponseCollection', data: Array<{ __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any } | null }> } | null };
@@ -960,7 +972,6 @@ export const GetMeDocument = gql`
     role {
       id
       name
-      type
       description
     }
   }
@@ -1158,6 +1169,7 @@ export const GetMaterialDocument = gql`
         createdAt
         title
         content
+        publishedAt
       }
     }
   }
@@ -1192,13 +1204,17 @@ export type GetMaterialQueryHookResult = ReturnType<typeof useGetMaterialQuery>;
 export type GetMaterialLazyQueryHookResult = ReturnType<typeof useGetMaterialLazyQuery>;
 export type GetMaterialQueryResult = Apollo.QueryResult<GetMaterialQuery, GetMaterialQueryVariables>;
 export const UpdateMaterialDocument = gql`
-    mutation updateMaterial($id: ID!, $title: String, $content: JSON) {
-  updateMaterial(id: $id, data: {title: $title, content: $content}) {
+    mutation updateMaterial($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
+  updateMaterial(
+    id: $id
+    data: {title: $title, content: $content, publishedAt: $publishedAt}
+  ) {
     data {
       id
       attributes {
         title
         content
+        publishedAt
       }
     }
   }
@@ -1222,6 +1238,7 @@ export type UpdateMaterialMutationFn = Apollo.MutationFunction<UpdateMaterialMut
  *      id: // value for 'id'
  *      title: // value for 'title'
  *      content: // value for 'content'
+ *      publishedAt: // value for 'publishedAt'
  *   },
  * });
  */
@@ -1233,8 +1250,12 @@ export type UpdateMaterialMutationHookResult = ReturnType<typeof useUpdateMateri
 export type UpdateMaterialMutationResult = Apollo.MutationResult<UpdateMaterialMutation>;
 export type UpdateMaterialMutationOptions = Apollo.BaseMutationOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
 export const GetMaterialsDocument = gql`
-    query getMaterials {
-  materials(sort: ["createdAt:desc"], pagination: {limit: 1000000000}) {
+    query getMaterials($publicationState: PublicationState) {
+  materials(
+    sort: ["createdAt:desc"]
+    pagination: {limit: 1000000000}
+    publicationState: $publicationState
+  ) {
     data {
       id
       attributes {
@@ -1259,6 +1280,7 @@ export const GetMaterialsDocument = gql`
  * @example
  * const { data, loading, error } = useGetMaterialsQuery({
  *   variables: {
+ *      publicationState: // value for 'publicationState'
  *   },
  * });
  */

@@ -2466,6 +2466,18 @@
             "deprecationReason": null
           },
           {
+            "name": "publishedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "title",
             "description": null,
             "args": [],
@@ -2695,6 +2707,18 @@
             "deprecationReason": null
           },
           {
+            "name": "publishedAt",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DateTimeFilterInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "title",
             "description": null,
             "type": {
@@ -2735,6 +2759,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "JSON",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "publishedAt",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
               "ofType": null
             },
             "defaultValue": null,
@@ -3848,6 +3884,29 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "PublicationState",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "LIVE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PREVIEW",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "Query",
         "description": null,
@@ -4058,6 +4117,18 @@
                   "ofType": null
                 },
                 "defaultValue": "{}",
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "publicationState",
+                "description": null,
+                "type": {
+                  "kind": "ENUM",
+                  "name": "PublicationState",
+                  "ofType": null
+                },
+                "defaultValue": "LIVE",
                 "isDeprecated": false,
                 "deprecationReason": null
               },
