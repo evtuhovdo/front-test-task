@@ -1,6 +1,6 @@
 FROM mhart/alpine-node:16.4.2 as build-stage
 
-RUN apk add --update --no-cache nano openssl curl
+RUN apk add --update --no-cache nano openssl curl git
 RUN curl -o- -L https://yarnpkg.com/install.sh | sh
 RUN mkdir /app
 ADD package.json /app/package.json
