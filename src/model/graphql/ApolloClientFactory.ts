@@ -55,6 +55,11 @@ const ApiClientFactory = (store: IRootStoreModel) => {
   apolloClient = new ApolloClient({
     link: ApolloLink.from([ errorLink, authLink, uploadLink ]),
     cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'cache-and-network',
+      },
+    }
   });
 
   return apolloClient;
