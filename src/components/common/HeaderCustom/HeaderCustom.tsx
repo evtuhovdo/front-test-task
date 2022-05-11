@@ -11,7 +11,7 @@ import styles from './HeaderCustom.module.scss';
 interface IProps {
 }
 
-export const HeaderCustom: FC<IProps> = () => {
+export const HeaderCustom: FC<IProps> = React.memo(() => {
   const { loading, data } = useGetMeQuery();
   const navigate = useNavigate();
 
@@ -34,6 +34,6 @@ export const HeaderCustom: FC<IProps> = () => {
       </div>
     </Header>
   );
-};
+});
 
 export default HeaderCustom;

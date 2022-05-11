@@ -28,6 +28,7 @@ const ApiClientFactory = (store: IRootStoreModel) => {
       console.log(`[Network error]: ${networkError}`);
     } else if (response && response.status === 401) {
       // Если токен сдох, то разлогиниваем пользователя
+      console.log(401);
       store.auth.clearState();
       apolloClient?.resetStore();
     }
