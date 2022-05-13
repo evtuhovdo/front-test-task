@@ -39,12 +39,16 @@ import Button from 'editorjs-button';
 import Undo from 'editorjs-undo';
 // @ts-ignore
 import DragDrop from 'editorjs-drag-drop';
+// @ts-ignore
+import Collapse from './collapse';
+// @ts-ignore
+import Video from './video';
 
 import { useInstance } from 'react-ioc';
-import { Store } from '../../model/store/Store';
-import { getApiBase } from '../../env';
+import { Store } from '../../../model/store/Store';
+import { getApiBase } from '../../../env';
 
-const additionalRequestHeaders = { Authorization: '' };
+export const additionalRequestHeaders = { Authorization: '' };
 
 export const EDITOR_JS_TOOLS = {
   // paragraph: Paragraph,
@@ -58,7 +62,6 @@ export const EDITOR_JS_TOOLS = {
   image: {
     class: Image,
     config: {
-      types: '*/*',
       additionalRequestHeaders,
       endpoints: {
         byFile: `${getApiBase()}/api/editorjs/uploadImage`,
@@ -97,6 +100,11 @@ export const EDITOR_JS_TOOLS = {
       }
     }
   },
+  collapse: {
+    class: Collapse,
+    inlineToolbar: true,
+  },
+  video: Video,
   // math: {
   //   // @ts-ignore
   //   class: window.EJLaTeX,
