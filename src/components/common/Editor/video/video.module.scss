@@ -1,0 +1,37 @@
+.videoContainer {
+  position: relative;
+}
+
+.qualityButton {
+  position: absolute;
+  padding: 0px 7px;
+  width: 40px;
+  text-align: center;
+  cursor: pointer;
+  top: 10px;
+  right: 10px;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  border: 2px white solid;
+  opacity: 0;
+  transition: opacity 0.8s;
+  pointer-events: none;
+}
+
+.qualityButtonEnabled {
+  @extend .qualityButton;
+  background-color: white;
+  color: black;
+}
+
+.videoContainer {
+  &:hover {
+    .qualityButton {
+      opacity: 1;
+      transition: opacity 0.3s;
+      pointer-events: all;
+    }
+  }
+}

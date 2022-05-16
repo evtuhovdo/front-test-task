@@ -29,17 +29,17 @@ const CollapseComponent = ({
   return (
     <Collapse
       defaultActiveKey={readOnly ? [] : ['1']}
-      onChange={() => {
-        setTimeout(insertInnerHTML, 100);
-      }}
+      // onChange={insertInnerHTML}
     >
       <CollapsePanel
         key="1"
+        forceRender
         header={
           readOnly
             ? title
             : (
               <Input
+                placeholder="Заголовок"
                 value={title}
                 onChange={e => onDataChange({ title: e.target.value, content })}
                 onPressEnter={e => e.stopPropagation()}
@@ -53,7 +53,7 @@ const CollapseComponent = ({
           ref={r => { editingDiv.current = r; }}
           style={{ padding: 5 }}
           onKeyDown={e => {
-            if (['Enter', 'NumpadEnter'].includes(e.code)) {
+            if (['Enter', 'NumpadEnter','KeyV'].includes(e.code)) {
               e.stopPropagation();
             }
           }}
@@ -119,7 +119,7 @@ export default class CollapseTool {
   api: any;
   readOnly: boolean = false;
   data: CollapseData = {
-    title: 'Заголовок',
+    title: '',
     content: '',
   };
   rootClassname: string = 'collapse-tool';
@@ -128,7 +128,7 @@ export default class CollapseTool {
   constructor({ data, config, api, readOnly }: any) {
     this.api = api;
     this.readOnly = readOnly;
-    this.data = data;
+    this.data = data || this.data;
   }
 
   render() {

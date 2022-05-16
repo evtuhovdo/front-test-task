@@ -1,10 +1,14 @@
-import { Input, message, Upload } from 'antd';
-import { default as React, useRef } from 'react';
+import { Input, message, Tooltip, Upload } from 'antd';
+import { default as React, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import ReactHlsPlayer from 'react-hls-player/dist';
 import { getApiBase } from '../../../../env';
-import { InboxOutlined } from '@ant-design/icons';
 import { additionalRequestHeaders } from '..';
+import videojs from 'video.js';
+import 'video.js/dist/video-js.css';
+import '@videojs/http-streaming';
+import 'videojs-contrib-quality-levels';
+import styles from './video.module.scss';
+
 
 interface VideoData {
   link: string | null,
@@ -20,18 +24,50 @@ export const VideoPlayer = ({
   onDataChange: (data: VideoData) => void,
   readOnly: boolean,
 }) => {
-  const playerRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<HTMLVideoElement | null>(null);
+  const videoJsRef = useRef<videojs.Player | null>(null);
+  const [hdQuality, setHdQuality] = useState(true);
+
+  useEffect(() => {
+    if (playerRef.current) {
+      const player = videojs(playerRef.current, { fluid: true });
+      videoJsRef.current = player;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (videoJsRef.current) {
+      const  qualityLevels = videoJsRef.current.qualityLevels();
+      for (var i = 0; i < qualityLevels.length; i++) {
+        const qualityLevel = qualityLevels[i];
+        const { height = 0 } = qualityLevel;
+        qualityLevel.enabled = hdQuality || height < 720;
+      }
+    }
+  }, [hdQuality])
 
   return (link || readOnly) ? (
     <div>
-      <ReactHlsPlayer
-        src={link || ''}
-        autoPlay={false}
-        controls={true}
-        width="100%"
-        height="auto"
-        playerRef={playerRef}
-      />
+      <div className={styles.videoContainer}>
+        <video
+          className="video-js vjs-default-skin"
+          ref={r => { playerRef.current = r }}
+        >
+          <source src={link || ''} type="application/x-mpegURL"/>
+        </video>
+        <Tooltip title={`Качество: ${hdQuality ? 'высокое' : 'низкое'}`}>
+          <div
+            className={hdQuality ? styles.qualityButtonEnabled : styles.qualityButton}
+            style={!hdQuality ? {
+              color: 'white',
+              backgroundColor: 'black',
+            } : {}}
+            onClick={() => setHdQuality(!hdQuality)}
+          >
+            {hdQuality ? 'HD' : 'LQ'}
+          </div>
+        </Tooltip>
+      </div>
       {readOnly ? title : (
         <Input
           value={title}
@@ -55,7 +91,7 @@ export const VideoPlayer = ({
           console.log(info.file, info.fileList);
         }
         if (status === 'done') {
-          onDataChange({ title, link: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' })
+          onDataChange({ title, link: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' });
           message.success(`${info.file.name} file uploaded successfully.`);
         } else if (status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
