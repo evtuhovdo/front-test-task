@@ -52,6 +52,7 @@ export const VideoPlayer = ({
           />
         )}
       </div>
+
       {readOnly ? title : (
         <Input
           value={title}
