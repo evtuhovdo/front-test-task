@@ -3,12 +3,9 @@ import { default as React, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { getApiBase } from '../../../../env';
 import { additionalRequestHeaders } from '..';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
-import '@videojs/http-streaming';
-import 'videojs-contrib-quality-levels';
-import styles from './video.module.scss';
 
+import styles from './video.module.scss';
+import VideoJsPlayer from './VideoJsPlayer';
 
 interface VideoData {
   link: string | null,
@@ -24,49 +21,36 @@ export const VideoPlayer = ({
   onDataChange: (data: VideoData) => void,
   readOnly: boolean,
 }) => {
-  const playerRef = useRef<HTMLVideoElement | null>(null);
-  const videoJsRef = useRef<videojs.Player | null>(null);
-  const [hdQuality, setHdQuality] = useState(true);
+  const videoJsRef = useRef<any | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
-    if (playerRef.current) {
-      const player = videojs(playerRef.current, { fluid: true });
-      videoJsRef.current = player;
-    }
+    setTimeout(() => setShowVideo(true), 100);
   }, []);
-
-  useEffect(() => {
-    if (videoJsRef.current) {
-      const  qualityLevels = videoJsRef.current.qualityLevels();
-      for (var i = 0; i < qualityLevels.length; i++) {
-        const qualityLevel = qualityLevels[i];
-        const { height = 0 } = qualityLevel;
-        qualityLevel.enabled = hdQuality || height < 720;
-      }
-    }
-  }, [hdQuality])
 
   return (link || readOnly) ? (
     <div>
       <div className={styles.videoContainer}>
-        <video
-          className="video-js vjs-default-skin"
-          ref={r => { playerRef.current = r }}
-        >
-          <source src={link || ''} type="application/x-mpegURL"/>
-        </video>
-        <Tooltip title={`Качество: ${hdQuality ? 'высокое' : 'низкое'}`}>
-          <div
-            className={hdQuality ? styles.qualityButtonEnabled : styles.qualityButton}
-            style={!hdQuality ? {
-              color: 'white',
-              backgroundColor: 'black',
-            } : {}}
-            onClick={() => setHdQuality(!hdQuality)}
-          >
-            {hdQuality ? 'HD' : 'LQ'}
-          </div>
-        </Tooltip>
+        {showVideo && (
+          <VideoJsPlayer
+            controls
+            src={link || ''}
+            playbackRates={[0.75, 1, 1.25, 1.5, 1.75, 2]}
+            onReady={(player: any) => {
+              player.fluid(true);
+              videoJsRef.current = player;
+              player.hlsQualitySelector({
+                  displayCurrentQuality: true,
+              });
+            }}
+            // onPlay={this.onVideoPlay.bind(this)}
+            // onPause={this.onVideoPause.bind(this)}
+            // onTimeUpdate={this.onVideoTimeUpdate.bind(this)}
+            // onSeeking={this.onVideoSeeking.bind(this)}
+            // onSeeked={this.onVideoSeeked.bind(this)}
+            // onEnd={this.onVideoEnd.bind(this)}
+          />
+        )}
       </div>
       {readOnly ? title : (
         <Input

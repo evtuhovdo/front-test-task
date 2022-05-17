@@ -143,13 +143,13 @@ export const Editor: FC<IEditorProps> = observer(({
       });
   };
 
-  function enableVideoControls() {
-    window.document
-      .querySelectorAll('#editorjs video')
-      .forEach(e => {
-        if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
-      });
-  } 
+  // function enableVideoControls() {
+  //   window.document
+  //     .querySelectorAll('#editorjs video')
+  //     .forEach(e => {
+  //       if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
+  //     });
+  // } 
 
   useEffect(() => {
     additionalRequestHeaders.Authorization = `Bearer ${auth.token}`;
@@ -175,10 +175,10 @@ export const Editor: FC<IEditorProps> = observer(({
       onChange: (api) => {
         console.log('change', api.blocks)
         save();
-        enableVideoControls();
+        // enableVideoControls();
       },
       onReady: () => {
-        enableVideoControls();
+        // enableVideoControls();
         if (!readOnly) {
           const undo = new Undo({ editor, maxLength: 100 });
           new DragDrop(editor);
