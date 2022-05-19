@@ -210,9 +210,9 @@ export type GenericMorph = CalendarEvent | Discipline | Grade | I18NLocale | Mar
 
 export type Grade = {
   __typename?: 'Grade';
-  class?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   disciplines?: Maybe<DisciplineRelationResponseCollection>;
+  grade?: Maybe<Scalars['Int']>;
   topics?: Maybe<TopicRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -250,9 +250,9 @@ export type GradeEntityResponseCollection = {
 
 export type GradeFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<GradeFiltersInput>>>;
-  class?: InputMaybe<IntFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   disciplines?: InputMaybe<DisciplineFiltersInput>;
+  grade?: InputMaybe<IntFilterInput>;
   id?: InputMaybe<IdFilterInput>;
   not?: InputMaybe<GradeFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<GradeFiltersInput>>>;
@@ -261,8 +261,8 @@ export type GradeFiltersInput = {
 };
 
 export type GradeInput = {
-  class?: InputMaybe<Scalars['Int']>;
   disciplines?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  grade?: InputMaybe<Scalars['Int']>;
   topics?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
@@ -378,12 +378,12 @@ export type JsonFilterInput = {
 
 export type Mark = {
   __typename?: 'Mark';
-  class: Scalars['Int'];
-  classLetter?: Maybe<Scalars['String']>;
   comment?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   criterion?: Maybe<Scalars['String']>;
   discipline?: Maybe<DisciplineEntityResponse>;
+  grade?: Maybe<GradeEntityResponse>;
+  gradeLetter?: Maybe<Scalars['String']>;
   mark: Scalars['Int'];
   schoolyear: Scalars['Int'];
   septima: Scalars['Int'];
@@ -411,12 +411,12 @@ export type MarkEntityResponseCollection = {
 
 export type MarkFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<MarkFiltersInput>>>;
-  class?: InputMaybe<IntFilterInput>;
-  classLetter?: InputMaybe<StringFilterInput>;
   comment?: InputMaybe<StringFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   criterion?: InputMaybe<StringFilterInput>;
   discipline?: InputMaybe<DisciplineFiltersInput>;
+  grade?: InputMaybe<GradeFiltersInput>;
+  gradeLetter?: InputMaybe<StringFilterInput>;
   id?: InputMaybe<IdFilterInput>;
   mark?: InputMaybe<IntFilterInput>;
   not?: InputMaybe<MarkFiltersInput>;
@@ -429,11 +429,11 @@ export type MarkFiltersInput = {
 };
 
 export type MarkInput = {
-  class?: InputMaybe<Scalars['Int']>;
-  classLetter?: InputMaybe<Scalars['String']>;
   comment?: InputMaybe<Scalars['String']>;
   criterion?: InputMaybe<Scalars['String']>;
   discipline?: InputMaybe<Scalars['ID']>;
+  grade?: InputMaybe<Scalars['ID']>;
+  gradeLetter?: InputMaybe<Scalars['String']>;
   mark?: InputMaybe<Scalars['Int']>;
   schoolyear?: InputMaybe<Scalars['Int']>;
   septima?: InputMaybe<Scalars['Int']>;
@@ -1304,12 +1304,12 @@ export type UsersPermissionsUpdateRolePayload = {
 export type UsersPermissionsUser = {
   __typename?: 'UsersPermissionsUser';
   blocked?: Maybe<Scalars['Boolean']>;
-  class?: Maybe<Scalars['Int']>;
-  classLetter?: Maybe<Scalars['String']>;
   confirmed?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
   firstname: Scalars['String'];
+  grade?: Maybe<GradeEntityResponse>;
+  gradeLetter?: Maybe<Scalars['String']>;
   lastname: Scalars['String'];
   provider?: Maybe<Scalars['String']>;
   role?: Maybe<UsersPermissionsRoleEntityResponse>;
@@ -1345,13 +1345,13 @@ export type UsersPermissionsUserEntityResponseCollection = {
 export type UsersPermissionsUserFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsUserFiltersInput>>>;
   blocked?: InputMaybe<BooleanFilterInput>;
-  class?: InputMaybe<IntFilterInput>;
-  classLetter?: InputMaybe<StringFilterInput>;
   confirmationToken?: InputMaybe<StringFilterInput>;
   confirmed?: InputMaybe<BooleanFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   email?: InputMaybe<StringFilterInput>;
   firstname?: InputMaybe<StringFilterInput>;
+  grade?: InputMaybe<GradeFiltersInput>;
+  gradeLetter?: InputMaybe<StringFilterInput>;
   id?: InputMaybe<IdFilterInput>;
   lastname?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<UsersPermissionsUserFiltersInput>;
@@ -1367,12 +1367,12 @@ export type UsersPermissionsUserFiltersInput = {
 
 export type UsersPermissionsUserInput = {
   blocked?: InputMaybe<Scalars['Boolean']>;
-  class?: InputMaybe<Scalars['Int']>;
-  classLetter?: InputMaybe<Scalars['String']>;
   confirmationToken?: InputMaybe<Scalars['String']>;
   confirmed?: InputMaybe<Scalars['Boolean']>;
   email?: InputMaybe<Scalars['String']>;
   firstname?: InputMaybe<Scalars['String']>;
+  grade?: InputMaybe<Scalars['ID']>;
+  gradeLetter?: InputMaybe<Scalars['String']>;
   lastname?: InputMaybe<Scalars['String']>;
   password?: InputMaybe<Scalars['String']>;
   provider?: InputMaybe<Scalars['String']>;
@@ -1435,7 +1435,7 @@ export type GetMarksQueryVariables = Exact<{
 }>;
 
 
-export type GetMarksQuery = { __typename?: 'Query', marks?: { __typename?: 'MarkEntityResponseCollection', meta: { __typename?: 'ResponseCollectionMeta', pagination: { __typename?: 'Pagination', total: number, page: number, pageSize: number, pageCount: number } }, data: Array<{ __typename?: 'MarkEntity', id?: string | null, attributes?: { __typename?: 'Mark', mark: number, schoolyear: number, septima: number, class: number, classLetter?: string | null, criterion?: string | null, comment?: string | null, discipline?: { __typename?: 'DisciplineEntityResponse', data?: { __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null } | null } | null, teacher?: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', firstname: string, lastname: string } | null } | null } | null } | null }> } | null };
+export type GetMarksQuery = { __typename?: 'Query', marks?: { __typename?: 'MarkEntityResponseCollection', meta: { __typename?: 'ResponseCollectionMeta', pagination: { __typename?: 'Pagination', total: number, page: number, pageSize: number, pageCount: number } }, data: Array<{ __typename?: 'MarkEntity', id?: string | null, attributes?: { __typename?: 'Mark', mark: number, schoolyear: number, septima: number, gradeLetter?: string | null, criterion?: string | null, comment?: string | null, discipline?: { __typename?: 'DisciplineEntityResponse', data?: { __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null } | null } | null, teacher?: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', firstname: string, lastname: string } | null } | null } | null, grade?: { __typename?: 'GradeEntityResponse', data?: { __typename?: 'GradeEntity', id?: string | null, attributes?: { __typename?: 'Grade', grade?: number | null } | null } | null } | null } | null }> } | null };
 
 export type GetDisciplinesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1710,8 +1710,15 @@ export const GetMarksDocument = gql`
         mark
         schoolyear
         septima
-        class
-        classLetter
+        grade {
+          data {
+            id
+            attributes {
+              grade
+            }
+          }
+        }
+        gradeLetter
         criterion
         comment
       }

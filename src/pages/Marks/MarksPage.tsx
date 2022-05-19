@@ -42,6 +42,7 @@ const MarksPage: FC = () => {
     let sortPath = columnKey;
     if (columnKey === 'teacher') sortPath = 'teacher.firstname';
     if (columnKey === 'discipline') sortPath = 'discipline.name';
+    if (columnKey === 'grade') sortPath = 'grade.grade';
     const sortOrderPostfix = order === 'descend' ? ':desc' : '';
     const sort = column
       ? [`${sortPath}${sortOrderPostfix}`]
@@ -139,8 +140,8 @@ const MarksPage: FC = () => {
           },
           {
             title: 'Класс',
-            dataIndex: ['attributes'],
-            key: 'class',
+            dataIndex: ['attributes', 'grade', 'data', 'attributes', 'grade'],
+            key: 'grade',
             sorter: true,
             render: attrs => `${attrs?.class}${attrs?.classLetter}`,
           },
