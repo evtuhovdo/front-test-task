@@ -15,7 +15,7 @@ import StoreDI from './model/store/StoreDI';
 import ApolloClientDI from './model/graphql/ApolloClientDI';
 import { Store } from './model/store/Store';
 import ScrollToTop from './components/common/ScrollToTop';
-import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, MARKS, MATERIAL, MATERIALS, NOT_FOUND, RESET_PASSWORD } from './routes';
+import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, LOGOUT, MARKS, MODULE, MODULES, NOT_FOUND, RESET_PASSWORD } from './routes';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
@@ -29,8 +29,8 @@ import EventsPage from './pages/Events/EventsPage';
 
 import moment from 'moment';
 import 'moment/locale/ru';
-import MaterialsPage from './pages/Materials/MaterialsPage';
-import MaterialPage from './pages/Materials/MaterialPage';
+import ModulesPage from './pages/Modules/ModulesPage';
+import ModulePage from './pages/Modules/ModulePage';
 import GlobalActionsDI from './model/actions/ActionsDI';
 import MarksPage from './pages/Marks/MarksPage';
 
@@ -63,8 +63,8 @@ const App: FC = () => {
               {hasAuthToken && (
                 <React.Fragment>
                   <Route path={INDEX} element={<Navigate to={EVENTS}/>}/>
-                  <Route path={MATERIALS} element={<MaterialsPage/>}/>
-                  <Route path={MATERIAL} element={<MaterialPage/>}/>
+                  <Route path={MODULES} element={<ModulesPage/>}/>
+                  <Route path={MODULE} element={<ModulePage/>}/>
                   <Route path={MARKS} element={<MarksPage/>}/>
                   <Route path={LOGOUT} element={<LogoutPage/>}/>
                   <Route path={EVENTS} element={<EventsPage/>}/>

@@ -54,8 +54,15 @@ query getMarks (
         mark
         schoolyear
         septima
-        class
-        classLetter
+        grade {
+          data {
+            id
+            attributes {
+              grade
+            }
+          }
+        }
+        gradeLetter
         criterion
         comment
       }

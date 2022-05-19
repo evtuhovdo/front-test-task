@@ -42,6 +42,7 @@ const MarksPage: FC = () => {
     let sortPath = columnKey;
     if (columnKey === 'teacher') sortPath = 'teacher.firstname';
     if (columnKey === 'discipline') sortPath = 'discipline.name';
+    if (columnKey === 'grade') sortPath = 'grade.grade';
     const sortOrderPostfix = order === 'descend' ? ':desc' : '';
     const sort = column
       ? [`${sortPath}${sortOrderPostfix}`]
@@ -68,6 +69,8 @@ const MarksPage: FC = () => {
   }, [getMarks, userData]);
 
   const pagination = data?.marks?.meta.pagination;
+
+  console.log(data?.marks?.data);
 
   return (
     <CommonLayout>
@@ -140,9 +143,9 @@ const MarksPage: FC = () => {
           {
             title: 'Класс',
             dataIndex: ['attributes'],
-            key: 'class',
+            key: 'grade',
             sorter: true,
-            render: attrs => `${attrs?.class}${attrs?.classLetter}`,
+            render: attrs => `${attrs?.grade?.data?.attributes?.grade ?? ''}${attrs?.gradeLetter ?? ''}`,
           },
           {
             title: 'Септима',

@@ -4,10 +4,10 @@ export const INDEX = '/';
 // EVENTS
 export const EVENTS = '/events';
 
-// MATERIALS
-export const MATERIALS = '/materials';
-export const MATERIAL = '/materials/:id';
-export const makeMaterialUrl = (id: string) => `/materials/${id}`;
+// MODULES
+export const MODULES = '/modules';
+export const MODULE = '/modules/:id';
+export const makeModuleUrl = (id: string) => `/modules/${id}`;
 
 // MARKS
 export const MARKS = '/marks';

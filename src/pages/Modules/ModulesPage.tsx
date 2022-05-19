@@ -3,14 +3,14 @@ import { observer } from 'mobx-react-lite';
 import { Button, Card, Switch, Typography } from 'antd';
 import { useNavigate } from 'react-router';
 
-import { PublicationState, useCreateMaterialMutation, useGetMaterialsQuery, useGetMeQuery } from '../../generated/graphql';
-import { makeMaterialUrl } from '../../routes';
+import { PublicationState, useCreateModuleMutation, useGetModulesQuery, useGetMeQuery } from '../../generated/graphql';
+import { makeModuleUrl } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
-import styles from './MaterialsPage.module.scss';
+import styles from './ModulesPage.module.scss';
 import { useSearchParams } from 'react-router-dom';
 
 
-const MaterialsPage: FC = () => {
+const ModulesPage: FC = () => {
   const navigate = useNavigate();
   const [ params, setSearchParams ] = useSearchParams();
 
@@ -22,24 +22,24 @@ const MaterialsPage: FC = () => {
     ? PublicationState.Live
     : PublicationState.Preview;
 
-  const { loading, data, refetch } = useGetMaterialsQuery({
+  const { loading, data, refetch } = useGetModulesQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       publicationState
     }
   });
-  const [ createMaterial, createMaterialStatus ] = useCreateMaterialMutation({});
+  const [ createModule, createModuleStatus ] = useCreateModuleMutation({});
 
-  function onClickAddMaterial() {
-    createMaterial({
+  function onClickAddModule() {
+    createModule({
       variables: {
-        title: 'Новый материал',
+        title: 'Новый модуль',
         content: {},
       },
       onCompleted: r => {
-        const id = r.createMaterial?.data?.id;
+        const id = r.createModule?.data?.id;
         if (id) {
-          navigate(makeMaterialUrl(id));
+          navigate(makeModuleUrl(id));
         }
       },
     });
@@ -51,13 +51,13 @@ const MaterialsPage: FC = () => {
   }, [onlyPublished, refetch, setSearchParams]);
 
   return (
-    <CommonLayout contentLoading={loading || loadingUser || createMaterialStatus.loading}>
-      <Typography.Title>Материалы</Typography.Title>
+    <CommonLayout contentLoading={loading || loadingUser || createModuleStatus.loading}>
+      <Typography.Title>Модули</Typography.Title>
 
       {isTeacher && (
         <div className={styles.topPanel}>
-          <Button onClick={() => onClickAddMaterial()}>
-            Добавить материал
+          <Button onClick={() => onClickAddModule()}>
+            Добавить модуль
           </Button>
           <div className={styles.publishingContainer}>
             Только опубликованные: 
@@ -72,12 +72,12 @@ const MaterialsPage: FC = () => {
       )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {data?.materials?.data.map(m => (
+        {data?.modules?.data.map(m => (
           <Card
             key={m.id}
             style={{ flexBasis: '45%', margin: '2.5%', cursor: 'pointer' }}
             onClick={() => {
-              if (m.id) navigate(makeMaterialUrl(m.id));
+              if (m.id) navigate(makeModuleUrl(m.id));
             }}
           >
             <Typography.Title level={2}>
@@ -90,7 +90,7 @@ const MaterialsPage: FC = () => {
   );
 };
 
-export default observer(MaterialsPage);
+export default observer(ModulesPage);
 
 
 

@@ -5,31 +5,31 @@ import { OutputData } from '@editorjs/editorjs';
 import { useParams } from 'react-router';
 import { debounce } from 'lodash';
 
-import { useGetMaterialQuery, useGetMeQuery, useUpdateMaterialMutation } from '../../generated/graphql';
+import { useGetModuleQuery, useGetMeQuery, useUpdateModuleMutation } from '../../generated/graphql';
 import Editor from '../../components/common/Editor';
-import { MATERIALS } from '../../routes';
+import { MODULES } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
 import { Link } from 'react-router-dom';
-import styles from './MaterialPage.module.scss';
+import styles from './ModulePage.module.scss';
 import moment from 'moment';
 
 
-const MaterialsPage: FC = () => {
+const ModulesPage: FC = () => {
   const { id = '' } = useParams();
   const { loading: loadingUser, data: userData } = useGetMeQuery({ fetchPolicy: 'cache-and-network' });
-  const [ updateMaterial, updateMaterialStatus ] = useUpdateMaterialMutation();
+  const [ updateModule, updateModuleStatus ] = useUpdateModuleMutation();
   const isTeacher = userData?.me?.role?.name === 'Teacher';
   const [ title, setTitle ] = useState('');
   const [isPublished, setIsPublished] = useState(false);
-  const { loading, data } = useGetMaterialQuery({
+  const { loading, data } = useGetModuleQuery({
     variables: { id },
     onCompleted: m => {
-      const attributes = m.material?.data?.attributes;
+      const attributes = m.module?.data?.attributes;
       setTitle(attributes?.title || '');
       setIsPublished(!!attributes?.publishedAt);
     },
   });
-  const content = data?.material?.data?.attributes?.content;
+  const content = data?.module?.data?.attributes?.content;
 
   function onChange(
     vars: {
@@ -38,7 +38,7 @@ const MaterialsPage: FC = () => {
       publishedAt?: string | null
     }
   ) {
-    updateMaterial({
+    updateModule({
       variables: { id, ...vars },
     });
   }
@@ -62,7 +62,7 @@ const MaterialsPage: FC = () => {
   return (
     <CommonLayout contentLoading={loading}>
       <Breadcrumb style={{ paddingBottom: 20 }}>
-        <Breadcrumb.Item><Link to={MATERIALS}>Материалы</Link></Breadcrumb.Item>
+        <Breadcrumb.Item><Link to={MODULES}>Модули</Link></Breadcrumb.Item>
         <Breadcrumb.Item>{title}</Breadcrumb.Item>
       </Breadcrumb>
 
@@ -99,7 +99,7 @@ const MaterialsPage: FC = () => {
   );
 };
 
-export default observer(MaterialsPage);
+export default observer(ModulesPage);
 
 
 

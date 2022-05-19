@@ -5,7 +5,7 @@ schema {
     mutation: Mutation
 }
 
-union GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Material | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Module | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type CalendarEvent {
     createdAt: DateTime
@@ -100,7 +100,7 @@ type MarkEntityResponseCollection {
     meta: ResponseCollectionMeta!
 }
 
-type Material {
+type Module {
     content: JSON!
     createdAt: DateTime
     publishedAt: DateTime
@@ -108,17 +108,17 @@ type Material {
     updatedAt: DateTime
 }
 
-type MaterialEntity {
-    attributes: Material
+type ModuleEntity {
+    attributes: Module
     id: ID
 }
 
-type MaterialEntityResponse {
-    data: MaterialEntity
+type ModuleEntityResponse {
+    data: ModuleEntity
 }
 
-type MaterialEntityResponseCollection {
-    data: [MaterialEntity!]!
+type ModuleEntityResponseCollection {
+    data: [ModuleEntity!]!
     meta: ResponseCollectionMeta!
 }
 
@@ -126,7 +126,7 @@ type Mutation {
     createCalendarEvent(data: CalendarEventInput!): CalendarEventEntityResponse
     createDiscipline(data: DisciplineInput!): DisciplineEntityResponse
     createMark(data: MarkInput!): MarkEntityResponse
-    createMaterial(data: MaterialInput!): MaterialEntityResponse
+    createModule(data: ModuleInput!): ModuleEntityResponse
     createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
     "Create a new role"
     createUsersPermissionsRole(data: UsersPermissionsRoleInput!): UsersPermissionsCreateRolePayload
@@ -135,7 +135,7 @@ type Mutation {
     deleteCalendarEvent(id: ID!): CalendarEventEntityResponse
     deleteDiscipline(id: ID!): DisciplineEntityResponse
     deleteMark(id: ID!): MarkEntityResponse
-    deleteMaterial(id: ID!): MaterialEntityResponse
+    deleteModule(id: ID!): ModuleEntityResponse
     deleteUploadFile(id: ID!): UploadFileEntityResponse
     "Delete an existing role"
     deleteUsersPermissionsRole(id: ID!): UsersPermissionsDeleteRolePayload
@@ -156,7 +156,7 @@ type Mutation {
     updateDiscipline(data: DisciplineInput!, id: ID!): DisciplineEntityResponse
     updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
     updateMark(data: MarkInput!, id: ID!): MarkEntityResponse
-    updateMaterial(data: MaterialInput!, id: ID!): MaterialEntityResponse
+    updateModule(data: ModuleInput!, id: ID!): ModuleEntityResponse
     updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
     "Update an existing role"
     updateUsersPermissionsRole(data: UsersPermissionsRoleInput!, id: ID!): UsersPermissionsUpdateRolePayload
@@ -181,8 +181,8 @@ type Query {
     i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
     mark(id: ID): MarkEntityResponse
     marks(filters: MarkFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MarkEntityResponseCollection
-    material(id: ID): MaterialEntityResponse
-    materials(filters: MaterialFiltersInput, pagination: PaginationArg = {}, publicationState: PublicationState = LIVE, sort: [String] = []): MaterialEntityResponseCollection
+    module(id: ID): ModuleEntityResponse
+    modules(filters: ModuleFiltersInput, pagination: PaginationArg = {}, publicationState: PublicationState = LIVE, sort: [String] = []): ModuleEntityResponseCollection
     me: UsersPermissionsMe
     uploadFile(id: ID): UploadFileEntityResponse
     uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
@@ -576,19 +576,19 @@ input MarkInput {
     teacher: ID
 }
 
-input MaterialFiltersInput {
-    and: [MaterialFiltersInput]
+input ModuleFiltersInput {
+    and: [ModuleFiltersInput]
     content: JSONFilterInput
     createdAt: DateTimeFilterInput
     id: IDFilterInput
-    not: MaterialFiltersInput
-    or: [MaterialFiltersInput]
+    not: ModuleFiltersInput
+    or: [ModuleFiltersInput]
     publishedAt: DateTimeFilterInput
     title: StringFilterInput
     updatedAt: DateTimeFilterInput
 }
 
-input MaterialInput {
+input ModuleInput {
     content: JSON
     publishedAt: DateTime
     title: String

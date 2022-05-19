@@ -39,12 +39,16 @@ import Button from 'editorjs-button';
 import Undo from 'editorjs-undo';
 // @ts-ignore
 import DragDrop from 'editorjs-drag-drop';
+// @ts-ignore
+import Collapse from './collapse';
+// @ts-ignore
+import Video from './video';
 
 import { useInstance } from 'react-ioc';
-import { Store } from '../../model/store/Store';
-import { getApiBase } from '../../env';
+import { Store } from '../../../model/store/Store';
+import { getApiBase } from '../../../env';
 
-const additionalRequestHeaders = { Authorization: '' };
+export const additionalRequestHeaders = { Authorization: '' };
 
 export const EDITOR_JS_TOOLS = {
   // paragraph: Paragraph,
@@ -58,7 +62,6 @@ export const EDITOR_JS_TOOLS = {
   image: {
     class: Image,
     config: {
-      types: '*/*',
       additionalRequestHeaders,
       endpoints: {
         byFile: `${getApiBase()}/api/editorjs/uploadImage`,
@@ -97,6 +100,11 @@ export const EDITOR_JS_TOOLS = {
       }
     }
   },
+  collapse: {
+    class: Collapse,
+    inlineToolbar: true,
+  },
+  video: Video,
   // math: {
   //   // @ts-ignore
   //   class: window.EJLaTeX,
@@ -135,13 +143,13 @@ export const Editor: FC<IEditorProps> = observer(({
       });
   };
 
-  function enableVideoControls() {
-    window.document
-      .querySelectorAll('#editorjs video')
-      .forEach(e => {
-        if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
-      });
-  } 
+  // function enableVideoControls() {
+  //   window.document
+  //     .querySelectorAll('#editorjs video')
+  //     .forEach(e => {
+  //       if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
+  //     });
+  // } 
 
   useEffect(() => {
     additionalRequestHeaders.Authorization = `Bearer ${auth.token}`;
@@ -167,10 +175,10 @@ export const Editor: FC<IEditorProps> = observer(({
       onChange: (api) => {
         console.log('change', api.blocks)
         save();
-        enableVideoControls();
+        // enableVideoControls();
       },
       onReady: () => {
-        enableVideoControls();
+        // enableVideoControls();
         if (!readOnly) {
           const undo = new Undo({ editor, maxLength: 100 });
           new DragDrop(editor);
