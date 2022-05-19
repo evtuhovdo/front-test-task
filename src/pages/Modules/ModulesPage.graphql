@@ -3,29 +3,130 @@ enum PublicationState {
   LIVE
 }
 
-query getModules ($publicationState: PublicationState) {
-    modules (
-      sort: ["createdAt:desc"]
-      pagination: { limit: 1000000000 }
-      publicationState: $publicationState
-    ) {
-        data {
+fragment ModulesFragment on Section {
+  modules (
+    sort: ["createdAt:desc"]
+    pagination: { limit: 1000000000 }
+    publicationState: $publicationState
+  ) {
+    data {
+      id
+      attributes {
+        title
+      }
+    }
+  }
+}
+
+query getModules (
+  $publicationState: PublicationState
+  $gradeId: ID!
+  $disciplineId: ID!
+) {
+  topics (
+    filters: {
+      grade: {
+        id: {
+          eq: $gradeId
+        }
+      }
+      discipline: {
+        id: {
+          eq: $disciplineId
+        }
+      }
+    }
+	) {
+    data {
+      id
+      attributes {
+        name
+        sections {
+          data {
             id
             attributes {
-                createdAt
-                title
-                content
+              name
+              children {
+                data {
+                  id
+                  attributes {
+                  name
+                    ...ModulesFragment
+                  }
+                }
+              }
+              ...ModulesFragment
             }
+          }
         }
+      }
     }
+  }
+}
+
+query getGradesDisciplines {
+  grades (
+    sort: ["grade"]
+    pagination: { pageSize: 1000 }
+  ) {
+    data {
+      id
+      attributes {
+        grade
+        disciplines (pagination: { pageSize: 1000 }) {
+          data {
+            id
+            attributes {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation createTopic ($name: String!, $gradeId: ID!, $disciplineId: ID!) {
+  createTopic (
+    data: {
+      name: $name
+			grade: $gradeId
+      discipline: $disciplineId
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
 }
 
 
-mutation createModule ($title: String!, $content: JSON!) {
+mutation createSection ($name: String!, $topicId: ID, $parentId: ID) {
+  createSection(
+    data: {
+      name: $name
+      topic: $topicId
+      parent: $parentId
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+mutation createModule ($title: String!, $content: JSON!, $sectionId: ID!) {
   createModule(
     data: {
       title: $title
       content: $content
+      section: $sectionId
     }
   ) {
     data {
