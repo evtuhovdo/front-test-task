@@ -114,10 +114,18 @@ export type DateTimeFilterInput = {
 export type Discipline = {
   __typename?: 'Discipline';
   createdAt?: Maybe<Scalars['DateTime']>;
+  grades?: Maybe<GradeRelationResponseCollection>;
   name: Scalars['String'];
   relevantClasses?: Maybe<Scalars['JSON']>;
   topics?: Maybe<TopicRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type DisciplineGradesArgs = {
+  filters?: InputMaybe<GradeFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 
@@ -147,6 +155,7 @@ export type DisciplineEntityResponseCollection = {
 export type DisciplineFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<DisciplineFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
+  grades?: InputMaybe<GradeFiltersInput>;
   id?: InputMaybe<IdFilterInput>;
   name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<DisciplineFiltersInput>;
@@ -157,9 +166,15 @@ export type DisciplineFiltersInput = {
 };
 
 export type DisciplineInput = {
+  grades?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   name?: InputMaybe<Scalars['String']>;
   relevantClasses?: InputMaybe<Scalars['JSON']>;
   topics?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+};
+
+export type DisciplineRelationResponseCollection = {
+  __typename?: 'DisciplineRelationResponseCollection';
+  data: Array<DisciplineEntity>;
 };
 
 export type FileInfoInput = {
@@ -191,7 +206,70 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Module | Section | Topic | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = CalendarEvent | Discipline | Grade | I18NLocale | Mark | Module | Section | Topic | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+
+export type Grade = {
+  __typename?: 'Grade';
+  class?: Maybe<Scalars['Int']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  disciplines?: Maybe<DisciplineRelationResponseCollection>;
+  topics?: Maybe<TopicRelationResponseCollection>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type GradeDisciplinesArgs = {
+  filters?: InputMaybe<DisciplineFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type GradeTopicsArgs = {
+  filters?: InputMaybe<TopicFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type GradeEntity = {
+  __typename?: 'GradeEntity';
+  attributes?: Maybe<Grade>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type GradeEntityResponse = {
+  __typename?: 'GradeEntityResponse';
+  data?: Maybe<GradeEntity>;
+};
+
+export type GradeEntityResponseCollection = {
+  __typename?: 'GradeEntityResponseCollection';
+  data: Array<GradeEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type GradeFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<GradeFiltersInput>>>;
+  class?: InputMaybe<IntFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  disciplines?: InputMaybe<DisciplineFiltersInput>;
+  id?: InputMaybe<IdFilterInput>;
+  not?: InputMaybe<GradeFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<GradeFiltersInput>>>;
+  topics?: InputMaybe<TopicFiltersInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type GradeInput = {
+  class?: InputMaybe<Scalars['Int']>;
+  disciplines?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  topics?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+};
+
+export type GradeRelationResponseCollection = {
+  __typename?: 'GradeRelationResponseCollection';
+  data: Array<GradeEntity>;
+};
 
 export type I18NLocale = {
   __typename?: 'I18NLocale';
@@ -416,6 +494,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   createDiscipline?: Maybe<DisciplineEntityResponse>;
+  createGrade?: Maybe<GradeEntityResponse>;
   createMark?: Maybe<MarkEntityResponse>;
   createModule?: Maybe<ModuleEntityResponse>;
   createSection?: Maybe<SectionEntityResponse>;
@@ -427,6 +506,7 @@ export type Mutation = {
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
   deleteCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   deleteDiscipline?: Maybe<DisciplineEntityResponse>;
+  deleteGrade?: Maybe<GradeEntityResponse>;
   deleteMark?: Maybe<MarkEntityResponse>;
   deleteModule?: Maybe<ModuleEntityResponse>;
   deleteSection?: Maybe<SectionEntityResponse>;
@@ -450,6 +530,7 @@ export type Mutation = {
   updateCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   updateDiscipline?: Maybe<DisciplineEntityResponse>;
   updateFileInfo: UploadFileEntityResponse;
+  updateGrade?: Maybe<GradeEntityResponse>;
   updateMark?: Maybe<MarkEntityResponse>;
   updateModule?: Maybe<ModuleEntityResponse>;
   updateSection?: Maybe<SectionEntityResponse>;
@@ -470,6 +551,11 @@ export type MutationCreateCalendarEventArgs = {
 
 export type MutationCreateDisciplineArgs = {
   data: DisciplineInput;
+};
+
+
+export type MutationCreateGradeArgs = {
+  data: GradeInput;
 };
 
 
@@ -514,6 +600,11 @@ export type MutationDeleteCalendarEventArgs = {
 
 
 export type MutationDeleteDisciplineArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteGradeArgs = {
   id: Scalars['ID'];
 };
 
@@ -611,6 +702,12 @@ export type MutationUpdateFileInfoArgs = {
 };
 
 
+export type MutationUpdateGradeArgs = {
+  data: GradeInput;
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpdateMarkArgs = {
   data: MarkInput;
   id: Scalars['ID'];
@@ -687,6 +784,8 @@ export type Query = {
   calendarEvents?: Maybe<CalendarEventEntityResponseCollection>;
   discipline?: Maybe<DisciplineEntityResponse>;
   disciplines?: Maybe<DisciplineEntityResponseCollection>;
+  grade?: Maybe<GradeEntityResponse>;
+  grades?: Maybe<GradeEntityResponseCollection>;
   i18NLocale?: Maybe<I18NLocaleEntityResponse>;
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
   mark?: Maybe<MarkEntityResponse>;
@@ -726,6 +825,18 @@ export type QueryDisciplineArgs = {
 
 export type QueryDisciplinesArgs = {
   filters?: InputMaybe<DisciplineFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryGradeArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryGradesArgs = {
+  filters?: InputMaybe<GradeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
