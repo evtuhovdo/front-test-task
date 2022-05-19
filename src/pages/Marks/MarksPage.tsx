@@ -70,6 +70,8 @@ const MarksPage: FC = () => {
 
   const pagination = data?.marks?.meta.pagination;
 
+  console.log(data?.marks?.data);
+
   return (
     <CommonLayout>
       <Typography.Title>Оценки</Typography.Title>
@@ -140,10 +142,10 @@ const MarksPage: FC = () => {
           },
           {
             title: 'Класс',
-            dataIndex: ['attributes', 'grade', 'data', 'attributes', 'grade'],
+            dataIndex: ['attributes'],
             key: 'grade',
             sorter: true,
-            render: attrs => `${attrs?.class}${attrs?.classLetter}`,
+            render: attrs => `${attrs?.grade?.data?.attributes?.grade ?? ''}${attrs?.gradeLetter ?? ''}`,
           },
           {
             title: 'Септима',
