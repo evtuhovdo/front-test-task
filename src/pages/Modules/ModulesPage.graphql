@@ -3,8 +3,8 @@ enum PublicationState {
   LIVE
 }
 
-query getMaterials ($publicationState: PublicationState) {
-    materials (
+query getModules ($publicationState: PublicationState) {
+    modules (
       sort: ["createdAt:desc"]
       pagination: { limit: 1000000000 }
       publicationState: $publicationState
@@ -21,8 +21,8 @@ query getMaterials ($publicationState: PublicationState) {
 }
 
 
-mutation createMaterial ($title: String!, $content: JSON!) {
-  createMaterial(
+mutation createModule ($title: String!, $content: JSON!) {
+  createModule(
     data: {
       title: $title
       content: $content

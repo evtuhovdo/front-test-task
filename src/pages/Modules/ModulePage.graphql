@@ -1,5 +1,5 @@
-query getMaterial ($id: ID!) {
-    material (id: $id) {
+query getModule ($id: ID!) {
+    module (id: $id) {
         data {
             id
             attributes {
@@ -15,8 +15,8 @@ query getMaterial ($id: ID!) {
 
 
 
-mutation updateMaterial ($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
-  updateMaterial(
+mutation updateModule ($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
+  updateModule(
     id: $id
     data: {
       title: $title

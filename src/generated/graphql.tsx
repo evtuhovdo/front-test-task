@@ -116,7 +116,15 @@ export type Discipline = {
   createdAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   relevantClasses?: Maybe<Scalars['JSON']>;
+  topics?: Maybe<TopicRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type DisciplineTopicsArgs = {
+  filters?: InputMaybe<TopicFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export type DisciplineEntity = {
@@ -144,12 +152,14 @@ export type DisciplineFiltersInput = {
   not?: InputMaybe<DisciplineFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<DisciplineFiltersInput>>>;
   relevantClasses?: InputMaybe<JsonFilterInput>;
+  topics?: InputMaybe<TopicFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type DisciplineInput = {
   name?: InputMaybe<Scalars['String']>;
   relevantClasses?: InputMaybe<Scalars['JSON']>;
+  topics?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type FileInfoInput = {
@@ -181,7 +191,7 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Material | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = CalendarEvent | Discipline | I18NLocale | Mark | Module | Section | Topic | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
 
 export type I18NLocale = {
   __typename?: 'I18NLocale';
@@ -353,48 +363,53 @@ export type MarkInput = {
   teacher?: InputMaybe<Scalars['ID']>;
 };
 
-export type Material = {
-  __typename?: 'Material';
-  content: Scalars['JSON'];
+export type Module = {
+  __typename?: 'Module';
+  content?: Maybe<Scalars['JSON']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   publishedAt?: Maybe<Scalars['DateTime']>;
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
-export type MaterialEntity = {
-  __typename?: 'MaterialEntity';
-  attributes?: Maybe<Material>;
+export type ModuleEntity = {
+  __typename?: 'ModuleEntity';
+  attributes?: Maybe<Module>;
   id?: Maybe<Scalars['ID']>;
 };
 
-export type MaterialEntityResponse = {
-  __typename?: 'MaterialEntityResponse';
-  data?: Maybe<MaterialEntity>;
+export type ModuleEntityResponse = {
+  __typename?: 'ModuleEntityResponse';
+  data?: Maybe<ModuleEntity>;
 };
 
-export type MaterialEntityResponseCollection = {
-  __typename?: 'MaterialEntityResponseCollection';
-  data: Array<MaterialEntity>;
+export type ModuleEntityResponseCollection = {
+  __typename?: 'ModuleEntityResponseCollection';
+  data: Array<ModuleEntity>;
   meta: ResponseCollectionMeta;
 };
 
-export type MaterialFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<MaterialFiltersInput>>>;
+export type ModuleFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ModuleFiltersInput>>>;
   content?: InputMaybe<JsonFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   id?: InputMaybe<IdFilterInput>;
-  not?: InputMaybe<MaterialFiltersInput>;
-  or?: InputMaybe<Array<InputMaybe<MaterialFiltersInput>>>;
+  not?: InputMaybe<ModuleFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<ModuleFiltersInput>>>;
   publishedAt?: InputMaybe<DateTimeFilterInput>;
   title?: InputMaybe<StringFilterInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
-export type MaterialInput = {
+export type ModuleInput = {
   content?: InputMaybe<Scalars['JSON']>;
   publishedAt?: InputMaybe<Scalars['DateTime']>;
   title?: InputMaybe<Scalars['String']>;
+};
+
+export type ModuleRelationResponseCollection = {
+  __typename?: 'ModuleRelationResponseCollection';
+  data: Array<ModuleEntity>;
 };
 
 export type Mutation = {
@@ -402,7 +417,9 @@ export type Mutation = {
   createCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   createDiscipline?: Maybe<DisciplineEntityResponse>;
   createMark?: Maybe<MarkEntityResponse>;
-  createMaterial?: Maybe<MaterialEntityResponse>;
+  createModule?: Maybe<ModuleEntityResponse>;
+  createSection?: Maybe<SectionEntityResponse>;
+  createTopic?: Maybe<TopicEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
@@ -411,7 +428,9 @@ export type Mutation = {
   deleteCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   deleteDiscipline?: Maybe<DisciplineEntityResponse>;
   deleteMark?: Maybe<MarkEntityResponse>;
-  deleteMaterial?: Maybe<MaterialEntityResponse>;
+  deleteModule?: Maybe<ModuleEntityResponse>;
+  deleteSection?: Maybe<SectionEntityResponse>;
+  deleteTopic?: Maybe<TopicEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
@@ -432,7 +451,9 @@ export type Mutation = {
   updateDiscipline?: Maybe<DisciplineEntityResponse>;
   updateFileInfo: UploadFileEntityResponse;
   updateMark?: Maybe<MarkEntityResponse>;
-  updateMaterial?: Maybe<MaterialEntityResponse>;
+  updateModule?: Maybe<ModuleEntityResponse>;
+  updateSection?: Maybe<SectionEntityResponse>;
+  updateTopic?: Maybe<TopicEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
@@ -457,8 +478,18 @@ export type MutationCreateMarkArgs = {
 };
 
 
-export type MutationCreateMaterialArgs = {
-  data: MaterialInput;
+export type MutationCreateModuleArgs = {
+  data: ModuleInput;
+};
+
+
+export type MutationCreateSectionArgs = {
+  data: SectionInput;
+};
+
+
+export type MutationCreateTopicArgs = {
+  data: TopicInput;
 };
 
 
@@ -492,7 +523,17 @@ export type MutationDeleteMarkArgs = {
 };
 
 
-export type MutationDeleteMaterialArgs = {
+export type MutationDeleteModuleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteSectionArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteTopicArgs = {
   id: Scalars['ID'];
 };
 
@@ -576,8 +617,20 @@ export type MutationUpdateMarkArgs = {
 };
 
 
-export type MutationUpdateMaterialArgs = {
-  data: MaterialInput;
+export type MutationUpdateModuleArgs = {
+  data: ModuleInput;
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateSectionArgs = {
+  data: SectionInput;
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateTopicArgs = {
+  data: TopicInput;
   id: Scalars['ID'];
 };
 
@@ -638,9 +691,13 @@ export type Query = {
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>;
   mark?: Maybe<MarkEntityResponse>;
   marks?: Maybe<MarkEntityResponseCollection>;
-  material?: Maybe<MaterialEntityResponse>;
-  materials?: Maybe<MaterialEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
+  module?: Maybe<ModuleEntityResponse>;
+  modules?: Maybe<ModuleEntityResponseCollection>;
+  section?: Maybe<SectionEntityResponse>;
+  sections?: Maybe<SectionEntityResponseCollection>;
+  topic?: Maybe<TopicEntityResponse>;
+  topics?: Maybe<TopicEntityResponseCollection>;
   uploadFile?: Maybe<UploadFileEntityResponse>;
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>;
   usersPermissionsRole?: Maybe<UsersPermissionsRoleEntityResponse>;
@@ -698,15 +755,39 @@ export type QueryMarksArgs = {
 };
 
 
-export type QueryMaterialArgs = {
+export type QueryModuleArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
 
 
-export type QueryMaterialsArgs = {
-  filters?: InputMaybe<MaterialFiltersInput>;
+export type QueryModulesArgs = {
+  filters?: InputMaybe<ModuleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   publicationState?: InputMaybe<PublicationState>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QuerySectionArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QuerySectionsArgs = {
+  filters?: InputMaybe<SectionFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryTopicArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryTopicsArgs = {
+  filters?: InputMaybe<TopicFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
@@ -751,6 +832,60 @@ export type ResponseCollectionMeta = {
   pagination: Pagination;
 };
 
+export type Section = {
+  __typename?: 'Section';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  modules?: Maybe<ModuleRelationResponseCollection>;
+  name?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type SectionModulesArgs = {
+  filters?: InputMaybe<ModuleFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationState?: InputMaybe<PublicationState>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type SectionEntity = {
+  __typename?: 'SectionEntity';
+  attributes?: Maybe<Section>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type SectionEntityResponse = {
+  __typename?: 'SectionEntityResponse';
+  data?: Maybe<SectionEntity>;
+};
+
+export type SectionEntityResponseCollection = {
+  __typename?: 'SectionEntityResponseCollection';
+  data: Array<SectionEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type SectionFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<SectionFiltersInput>>>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  modules?: InputMaybe<ModuleFiltersInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<SectionFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<SectionFiltersInput>>>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type SectionInput = {
+  modules?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type SectionRelationResponseCollection = {
+  __typename?: 'SectionRelationResponseCollection';
+  data: Array<SectionEntity>;
+};
+
 export type StringFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   between?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
@@ -772,6 +907,59 @@ export type StringFilterInput = {
   null?: InputMaybe<Scalars['Boolean']>;
   or?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   startsWith?: InputMaybe<Scalars['String']>;
+};
+
+export type Topic = {
+  __typename?: 'Topic';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  sections?: Maybe<SectionRelationResponseCollection>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type TopicSectionsArgs = {
+  filters?: InputMaybe<SectionFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type TopicEntity = {
+  __typename?: 'TopicEntity';
+  attributes?: Maybe<Topic>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type TopicEntityResponse = {
+  __typename?: 'TopicEntityResponse';
+  data?: Maybe<TopicEntity>;
+};
+
+export type TopicEntityResponseCollection = {
+  __typename?: 'TopicEntityResponseCollection';
+  data: Array<TopicEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type TopicFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<TopicFiltersInput>>>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<TopicFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<TopicFiltersInput>>>;
+  sections?: InputMaybe<SectionFiltersInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type TopicInput = {
+  name?: InputMaybe<Scalars['String']>;
+  sections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+};
+
+export type TopicRelationResponseCollection = {
+  __typename?: 'TopicRelationResponseCollection';
+  data: Array<TopicEntity>;
 };
 
 export type UploadFile = {
@@ -1005,6 +1193,8 @@ export type UsersPermissionsUpdateRolePayload = {
 export type UsersPermissionsUser = {
   __typename?: 'UsersPermissionsUser';
   blocked?: Maybe<Scalars['Boolean']>;
+  class?: Maybe<Scalars['Int']>;
+  classLetter?: Maybe<Scalars['String']>;
   confirmed?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
@@ -1012,8 +1202,16 @@ export type UsersPermissionsUser = {
   lastname: Scalars['String'];
   provider?: Maybe<Scalars['String']>;
   role?: Maybe<UsersPermissionsRoleEntityResponse>;
+  tutors?: Maybe<UsersPermissionsUserRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   username: Scalars['String'];
+};
+
+
+export type UsersPermissionsUserTutorsArgs = {
+  filters?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export type UsersPermissionsUserEntity = {
@@ -1036,6 +1234,8 @@ export type UsersPermissionsUserEntityResponseCollection = {
 export type UsersPermissionsUserFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsUserFiltersInput>>>;
   blocked?: InputMaybe<BooleanFilterInput>;
+  class?: InputMaybe<IntFilterInput>;
+  classLetter?: InputMaybe<StringFilterInput>;
   confirmationToken?: InputMaybe<StringFilterInput>;
   confirmed?: InputMaybe<BooleanFilterInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
@@ -1049,12 +1249,15 @@ export type UsersPermissionsUserFiltersInput = {
   provider?: InputMaybe<StringFilterInput>;
   resetPasswordToken?: InputMaybe<StringFilterInput>;
   role?: InputMaybe<UsersPermissionsRoleFiltersInput>;
+  tutors?: InputMaybe<UsersPermissionsUserFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
   username?: InputMaybe<StringFilterInput>;
 };
 
 export type UsersPermissionsUserInput = {
   blocked?: InputMaybe<Scalars['Boolean']>;
+  class?: InputMaybe<Scalars['Int']>;
+  classLetter?: InputMaybe<Scalars['String']>;
   confirmationToken?: InputMaybe<Scalars['String']>;
   confirmed?: InputMaybe<Scalars['Boolean']>;
   email?: InputMaybe<Scalars['String']>;
@@ -1064,6 +1267,7 @@ export type UsersPermissionsUserInput = {
   provider?: InputMaybe<Scalars['String']>;
   resetPasswordToken?: InputMaybe<Scalars['String']>;
   role?: InputMaybe<Scalars['ID']>;
+  tutors?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   username?: InputMaybe<Scalars['String']>;
 };
 
@@ -1127,14 +1331,14 @@ export type GetDisciplinesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetDisciplinesQuery = { __typename?: 'Query', disciplines?: { __typename?: 'DisciplineEntityResponseCollection', data: Array<{ __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null }> } | null };
 
-export type GetMaterialQueryVariables = Exact<{
+export type GetModuleQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type GetMaterialQuery = { __typename?: 'Query', material?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any, publishedAt?: any | null } | null } | null } | null };
+export type GetModuleQuery = { __typename?: 'Query', module?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', createdAt?: any | null, title?: string | null, content?: any | null, publishedAt?: any | null } | null } | null } | null };
 
-export type UpdateMaterialMutationVariables = Exact<{
+export type UpdateModuleMutationVariables = Exact<{
   id: Scalars['ID'];
   title?: InputMaybe<Scalars['String']>;
   content?: InputMaybe<Scalars['JSON']>;
@@ -1142,22 +1346,22 @@ export type UpdateMaterialMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMaterialMutation = { __typename?: 'Mutation', updateMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', title: string, content: any, publishedAt?: any | null } | null } | null } | null };
+export type UpdateModuleMutation = { __typename?: 'Mutation', updateModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null, content?: any | null, publishedAt?: any | null } | null } | null } | null };
 
-export type GetMaterialsQueryVariables = Exact<{
+export type GetModulesQueryVariables = Exact<{
   publicationState?: InputMaybe<PublicationState>;
 }>;
 
 
-export type GetMaterialsQuery = { __typename?: 'Query', materials?: { __typename?: 'MaterialEntityResponseCollection', data: Array<{ __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', createdAt?: any | null, title: string, content: any } | null }> } | null };
+export type GetModulesQuery = { __typename?: 'Query', modules?: { __typename?: 'ModuleEntityResponseCollection', data: Array<{ __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', createdAt?: any | null, title?: string | null, content?: any | null } | null }> } | null };
 
-export type CreateMaterialMutationVariables = Exact<{
+export type CreateModuleMutationVariables = Exact<{
   title: Scalars['String'];
   content: Scalars['JSON'];
 }>;
 
 
-export type CreateMaterialMutation = { __typename?: 'Mutation', createMaterial?: { __typename?: 'MaterialEntityResponse', data?: { __typename?: 'MaterialEntity', id?: string | null, attributes?: { __typename?: 'Material', title: string, content: any } | null } | null } | null };
+export type CreateModuleMutation = { __typename?: 'Mutation', createModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null, content?: any | null } | null } | null } | null };
 
 
 export const GetMeDocument = gql`
@@ -1478,9 +1682,9 @@ export function useGetDisciplinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetDisciplinesQueryHookResult = ReturnType<typeof useGetDisciplinesQuery>;
 export type GetDisciplinesLazyQueryHookResult = ReturnType<typeof useGetDisciplinesLazyQuery>;
 export type GetDisciplinesQueryResult = Apollo.QueryResult<GetDisciplinesQuery, GetDisciplinesQueryVariables>;
-export const GetMaterialDocument = gql`
-    query getMaterial($id: ID!) {
-  material(id: $id) {
+export const GetModuleDocument = gql`
+    query getModule($id: ID!) {
+  module(id: $id) {
     data {
       id
       attributes {
@@ -1495,35 +1699,35 @@ export const GetMaterialDocument = gql`
     `;
 
 /**
- * __useGetMaterialQuery__
+ * __useGetModuleQuery__
  *
- * To run a query within a React component, call `useGetMaterialQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMaterialQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetModuleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetModuleQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMaterialQuery({
+ * const { data, loading, error } = useGetModuleQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetMaterialQuery(baseOptions: Apollo.QueryHookOptions<GetMaterialQuery, GetMaterialQueryVariables>) {
+export function useGetModuleQuery(baseOptions: Apollo.QueryHookOptions<GetModuleQuery, GetModuleQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMaterialQuery, GetMaterialQueryVariables>(GetMaterialDocument, options);
+        return Apollo.useQuery<GetModuleQuery, GetModuleQueryVariables>(GetModuleDocument, options);
       }
-export function useGetMaterialLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialQuery, GetMaterialQueryVariables>) {
+export function useGetModuleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModuleQuery, GetModuleQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMaterialQuery, GetMaterialQueryVariables>(GetMaterialDocument, options);
+          return Apollo.useLazyQuery<GetModuleQuery, GetModuleQueryVariables>(GetModuleDocument, options);
         }
-export type GetMaterialQueryHookResult = ReturnType<typeof useGetMaterialQuery>;
-export type GetMaterialLazyQueryHookResult = ReturnType<typeof useGetMaterialLazyQuery>;
-export type GetMaterialQueryResult = Apollo.QueryResult<GetMaterialQuery, GetMaterialQueryVariables>;
-export const UpdateMaterialDocument = gql`
-    mutation updateMaterial($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
-  updateMaterial(
+export type GetModuleQueryHookResult = ReturnType<typeof useGetModuleQuery>;
+export type GetModuleLazyQueryHookResult = ReturnType<typeof useGetModuleLazyQuery>;
+export type GetModuleQueryResult = Apollo.QueryResult<GetModuleQuery, GetModuleQueryVariables>;
+export const UpdateModuleDocument = gql`
+    mutation updateModule($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
+  updateModule(
     id: $id
     data: {title: $title, content: $content, publishedAt: $publishedAt}
   ) {
@@ -1538,20 +1742,20 @@ export const UpdateMaterialDocument = gql`
   }
 }
     `;
-export type UpdateMaterialMutationFn = Apollo.MutationFunction<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
+export type UpdateModuleMutationFn = Apollo.MutationFunction<UpdateModuleMutation, UpdateModuleMutationVariables>;
 
 /**
- * __useUpdateMaterialMutation__
+ * __useUpdateModuleMutation__
  *
- * To run a mutation, you first call `useUpdateMaterialMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateMaterialMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateModuleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateModuleMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateMaterialMutation, { data, loading, error }] = useUpdateMaterialMutation({
+ * const [updateModuleMutation, { data, loading, error }] = useUpdateModuleMutation({
  *   variables: {
  *      id: // value for 'id'
  *      title: // value for 'title'
@@ -1560,16 +1764,16 @@ export type UpdateMaterialMutationFn = Apollo.MutationFunction<UpdateMaterialMut
  *   },
  * });
  */
-export function useUpdateMaterialMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>) {
+export function useUpdateModuleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateModuleMutation, UpdateModuleMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateMaterialMutation, UpdateMaterialMutationVariables>(UpdateMaterialDocument, options);
+        return Apollo.useMutation<UpdateModuleMutation, UpdateModuleMutationVariables>(UpdateModuleDocument, options);
       }
-export type UpdateMaterialMutationHookResult = ReturnType<typeof useUpdateMaterialMutation>;
-export type UpdateMaterialMutationResult = Apollo.MutationResult<UpdateMaterialMutation>;
-export type UpdateMaterialMutationOptions = Apollo.BaseMutationOptions<UpdateMaterialMutation, UpdateMaterialMutationVariables>;
-export const GetMaterialsDocument = gql`
-    query getMaterials($publicationState: PublicationState) {
-  materials(
+export type UpdateModuleMutationHookResult = ReturnType<typeof useUpdateModuleMutation>;
+export type UpdateModuleMutationResult = Apollo.MutationResult<UpdateModuleMutation>;
+export type UpdateModuleMutationOptions = Apollo.BaseMutationOptions<UpdateModuleMutation, UpdateModuleMutationVariables>;
+export const GetModulesDocument = gql`
+    query getModules($publicationState: PublicationState) {
+  modules(
     sort: ["createdAt:desc"]
     pagination: {limit: 1000000000}
     publicationState: $publicationState
@@ -1587,35 +1791,35 @@ export const GetMaterialsDocument = gql`
     `;
 
 /**
- * __useGetMaterialsQuery__
+ * __useGetModulesQuery__
  *
- * To run a query within a React component, call `useGetMaterialsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMaterialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetModulesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetModulesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMaterialsQuery({
+ * const { data, loading, error } = useGetModulesQuery({
  *   variables: {
  *      publicationState: // value for 'publicationState'
  *   },
  * });
  */
-export function useGetMaterialsQuery(baseOptions?: Apollo.QueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+export function useGetModulesQuery(baseOptions?: Apollo.QueryHookOptions<GetModulesQuery, GetModulesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+        return Apollo.useQuery<GetModulesQuery, GetModulesQueryVariables>(GetModulesDocument, options);
       }
-export function useGetMaterialsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaterialsQuery, GetMaterialsQueryVariables>) {
+export function useGetModulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModulesQuery, GetModulesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMaterialsQuery, GetMaterialsQueryVariables>(GetMaterialsDocument, options);
+          return Apollo.useLazyQuery<GetModulesQuery, GetModulesQueryVariables>(GetModulesDocument, options);
         }
-export type GetMaterialsQueryHookResult = ReturnType<typeof useGetMaterialsQuery>;
-export type GetMaterialsLazyQueryHookResult = ReturnType<typeof useGetMaterialsLazyQuery>;
-export type GetMaterialsQueryResult = Apollo.QueryResult<GetMaterialsQuery, GetMaterialsQueryVariables>;
-export const CreateMaterialDocument = gql`
-    mutation createMaterial($title: String!, $content: JSON!) {
-  createMaterial(data: {title: $title, content: $content}) {
+export type GetModulesQueryHookResult = ReturnType<typeof useGetModulesQuery>;
+export type GetModulesLazyQueryHookResult = ReturnType<typeof useGetModulesLazyQuery>;
+export type GetModulesQueryResult = Apollo.QueryResult<GetModulesQuery, GetModulesQueryVariables>;
+export const CreateModuleDocument = gql`
+    mutation createModule($title: String!, $content: JSON!) {
+  createModule(data: {title: $title, content: $content}) {
     data {
       id
       attributes {
@@ -1626,30 +1830,30 @@ export const CreateMaterialDocument = gql`
   }
 }
     `;
-export type CreateMaterialMutationFn = Apollo.MutationFunction<CreateMaterialMutation, CreateMaterialMutationVariables>;
+export type CreateModuleMutationFn = Apollo.MutationFunction<CreateModuleMutation, CreateModuleMutationVariables>;
 
 /**
- * __useCreateMaterialMutation__
+ * __useCreateModuleMutation__
  *
- * To run a mutation, you first call `useCreateMaterialMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMaterialMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateModuleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateModuleMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createMaterialMutation, { data, loading, error }] = useCreateMaterialMutation({
+ * const [createModuleMutation, { data, loading, error }] = useCreateModuleMutation({
  *   variables: {
  *      title: // value for 'title'
  *      content: // value for 'content'
  *   },
  * });
  */
-export function useCreateMaterialMutation(baseOptions?: Apollo.MutationHookOptions<CreateMaterialMutation, CreateMaterialMutationVariables>) {
+export function useCreateModuleMutation(baseOptions?: Apollo.MutationHookOptions<CreateModuleMutation, CreateModuleMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateMaterialMutation, CreateMaterialMutationVariables>(CreateMaterialDocument, options);
+        return Apollo.useMutation<CreateModuleMutation, CreateModuleMutationVariables>(CreateModuleDocument, options);
       }
-export type CreateMaterialMutationHookResult = ReturnType<typeof useCreateMaterialMutation>;
-export type CreateMaterialMutationResult = Apollo.MutationResult<CreateMaterialMutation>;
-export type CreateMaterialMutationOptions = Apollo.BaseMutationOptions<CreateMaterialMutation, CreateMaterialMutationVariables>;
+export type CreateModuleMutationHookResult = ReturnType<typeof useCreateModuleMutation>;
+export type CreateModuleMutationResult = Apollo.MutationResult<CreateModuleMutation>;
+export type CreateModuleMutationOptions = Apollo.BaseMutationOptions<CreateModuleMutation, CreateModuleMutationVariables>;
