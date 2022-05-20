@@ -3,12 +3,18 @@ import { observer } from 'mobx-react-lite';
 import { Button, Card, Switch, Typography, Tree, Radio, Dropdown, Menu, Popconfirm, Input } from 'antd';
 import { useNavigate } from 'react-router';
 
-import { PublicationState, useCreateModuleMutation, useGetModulesQuery, useGetMeQuery, useGetGradesDisciplinesQuery, useCreateSectionMutation, useCreateTopicMutation } from '../../generated/graphql';
+import { PublicationState, useCreateModuleMutation, useGetModulesQuery, useGetMeQuery, useCreateSectionMutation, useCreateTopicMutation, useGetDisciplinesGradesQuery, useDeleteModuleMutation, useDeleteSectionMutation, useDeleteTopicMutation, useUpdateSectionMutation, useUpdateModuleMutation, useUpdateTopicMutation } from '../../generated/graphql';
 import { makeModuleUrl } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
 import styles from './ModulesPage.module.scss';
 import { useSearchParams } from 'react-router-dom';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
+
+// TODO:
+// 2. Открывать редактирование модуля в новом окне
+// 5. Дизайн получше
+// 6. Удаление
+// 7. Переименование
 
 
 const ModulesPage: FC = () => {
@@ -23,20 +29,20 @@ const ModulesPage: FC = () => {
     ? PublicationState.Live
     : PublicationState.Preview;
 
-  const { loading: loadingGradesDisciplines, data: dataGradesDisciplines } = useGetGradesDisciplinesQuery({
+  const { loading: loadingDisciplinesGrades, data: dataDisciplinesGrades } = useGetDisciplinesGradesQuery({
     fetchPolicy: 'cache-and-network',
   });
-  const [selectedGradeId, setSelectedGradeId] = useState('1');
-  const selectedGrade = dataGradesDisciplines?.grades?.data
-    .find(grade => grade.id === selectedGradeId);
-  const [selectedDisciplineId, setSelectedDisciplineId] = useState('1');
+  const [selectedDisciplineId, setSelectedDisciplineId] = useState(params.get('selectedDisciplineId') ?? '1');
+  const selectedDiscipline = dataDisciplinesGrades?.disciplines?.data
+    .find(discipline => discipline.id === selectedDisciplineId);
+  const [selectedGradeId, setSelectedGradeId] = useState(params.get('selectedGradeId') ?? '1');
 
   const { loading, data, refetch } = useGetModulesQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       publicationState,
-      disciplineId: '2',
-      gradeId: '5',
+      disciplineId: selectedDisciplineId,
+      gradeId: selectedGradeId,
     }
   });
 
@@ -46,21 +52,31 @@ const ModulesPage: FC = () => {
       gradeId: selectedGradeId ?? '1',
       disciplineId: selectedDisciplineId ?? '1',
     });
-    setSearchParams(onlyPublished ? '' : `onlyPublished=false`);
-  }, [onlyPublished, selectedGradeId, selectedDisciplineId, refetch, setSearchParams]);
+    setSearchParams([
+      `onlyPublished=${onlyPublished}`,
+      `selectedDisciplineId=${selectedDisciplineId}`,
+      `selectedGradeId=${selectedGradeId}`,
+    ].join('&'));
+  }, [onlyPublished, selectedDisciplineId, selectedGradeId, refetch, setSearchParams]);
 
 
-  const modulesTreeMapped = (function mapModulesTree(nodes: any): any {
+  console.log(data?.topics?.data);
+  const modulesTreeMapped = (function mapModulesTree(nodes: any, level = 1): any {
     return nodes?.map(({ id, attributes: attrs }: any) => ({
       ...attrs,
       id,
       // key: id,
       title: attrs?.name ?? attrs?.title ?? id,
-      children: mapModulesTree([
-        ...(attrs?.sections?.data ?? []),
-        ...(attrs?.children?.data ?? []),
-        ...(attrs?.modules?.data ?? [])
-      ])
+      children: mapModulesTree(
+        [
+          ...(attrs?.sections?.data ?? []),
+          ...(attrs?.children?.data ?? []),
+          ...(attrs?.modules?.data ?? [])
+        ],
+        level + 1
+      ),
+      isLeaf: attrs?.__typename === 'Module',
+      level,
     }));
   })(data?.topics?.data);
 
@@ -68,13 +84,14 @@ const ModulesPage: FC = () => {
 
   const [newItemName, setNewItemName] = useState('');
 
-  const [createModule, createModuleStatus] = useCreateModuleMutation({});
-  function onClickAddModule(sectionId: string) {
+  const [createModule, createModuleStatus] = useCreateModuleMutation();
+  function onClickAddModule({ sectionId, topicId }: { sectionId?: string, topicId?: string }) {
     createModule({
       variables: {
         title: newItemName,
         content: {},
         sectionId,
+        topicId,
       },
       onCompleted: r => {
         refetch();
@@ -82,7 +99,7 @@ const ModulesPage: FC = () => {
     });
   }
 
-  const [createSection, createSectionStatus] = useCreateSectionMutation({});
+  const [createSection, createSectionStatus] = useCreateSectionMutation();
   function onClickAddSection({
     topicId,
     parentId
@@ -102,13 +119,89 @@ const ModulesPage: FC = () => {
     });
   }
 
-  const [createTopic, createTopicStatus] = useCreateTopicMutation({});
+  const [createTopic, createTopicStatus] = useCreateTopicMutation();
   function onClickAddTopic() {
     createTopic({
       variables: {
         name: newItemName,
-        gradeId: selectedGradeId,
         disciplineId: selectedDisciplineId,
+        gradeId: selectedGradeId,
+      },
+      onCompleted: r => {
+        refetch();
+      },
+    });
+  }
+
+
+
+  const [deleteModule, deleteModuleStatus] = useDeleteModuleMutation();
+  function onClickDeleteModule(id: string) {
+    deleteModule({
+      variables: { id },
+      onCompleted: r => { refetch(); },
+    });
+  }
+
+  const [deleteSection, deleteSectionStatus] = useDeleteSectionMutation();
+  function onClickDeleteSection(id: string) {
+    deleteSection({
+      variables: { id },
+      onCompleted: r => { refetch(); },
+    });
+  }
+
+  const [deleteTopic, deleteTopicStatus] = useDeleteTopicMutation();
+  function onClickDeleteTopic(id: string) {
+    deleteTopic({
+      variables: { id },
+      onCompleted: r => { refetch(); },
+    });
+  }
+
+
+  
+
+  const [updateSection, updateSectionStatus] = useUpdateSectionMutation();
+  function onClickUpdateSection({
+    id,
+    // topicId,
+    // parentId
+  }: {
+    id: string,
+    // topicId?: string,
+    // parentId?: string
+  }) {
+    updateSection({
+      variables: {
+        id,
+        name: newItemName,
+        // topicId,
+        // parentId,
+      },
+      onCompleted: r => {
+        refetch();
+      },
+    });
+  }
+
+  const [updateTopic, updateTopicStatus] = useUpdateTopicMutation();
+  function onClickUpdateTopic({
+    id,
+    // topicId,
+    // parentId
+  }: {
+    id: string,
+    // topicId?: string,
+    // parentId?: string
+  }) {
+    console.log('delete module', id)
+    updateTopic({
+      variables: {
+        id,
+        name: newItemName,
+        // disciplineId: selectedDisciplineId,
+        // gradeId: selectedGradeId,
       },
       onCompleted: r => {
         refetch();
@@ -137,21 +230,6 @@ const ModulesPage: FC = () => {
         </div>
       )}
 
-      <div style={{ marginTop: 16 }}>
-        <Typography.Title level={5}>
-          Класс:
-        </Typography.Title>
-        <Radio.Group
-          onChange={e => setSelectedGradeId(e.target.value)}
-          defaultValue={selectedGradeId}
-        >
-          {dataGradesDisciplines?.grades?.data.map(grade => (
-            <Radio.Button key={grade.id} value={grade.id}>
-              {grade.attributes?.grade}
-            </Radio.Button>
-          ))}
-        </Radio.Group>
-      </div>
 
       <div style={{ marginTop: 16 }}>
         <Typography.Title level={5}>
@@ -161,7 +239,7 @@ const ModulesPage: FC = () => {
           onChange={e => setSelectedDisciplineId(e.target.value)}
           defaultValue={selectedDisciplineId}
         >
-          {selectedGrade?.attributes?.disciplines?.data?.map(discipline => (
+          {dataDisciplinesGrades?.disciplines?.data.map(discipline => (
             <Radio.Button key={discipline.id} value={discipline.id}>
               {discipline.attributes?.name}
             </Radio.Button>
@@ -169,11 +247,32 @@ const ModulesPage: FC = () => {
         </Radio.Group>
       </div>
 
+
+      <div style={{ marginTop: 16 }}>
+        <Typography.Title level={5}>
+          Класс:
+        </Typography.Title>
+        <Radio.Group
+          onChange={e => setSelectedGradeId(e.target.value)}
+          defaultValue={selectedGradeId}
+        >
+          {selectedDiscipline?.attributes?.grades?.data?.map(grade => (
+            <Radio.Button key={grade.id} value={grade.id}>
+              {grade.attributes?.grade}
+            </Radio.Button>
+          ))}
+        </Radio.Group>
+      </div>
+
+
+
       <Popconfirm
+        icon={null}
         title={
           <div>
             Название новой темы:
             <Input
+              autoFocus
               defaultValue={newItemName}
               onChange={e => setNewItemName(e.target.value)}
             />
@@ -181,75 +280,122 @@ const ModulesPage: FC = () => {
         }
         onConfirm={() => onClickAddTopic()}
         // onCancel={}
-        okText="Создать"
+        okText="Создать тему"
         cancelText="Отмена"
       >
         <Button
-          style={{ marginTop: 16 }}
+          style={{ marginTop: 32 }}
           onClick={() => setNewItemName('')}
         >
           Добавить тему
         </Button>
       </Popconfirm>
 
-      <Tree
-        style={{ marginTop: 16 }}
-        treeData={modulesTreeMapped}
-        titleRender={(node: any) => (
-          <div style={{ display: 'flex', justifyContent: 'space-between', minWidth: 200 }}>
-            {node.title}
-            <div style={{ display: 'flex' }}>
-              {/* @ts-ignore */}
-              {node?.__typename === 'Module' && (
-                <Button
-                  size='small'
-                  icon={<EditOutlined size={16} />}
-                  onClick={() => navigate(makeModuleUrl(node?.id))}
-                />
-              )}
-              {node?.__typename !== 'Module' && (
-                <Dropdown
-                  trigger={['click']}
-                  overlay={
-                    <Menu>
-                      <Popconfirm
-                        title={
-                          <div>
-                            Название новой секции:
-                            <Input
-                              defaultValue={newItemName}
-                              onChange={e => setNewItemName(e.target.value)}
-                            />
-                          </div>
-                        }
-                        onConfirm={() => onClickAddSection({
-                          [node?.__typename === 'Topic' ? 'topicId' : 'parentId']: node?.id
-                        })}
-                        // onCancel={}
-                        okText="Создать"
-                        cancelText="Отмена"
-                      >
-                        <Menu.Item
-                          key={1}
-                          onClick={() => setNewItemName('')}
-                        >
-                          Добавить секцию
-                        </Menu.Item>
-                      </Popconfirm>
-                      {node?.__typename !== 'Topic' && (
+
+      {!modulesTreeMapped?.length ? (
+        <div style={{ marginTop: 16 }}>
+          Пока нет ни одной темы
+        </div>
+      ) : (
+        <Tree.DirectoryTree
+          style={{ marginTop: 16, maxWidth: 500 }}
+          treeData={modulesTreeMapped}
+          defaultExpandAll
+          titleRender={(node: any) => (
+            <div style={{ display: 'inline-flex', flexWrap: 'nowrap' }}>
+              <div style={{ flex: 1 }}>
+                {node.title}
+              </div>
+              <div
+                style={{ display: 'flex', marginLeft: 48 }}
+                onClick={e => { e.stopPropagation(); }}
+              >
+                {node?.__typename === 'Module' ? (
+                  <Button
+                    size='small'
+                    icon={<EditOutlined size={16} />}
+                    onClick={() => navigate(makeModuleUrl(node?.id))}
+                  />
+                ): (
+                  <Popconfirm
+                    icon={null}
+                    title={
+                      <div>
+                        Переименовать:
+                        <Input
+                          autoFocus
+                          defaultValue={newItemName}
+                          onChange={e => setNewItemName(e.target.value)}
+                        />
+                      </div>
+                    }
+                    onConfirm={() => {
+                      const __typename = node?.__typename;
+                      if (__typename === 'Topic') onClickUpdateTopic({ id: node?.id });
+                      if (__typename === 'Section') onClickUpdateSection({ id: node?.id });
+                    }}
+                    // onCancel={}
+                    okText="Переименовать"
+                    cancelText="Отмена"
+                  >
+                    <Button
+                      size='small'
+                      icon={<EditOutlined size={16} />}
+                      onClick={() => setNewItemName(node?.title)}
+                    />
+                  </Popconfirm>
+                )}
+
+                {node?.__typename !== 'Module' && (
+                  <Dropdown
+                    trigger={['click']}
+                    overlay={
+                      <Menu>
+                        {node?.level <= 3 && (
+                          <Popconfirm
+                            icon={null}
+                            title={
+                              <div>
+                                Название нового раздела:
+                                <Input
+                                  autoFocus
+                                  defaultValue={newItemName}
+                                  onChange={e => setNewItemName(e.target.value)}
+                                />
+                              </div>
+                            }
+                            onConfirm={() => onClickAddSection({
+                              [node?.__typename === 'Topic' ? 'topicId' : 'parentId']: node?.id
+                            })}
+                            // onCancel={}
+                            okText="Создать раздел"
+                            cancelText="Отмена"
+                          >
+                            <Menu.Item
+                              key={1}
+                              onClick={() => setNewItemName('')}
+                            >
+                              Добавить раздел
+                            </Menu.Item>
+                          </Popconfirm>
+                        )}
                         <Popconfirm
+                          icon={null}
                           title={
                             <div>
                               Название нового модуля:
                               <Input
+                                autoFocus
                                 defaultValue={newItemName}
                                 onChange={e => setNewItemName(e.target.value)}
                               />
                             </div>
                           }
-                          onConfirm={() => onClickAddModule(node?.id)}
+                          onConfirm={() => onClickAddModule({
+                            [node?.__typename === 'Topic' ? 'topicId' : 'sectionId']: node?.id
+                          })}
                           // onCancel={}
-                          okText="Создать"
+                          okText="Создать модуль"
                           cancelText="Отмена"
                         >
                           <Menu.Item
@@ -259,40 +405,40 @@ const ModulesPage: FC = () => {
                             Добавить модуль
                           </Menu.Item>
                         </Popconfirm>
-                        )}
-                    </Menu>
-                  }
+                      </Menu>
+                    }
+                  >
+                    <Button
+                      size='small'
+                      icon={<PlusOutlined size={16} />}
+                    />
+                  </Dropdown>
+                )}
+
+                <Popconfirm
+                  title={`Удалить "${node?.title}"?`}
+                  onConfirm={() => {
+                    console.log('confirm deletion')
+                    const __typename = node?.__typename;
+                    if (__typename === 'Topic') onClickDeleteTopic(node?.id);
+                    if (__typename === 'Section') onClickDeleteSection(node?.id);
+                    if (__typename === 'Module') onClickDeleteModule(node?.id);
+                  }}
+                  // onCancel={}
+                  okText="Удалить"
+                  cancelText="Отмена"
                 >
                   <Button
                     size='small'
-                    icon={<PlusOutlined size={16} />}
+                    icon={<DeleteOutlined size={16} style={{ color: 'red'  }} />}
+                    onClick={() => setNewItemName('')}
                   />
-                </Dropdown>
-              )}
-              <Button
-                size='small'
-                icon={<DeleteOutlined size={16} style={{ color: 'red'  }} />}
-              />
+                </Popconfirm>
+              </div>
             </div>
-          </div>
-        )}
-      />
-
-      {/* <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {data?.modules?.data.map(m => (
-          <Card
-            key={m.id}
-            style={{ flexBasis: '45%', margin: '2.5%', cursor: 'pointer' }}
-            onClick={() => {
-              if (m.id) navigate(makeModuleUrl(m.id));
-            }}
-          >
-            <Typography.Title level={2}>
-              {m.attributes?.title}
-            </Typography.Title>
-          </Card>
-        ))}
-      </div> */}
+          )}
+        />
+      )}
     </CommonLayout>
   );
 };
