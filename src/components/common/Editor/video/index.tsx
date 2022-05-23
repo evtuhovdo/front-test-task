@@ -1,28 +1,36 @@
-import { Input, message, Tooltip, Upload } from 'antd';
-import { default as React, useEffect, useRef, useState } from 'react';
+import { Input, message, Upload } from 'antd';
+import { default as React, FC, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { getApiBase } from '../../../../env';
+import { getApiBase, getMaxUploadSize } from '../../../../env';
 import { additionalRequestHeaders } from '..';
 
 import styles from './video.module.scss';
 import VideoJsPlayer from './VideoJsPlayer';
+import { RcFile } from 'antd/lib/upload/interface';
+import { humanFileSize } from '../../../../utils';
 
 interface VideoData {
   link: string | null,
   title: string,
 }
 
-export const VideoPlayer = ({
-  data: { title, link },
-  onDataChange,
-  readOnly,
-}: {
+interface IProps {
   data: VideoData,
   onDataChange: (data: VideoData) => void,
   readOnly: boolean,
-}) => {
+}
+
+const playbackRates = [ 0.75, 1, 1.25, 1.5, 1.75, 2 ];
+
+export const VideoPlayer: FC<IProps> = (
+  {
+    data: { title, link },
+    onDataChange,
+    readOnly,
+  },
+) => {
   const videoJsRef = useRef<any | null>(null);
-  const [showVideo, setShowVideo] = useState(false);
+  const [ showVideo, setShowVideo ] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setShowVideo(true), 100);
@@ -35,12 +43,12 @@ export const VideoPlayer = ({
           <VideoJsPlayer
             controls
             src={link || ''}
-            playbackRates={[0.75, 1, 1.25, 1.5, 1.75, 2]}
+            playbackRates={playbackRates}
             onReady={(player: any) => {
               player.fluid(true);
               videoJsRef.current = player;
               player.hlsQualitySelector({
-                  displayCurrentQuality: true,
+                displayCurrentQuality: true,
               });
             }}
             // onPlay={this.onVideoPlay.bind(this)}
@@ -67,19 +75,28 @@ export const VideoPlayer = ({
       name="file"
       accept="video/*"
       multiple={false}
-      action={`${getApiBase()}/api/editorjs/uploadImage`}
+      maxCount={1}
+      action={`${getApiBase()}/api/editorjs/uploadVideo`}
       headers={additionalRequestHeaders}
-      onChange={(info) => {
-        console.log('uploaded?', info);
-        const { status } = info.file;
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
+      beforeUpload={(file) => {
+        const maxUploadSize = getMaxUploadSize();
+        if (file.size > maxUploadSize) {
+          message.error(`Размер файла для загрузки не должен превышать ${humanFileSize(maxUploadSize)}`);
+          throw 'Превышен размер файла для загрузки.';
         }
+      }}
+      onChange={(info) => {
+        const { status } = info.file;
         if (status === 'done') {
-          onDataChange({ title, link: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' });
-          message.success(`${info.file.name} file uploaded successfully.`);
+          const { success, file: { url } } = info.file.response;
+          if (success !== 1 || !url) {
+            message.error(`${info.file.name} - ошибка загрузки.`);
+            return;
+          }
+          onDataChange({ title, link: url });
+          message.success(`${info.file.name} - загружен.`);
         } else if (status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
+          message.error(`${info.file.name} - ошибка загрузки.`);
         }
       }}
       onDrop={(e) => {
@@ -87,14 +104,14 @@ export const VideoPlayer = ({
       }}
     >
       <div className="ant-upload-text">
-        Кликните, или положьте видео в эту зону для загрузки
+        Кликните, или положите видео в эту зону для загрузки
       </div>
     </Upload.Dragger>
   );
-}
+};
 
 
-export default class Collapse {
+export default class Video {
   static get toolbox() {
     return {
       icon: `
@@ -161,7 +178,7 @@ export default class Collapse {
         readOnly={this.readOnly}
         data={this.data}
       />,
-      this.holderNode
+      this.holderNode,
     );
   }
 

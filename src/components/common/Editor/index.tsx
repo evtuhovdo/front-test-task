@@ -149,7 +149,7 @@ export const Editor: FC<IEditorProps> = observer(({
   //     .forEach(e => {
   //       if (e.getAttribute('controls') !== 'true') e.setAttribute('controls', 'true')
   //     });
-  // } 
+  // }
 
   useEffect(() => {
     additionalRequestHeaders.Authorization = `Bearer ${auth.token}`;

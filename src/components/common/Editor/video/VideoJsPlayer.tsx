@@ -1,16 +1,17 @@
-import React, { Component } from "react";
-import videojs from "video.js";
-import "video.js/dist/video-js.css";
-import "@videojs/http-streaming";
-import "videojs-contrib-quality-levels";
-import "videojs-hls-quality-selector";
+import React, { Component } from 'react';
+import videojs from 'video.js';
+import cn from 'classnames';
+import 'video.js/dist/video-js.css';
+import '@videojs/http-streaming';
+import 'videojs-contrib-quality-levels';
+import 'videojs-hls-quality-selector';
 
 interface Props {
   src: string,
   poster: string,
   controls?: boolean,
   autoplay?: boolean,
-  preload?: "auto" | "none" | "metadata",
+  preload?: 'auto' | 'none' | 'metadata',
   width?: string | number,
   height?: string | number,
   hideControls: string[],
@@ -32,24 +33,31 @@ let uniqueIndex = 0;
 
 class VideoJsPlayer extends Component<Props> {
   static defaultProps = {
-    src: "",
-    poster: "",
+    src: '',
+    poster: '',
     controls: true,
     autoplay: false,
-    preload: "auto",
-    playbackRates: [0.5, 1, 1.5, 2],
+    preload: 'auto',
+    playbackRates: [ 0.5, 1, 1.5, 2 ],
     hidePlaybackRates: false,
-    className: "",
+    className: '',
     hideControls: [],
     bigPlayButton: true,
     bigPlayButtonCentered: true,
-    onReady: () => {},
-    onPlay: () => {},
-    onPause: () => {},
-    onTimeUpdate: () => {},
-    onSeeking: () => {},
-    onSeeked: () => {},
-    onEnd: () => {},
+    onReady: () => {
+    },
+    onPlay: () => {
+    },
+    onPause: () => {
+    },
+    onTimeUpdate: () => {
+    },
+    onSeeking: () => {
+    },
+    onSeeked: () => {
+    },
+    onEnd: () => {
+    },
   };
 
 
@@ -69,13 +77,13 @@ class VideoJsPlayer extends Component<Props> {
       player.ready(() => {
         props.onReady(player);
       });
-      player.on("play", () => {
+      player.on('play', () => {
         props.onPlay(player.currentTime());
       });
-      player.on("pause", () => {
+      player.on('pause', () => {
         props.onPause(player.currentTime());
       });
-      player.on("timeupdate", (e) => {
+      player.on('timeupdate', (e) => {
         props.onTimeUpdate(player.currentTime());
         previousTime = currentTime;
         currentTime = player.currentTime();
@@ -84,16 +92,18 @@ class VideoJsPlayer extends Component<Props> {
           previousTime = currentTime;
         }
       });
-      player.on("seeking", () => {
-        player.off("timeupdate", () => {});
-        player.one("seeked", () => {});
+      player.on('seeking', () => {
+        player.off('timeupdate', () => {
+        });
+        player.one('seeked', () => {
+        });
         props.onSeeking(player.currentTime());
       });
-      player.on("seeked", () => {
+      player.on('seeked', () => {
         let completeTime = Math.floor(player.currentTime());
         props.onSeeked(position, completeTime);
       });
-      player.on("ended", () => {
+      player.on('ended', () => {
         props.onEnd();
       });
     }
@@ -120,7 +130,7 @@ class VideoJsPlayer extends Component<Props> {
       bigPlayButton,
       playbackRates,
     } = props;
-    const hidePlaybackRates = props.hidePlaybackRates || props.hideControls.includes("playbackrates");
+    const hidePlaybackRates = props.hidePlaybackRates || props.hideControls.includes('playbackrates');
     const playerOptions = {
       controls,
       autoplay,
@@ -142,12 +152,12 @@ class VideoJsPlayer extends Component<Props> {
   setControlsVisibility(player: videojs.Player | null, hiddenControls: string[]) {
     if (player) {
       const Controls = {
-        play: "playToggle",
-        volume: "volumePanel",
-        seekbar: "progressControl",
-        timer: "remainingTimeDisplay",
-        playbackrates: "playbackRateMenuButton",
-        fullscreen: "fullscreenToggle",
+        play: 'playToggle',
+        volume: 'volumePanel',
+        seekbar: 'progressControl',
+        timer: 'remainingTimeDisplay',
+        playbackrates: 'playbackRateMenuButton',
+        fullscreen: 'fullscreenToggle',
       };
       Object.keys(Controls).map(x => {
         //@ts-ignore
@@ -164,10 +174,12 @@ class VideoJsPlayer extends Component<Props> {
     return (
       <video
         id={this.playerId}
-        className={`video-js ${
-          this.props.bigPlayButtonCentered ? "vjs-big-play-centered" : ""
-        } ${this.props.className}`}
-      ></video>
+        className={cn([
+          'video-js',
+          this.props.bigPlayButtonCentered && 'vjs-big-play-centered',
+          this.props.className,
+        ])}
+      />
     );
   }
 }
