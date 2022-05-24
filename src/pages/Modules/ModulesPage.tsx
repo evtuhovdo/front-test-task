@@ -326,8 +326,6 @@ const ModulesPage: FC = () => {
     dropToGap: boolean,
     node: any, // MappedNodeType,
   }) {
-    setReplaceLoading(true);
-
     console.log({
       dragNode,
       dropToGap,
@@ -393,6 +391,8 @@ const ModulesPage: FC = () => {
       message.error(`Максимальная глубина вложенности разделов - ${maxSectionLevel}`);
       return;
     }
+
+    setReplaceLoading(true);
 
     await Promise.allSettled(
       targetParentChildrenFiltered.map((node, order) => {
