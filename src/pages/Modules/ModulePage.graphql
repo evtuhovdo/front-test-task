@@ -12,25 +12,3 @@ query getModule ($id: ID!) {
     }
 }
 
-
-
-
-mutation updateModule ($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
-  updateModule(
-    id: $id
-    data: {
-      title: $title
-      content: $content
-      publishedAt: $publishedAt
-    }
-  ) {
-    data {
-      id
-      attributes {
-        title
-        content
-        publishedAt
-      }
-    }
-  }
-}
