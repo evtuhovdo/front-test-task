@@ -3,29 +3,195 @@ enum PublicationState {
   LIVE
 }
 
-query getModules ($publicationState: PublicationState) {
-    modules (
-      sort: ["createdAt:desc"]
-      pagination: { limit: 1000000000 }
-      publicationState: $publicationState
-    ) {
-        data {
+fragment ModulesFragment on Section {
+  modules (
+    filters: {
+      or: [
+        { isDeleted: { eq: false } }
+        { isDeleted: { eq: null } }
+      ]
+    }
+    sort: ["createdAt:desc"]
+    pagination: { limit: 1000000000 }
+    publicationState: $publicationState
+  ) {
+    data {
+      id
+      attributes {
+        title
+      }
+    }
+  }
+}
+
+query getModules (
+  $publicationState: PublicationState
+  $gradeId: ID!
+  $disciplineId: ID!
+) {
+  topics (
+    filters: {
+      or: [
+        { isDeleted: { eq: false } }
+        { isDeleted: { eq: null } }
+      ]
+      grade: {
+        id: {
+          eq: $gradeId
+        }
+      }
+      discipline: {
+        id: {
+          eq: $disciplineId
+        }
+      }
+    }
+	) {
+    data {
+      id
+      attributes {
+        name
+        modules (
+          filters: {
+            or: [
+              { isDeleted: { eq: false } }
+              { isDeleted: { eq: null } }
+            ]
+          }
+          sort: ["createdAt:desc"]
+          pagination: { limit: 1000000000 }
+          publicationState: $publicationState
+        ) {
+          data {
             id
             attributes {
-                createdAt
-                title
-                content
+              title
             }
+          }
         }
+        sections (
+          filters: {
+            or: [
+              { isDeleted: { eq: false } }
+              { isDeleted: { eq: null } }
+            ]
+          }
+        ) {
+          data {
+            id
+            attributes {
+              name
+              ...ModulesFragment
+              children (
+                filters: {
+                  or: [
+                    { isDeleted: { eq: false } }
+                    { isDeleted: { eq: null } }
+                  ]
+                }
+              ) {
+                data {
+                  id
+                  attributes {
+                    name
+                    ...ModulesFragment
+                    children (
+                      filters: {
+                        or: [
+                          { isDeleted: { eq: false } }
+                          { isDeleted: { eq: null } }
+                        ]
+                      }
+                    ) {
+                      data {
+                        id
+                        attributes {
+                          name
+                          ...ModulesFragment
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
+  }
 }
 
 
-mutation createModule ($title: String!, $content: JSON!) {
+
+query getDisciplinesGrades {
+  disciplines (
+    pagination: { pageSize: 1000 }
+  ) {
+    data {
+      id
+      attributes {
+        name
+        grades (
+          pagination: { pageSize: 1000 }
+          sort: ["grade"]
+        ) {
+          data {
+            id
+            attributes {
+              grade
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+mutation createTopic ($name: String!, $gradeId: ID!, $disciplineId: ID!) {
+  createTopic (
+    data: {
+      name: $name
+			grade: $gradeId
+      discipline: $disciplineId
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+
+mutation createSection ($name: String!, $topicId: ID, $parentId: ID) {
+  createSection(
+    data: {
+      name: $name
+      topic: $topicId
+      parent: $parentId
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+mutation createModule ($title: String!, $content: JSON!, $sectionId: ID, $topicId: ID) {
   createModule(
     data: {
       title: $title
       content: $content
+      section: $sectionId
+      topic: $topicId
     }
   ) {
     data {
@@ -33,6 +199,98 @@ mutation createModule ($title: String!, $content: JSON!) {
       attributes {
         title
         content
+      }
+    }
+  }
+}
+
+
+
+mutation updateTopic ($id: ID!, $name: String, $gradeId: ID, $disciplineId: ID) {
+  updateTopic (
+    id: $id
+    data: {
+      name: $name
+			grade: $gradeId
+      discipline: $disciplineId
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+
+mutation updateSection ($id: ID!, $name: String, $topicId: ID, $parentId: ID) {
+  updateSection (
+    id: $id
+    data: {
+      name: $name
+      topic: $topicId
+      parent: $parentId
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+
+
+mutation deleteTopic ($id: ID!) {
+  updateTopic (
+    id: $id
+    data: {
+      isDeleted: true
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+        isDeleted
+      }
+    }
+  }
+}
+
+mutation deleteSection ($id: ID!) {
+  updateSection (
+    id: $id
+    data: {
+      isDeleted: true
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+        isDeleted
+      }
+    }
+  }
+}
+
+mutation deleteModule ($id: ID!) {
+  updateModule (
+    id: $id
+    data: {
+      isDeleted: true
+    }
+  ) {
+    data {
+      id
+      attributes {
+        title
+        isDeleted
       }
     }
   }

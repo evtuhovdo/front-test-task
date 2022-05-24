@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetMeQuery } from '../../../generated/graphql';
 import { LOGOUT } from '../../../routes';
 import styles from './HeaderCustom.module.scss';
+import logo from '../../../logo.png';
 
 
 interface IProps {
@@ -17,7 +18,7 @@ export const HeaderCustom: FC<IProps> = React.memo(() => {
 
   return (
     <Header className={styles.header}>
-      <div className={styles.logo}/>
+      <img src={logo} className={styles.logo} />
       <div className={styles.content}>
         <div>{loading ? 'Загрузка...' : `${data?.me?.username} (${data?.me?.role?.description})`}</div>
         <Dropdown
