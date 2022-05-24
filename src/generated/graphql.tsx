@@ -1561,7 +1561,7 @@ export type UpdateTopicMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTopicMutation = { __typename?: 'Mutation', updateTopic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null, attributes?: { __typename?: 'Topic', name: string } | null } | null } | null };
+export type UpdateTopicMutation = { __typename?: 'Mutation', updateTopic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null, attributes?: { __typename?: 'Topic', name: string, order?: number | null } | null } | null } | null };
 
 export type UpdateSectionMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1573,7 +1573,7 @@ export type UpdateSectionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null } | null } | null } | null };
+export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, order?: number | null, topic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null } | null } | null, parent?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null } | null } | null } | null } | null } | null };
 
 export type UpdateModuleMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1587,7 +1587,7 @@ export type UpdateModuleMutationVariables = Exact<{
 }>;
 
 
-export type UpdateModuleMutation = { __typename?: 'Mutation', updateModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null } | null } | null } | null };
+export type UpdateModuleMutation = { __typename?: 'Mutation', updateModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null, order?: number | null, topic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null } | null } | null, section?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null } | null } | null } | null } | null } | null };
 
 export const ModuleFieldsFragmentFragmentDoc = gql`
     fragment ModuleFieldsFragment on ModuleRelationResponseCollection {
@@ -2262,6 +2262,7 @@ export const UpdateTopicDocument = gql`
       id
       attributes {
         name
+        order
       }
     }
   }
@@ -2308,6 +2309,17 @@ export const UpdateSectionDocument = gql`
       id
       attributes {
         name
+        topic {
+          data {
+            id
+          }
+        }
+        parent {
+          data {
+            id
+          }
+        }
+        order
       }
     }
   }
@@ -2354,6 +2366,17 @@ export const UpdateModuleDocument = gql`
       id
       attributes {
         title
+        topic {
+          data {
+            id
+          }
+        }
+        section {
+          data {
+            id
+          }
+        }
+        order
       }
     }
   }

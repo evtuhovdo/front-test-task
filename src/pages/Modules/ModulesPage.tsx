@@ -1,6 +1,6 @@
 import React, { FC, Key, memo, useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Switch, Typography, Tree, Radio, Dropdown, Menu, Popconfirm, Input, Modal, message } from 'antd';
+import { Button, Switch, Typography, Tree, Radio, Dropdown, Menu, Popconfirm, Input, Modal, message, Spin } from 'antd';
 import { useNavigate } from 'react-router';
 
 import {
@@ -22,12 +22,13 @@ import { makeModuleUrl } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
 import styles from './ModulesPage.module.scss';
 import { useSearchParams } from 'react-router-dom';
-import { DeleteOutlined, PlusOutlined, EditOutlined, ReloadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined, EditOutlined, ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
 
 
 // TODO:
-// регулировка глубины вложенности env
 // оптимистический апдейт при перетаскивании
+// типизация 
+// рефакторинг
 
 
 // должно соответствовать глубине запроса getModules
@@ -56,7 +57,7 @@ const ModulesPage: FC = () => {
   const selectedGrade = selectedDiscipline?.attributes?.grades?.data
     ?.find(grade => grade.id === selectedGradeId);
 
-  const { loading, data, refetch } = useGetModulesQuery({
+  const { loading, data, refetch, networkStatus } = useGetModulesQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       publicationState,
@@ -301,17 +302,17 @@ const ModulesPage: FC = () => {
     }
   )(data?.topics?.data ?? []);
 
-  const deletedNodesSorted: any[] = [...deletedNodes]
+  const deletedNodesSorted = [...deletedNodes]
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
   // console.log(modulesTreeMapped, deletedNodes, deletedNodesSorted);
 
-  
+  type TreeNodeItemMapped = typeof modulesTreeMapped[number];
 
 
 
 
-
+  const [replaceLoading, setReplaceLoading] = useState(false);
 
   async function onDropNode ({
     dragNode,
@@ -325,6 +326,8 @@ const ModulesPage: FC = () => {
     dropToGap: boolean,
     node: any, // MappedNodeType,
   }) {
+    setReplaceLoading(true);
+
     console.log({
       dragNode,
       dropToGap,
@@ -348,7 +351,8 @@ const ModulesPage: FC = () => {
       index = dropPosition + 1;
     }
     targetParentChildren.splice(index, 0, dragNode);
-    const targetParentChildrenFiltered = targetParentChildren.filter((n, i) => ( // если перетаскиваем ноду в тот же список - удалить изначальное положение ноды
+    // если перетаскиваем ноду в тот же список - удалить изначальное положение ноды
+    const targetParentChildrenFiltered = targetParentChildren.filter((n, i) => ( 
       !(isSameNode(n, dragNode) && i !== index)
     )); 
     const parentType = targetParent?.__typename;
@@ -393,7 +397,7 @@ const ModulesPage: FC = () => {
     await Promise.allSettled(
       targetParentChildrenFiltered.map((node, order) => {
         const nodeType = node?.__typename;
-        console.log(parentType, nodeType)
+        console.log(parentType, nodeType);
         if (nodeType === 'Topic') {
           return updateTopic({
             variables: {
@@ -426,7 +430,9 @@ const ModulesPage: FC = () => {
       })
     );
 
-    refetch();
+    await refetch();
+
+    setReplaceLoading(false);
   }
 
 
@@ -756,27 +762,52 @@ const ModulesPage: FC = () => {
       </Popconfirm>
 
 
-      {!modulesTreeMapped?.length ? (
-        <div style={{ marginTop: 16 }}>
-          Пока нет ни одной темы
-        </div>
-      ) : (
-        <Tree.DirectoryTree
-          style={{ marginTop: 16, maxWidth: 500 }}
-          treeData={modulesTreeMapped}
-          defaultExpandAll
-          blockNode
-          draggable
-          onDragEnter={() => {}}
-          onDrop={onDropNode}
-          titleRender={node => (
-            <TreeItem
-              node={node}
-              isHighlighted={isNodeHighlighted(node)}
+      <div style={{ position: 'relative' }}>
+        {(loading || replaceLoading) && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 100,
+            }}
+          >
+            <Spin
+              style={{
+                position: 'absolute',
+                top: '40%',
+                left: '40%',
+              }}
+              size="large"
+              indicator={<LoadingOutlined />}
             />
-          )}
-        />
-      )}
+          </div>
+        )}
+
+        {!modulesTreeMapped?.length ? (
+          <div style={{ marginTop: 16 }}>
+            Пока нет ни одной темы
+          </div>
+        ) : (
+          <Tree.DirectoryTree
+            style={{ marginTop: 16, maxWidth: 500 }}
+            treeData={modulesTreeMapped}
+            defaultExpandAll
+            blockNode
+            draggable
+            onDragEnter={() => {}}
+            onDrop={onDropNode}
+            titleRender={node => (
+              <TreeItem
+                node={node}
+                isHighlighted={isNodeHighlighted(node)}
+              />
+            )}
+          />
+        )}
+      </div>
       <div style={{ minHeight: 50 }} />
     </CommonLayout>
   );
