@@ -1,10 +1,10 @@
-query getModule ($id: ID!) {
-    module (id: $id) {
+query getContent ($id: ID!) {
+    content (id: $id) {
         data {
             id
             attributes {
                 createdAt
-                title
+                name
                 content
                 publishedAt
             }

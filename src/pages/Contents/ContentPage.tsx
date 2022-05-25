@@ -5,40 +5,40 @@ import { OutputData } from '@editorjs/editorjs';
 import { useParams } from 'react-router';
 import { debounce } from 'lodash';
 
-import { useGetModuleQuery, useGetMeQuery, useUpdateModuleMutation } from '../../generated/graphql';
+import { useGetContentQuery, useGetMeQuery, useUpdateContentMutation } from '../../generated/graphql';
 import Editor from '../../components/common/Editor';
-import { MODULES } from '../../routes';
+import { CONTENT_TREE } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
 import { Link } from 'react-router-dom';
-import styles from './ModulePage.module.scss';
+import styles from './ContentPage.module.scss';
 import moment from 'moment';
 
 
-const ModulesPage: FC = () => {
+const ContentTreePage: FC = () => {
   const { id = '' } = useParams();
   const { loading: loadingUser, data: userData } = useGetMeQuery({ fetchPolicy: 'cache-and-network' });
-  const [ updateModule, updateModuleStatus ] = useUpdateModuleMutation();
+  const [ updateContent, updateContentStatus ] = useUpdateContentMutation();
   const isTeacher = userData?.me?.role?.name === 'Teacher';
-  const [ title, setTitle ] = useState('');
+  const [ name, setName ] = useState('');
   const [isPublished, setIsPublished] = useState(false);
-  const { loading, data } = useGetModuleQuery({
+  const { loading, data } = useGetContentQuery({
     variables: { id },
-    onCompleted: m => {
-      const attributes = m.module?.data?.attributes;
-      setTitle(attributes?.title || '');
+    onCompleted: n => {
+      const attributes = n.content?.data?.attributes;
+      setName(attributes?.name || '');
       setIsPublished(!!attributes?.publishedAt);
     },
   });
-  const content = data?.module?.data?.attributes?.content;
+  const content = data?.content?.data?.attributes?.content;
 
   function onChange(
     vars: {
       content?: OutputData,
-      title?: string,
+      name?: string,
       publishedAt?: string | null
     }
   ) {
-    updateModule({
+    updateContent({
       variables: { id, ...vars },
     });
   }
@@ -49,8 +49,8 @@ const ModulesPage: FC = () => {
   );
 
   useEffect(() => {
-    if (isTeacher && !loading) onChange({ title });
-  }, [title, onChangeDebounced, isTeacher]);
+    if (isTeacher && !loading) onChange({ name });
+  }, [name, onChangeDebounced, isTeacher]);
 
   function onCheckPublish(checked: Boolean) {
     const publishedAt = checked ? moment().format() : null;
@@ -62,19 +62,19 @@ const ModulesPage: FC = () => {
   return (
     <CommonLayout contentLoading={loading}>
       <Breadcrumb style={{ paddingBottom: 20 }}>
-        <Breadcrumb.Item><Link to={MODULES}>Модули</Link></Breadcrumb.Item>
-        <Breadcrumb.Item>{title}</Breadcrumb.Item>
+        <Breadcrumb.Item><Link to={CONTENT_TREE}>Модули</Link></Breadcrumb.Item>
+        <Breadcrumb.Item>{name}</Breadcrumb.Item>
       </Breadcrumb>
 
       <div className={styles.topPanel}>
         <Typography.Title
           className={styles.heading}
           editable={isTeacher && {
-            onChange: title => setTitle(title),
+            onChange: name => setName(name),
             triggerType: [ 'text', 'icon' ],
           }}
         >
-          {title}
+          {name}
         </Typography.Title>
         {isTeacher && (
           <div className={styles.publishingContainer}>
@@ -99,7 +99,7 @@ const ModulesPage: FC = () => {
   );
 };
 
-export default observer(ModulesPage);
+export default observer(ContentTreePage);
 
 
 

@@ -3,11 +3,11 @@ enum PublicationState {
   LIVE
 }
 
-fragment ModuleFieldsFragment on ModuleRelationResponseCollection {
+fragment ContentFieldsFragment on ContentRelationResponseCollection {
   data {
     id
     attributes {
-      title
+      name
       isDeleted
       order
       createdAt
@@ -16,13 +16,13 @@ fragment ModuleFieldsFragment on ModuleRelationResponseCollection {
   }
 }
 
-fragment ModulesFragment on Section {
-  modules (
+fragment ContentListFragment on Section {
+  contentList (
     sort: ["order"]
     pagination: { limit: 1000000000 }
     publicationState: $publicationState
   ) {
-    ...ModuleFieldsFragment
+    ...ContentFieldsFragment
   }
 }
 
@@ -33,15 +33,15 @@ fragment SectionFieldsFragment on Section {
   order
   createdAt
   updatedAt
-  ...ModulesFragment
+  ...ContentListFragment
 }
 
-query getModules (
+query getContentTree (
   $publicationState: PublicationState
   $gradeId: ID!
   $disciplineId: ID!
 ) {
-  topics (
+  sections (
     sort: ["order"]
     filters: {
       grade: {
@@ -55,19 +55,8 @@ query getModules (
     data {
       id
       attributes {
-        name
-        isDeleted
-        order
-        createdAt
-        updatedAt
-        modules (
-          sort: ["order"]
-          pagination: { limit: 1000000000 }
-          publicationState: $publicationState
-        ) {
-          ...ModuleFieldsFragment
-        }
-        sections (sort: ["order"]) {
+        ...SectionFieldsFragment
+        children (sort: ["order"]) {
           data {
             id
             attributes {
@@ -132,77 +121,20 @@ query getDisciplinesGrades {
 
 
 
-mutation createTopic ($name: String!, $gradeId: ID!, $disciplineId: ID!) {
-  createTopic (
-    data: {
-      name: $name
-			grade: $gradeId
-      discipline: $disciplineId
-    }
-  ) {
-    data {
-      id
-      attributes {
-        name
-      }
-    }
-  }
-}
 
-
-mutation createSection ($name: String!, $topicId: ID, $parentId: ID) {
+mutation createSection (
+  $name: String!,
+  $parentId: ID,
+  $gradeId: ID,
+  $disciplineId: ID,
+  $order: Int,
+) {
   createSection(
     data: {
       name: $name
-      topic: $topicId
-      parent: $parentId
-    }
-  ) {
-    data {
-      id
-      attributes {
-        name
-      }
-    }
-  }
-}
-
-mutation createModule ($title: String!, $content: JSON!, $sectionId: ID, $topicId: ID) {
-  createModule(
-    data: {
-      title: $title
-      content: $content
-      section: $sectionId
-      topic: $topicId
-    }
-  ) {
-    data {
-      id
-      attributes {
-        title
-        content
-      }
-    }
-  }
-}
-
-
-
-mutation updateTopic (
-  $id: ID!,
-  $name: String,
-  $gradeId: ID,
-  $disciplineId: ID,
-  $isDeleted: Boolean,
-  $order: Int,
-) {
-  updateTopic (
-    id: $id
-    data: {
-      isDeleted: $isDeleted
-      name: $name
 			grade: $gradeId
       discipline: $disciplineId
+      parent: $parentId
       order: $order
     }
   ) {
@@ -215,11 +147,39 @@ mutation updateTopic (
   }
 }
 
+mutation createContent (
+  $name: String!,
+  $content: JSON!,
+  $sectionId: ID,
+  $order: Int,
+) {
+  createContent(
+    data: {
+      name: $name
+      content: $content
+      section: $sectionId
+      order: $order
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+        content
+      }
+    }
+  }
+}
+
+
+
+
 
 mutation updateSection (
   $id: ID!,
   $name: String,
-  $topicId: ID,
+  $gradeId: ID,
+  $disciplineId: ID,
   $parentId: ID,
   $isDeleted: Boolean,
   $order: Int,
@@ -229,7 +189,8 @@ mutation updateSection (
     data: {
       isDeleted: $isDeleted
       name: $name
-      topic: $topicId
+      grade: $gradeId
+      discipline: $disciplineId
       parent: $parentId
       order: $order
     }
@@ -244,23 +205,21 @@ mutation updateSection (
 }
 
 
-mutation updateModule (
+mutation updateContent (
   $id: ID!,
-  $title: String,
+  $name: String,
   $content: JSON,
-  $topicId: ID,
   $sectionId: ID,
   $isDeleted: Boolean,
   $publishedAt: DateTime,
   $order: Int,
 ) {
-  updateModule (
+  updateContent (
     id: $id
     data: {
       isDeleted: $isDeleted
-      title: $title
+      name: $name
       content: $content
-      topic: $topicId
       section: $sectionId
       publishedAt: $publishedAt,
       order: $order
@@ -269,7 +228,7 @@ mutation updateModule (
     data {
       id
       attributes {
-        title
+        name
       }
     }
   }

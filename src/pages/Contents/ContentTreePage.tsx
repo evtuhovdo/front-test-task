@@ -1,26 +1,23 @@
-import React, { FC, Key, memo, useCallback, useEffect, useState } from 'react';
+import React, { FC, Key, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Switch, Typography, Tree, Radio, Dropdown, Menu, Popconfirm, Input, Modal, message, Spin } from 'antd';
+import { Button, Switch, Typography, Tree, Radio, Dropdown, Menu, Popconfirm, Input, Modal, message, Spin, Tooltip } from 'antd';
 import { useNavigate } from 'react-router';
 
 import {
   PublicationState,
-  useCreateModuleMutation,
-  useGetModulesQuery,
+  useCreateContentMutation,
+  useGetContentTreeQuery,
   useGetMeQuery,
   useCreateSectionMutation,
-  useCreateTopicMutation,
   useGetDisciplinesGradesQuery,
   useUpdateSectionMutation,
-  useUpdateModuleMutation,
-  useUpdateTopicMutation,
-  TopicEntity,
+  useUpdateContentMutation,
   SectionEntity,
-  ModuleEntity
+  ContentEntity
 } from '../../generated/graphql';
-import { makeModuleUrl } from '../../routes';
+import { makeContentUrl } from '../../routes';
 import CommonLayout from '../../components/layout/common/CommonLayout';
-import styles from './ModulesPage.module.scss';
+import styles from './ContentTreePage.module.scss';
 import { useSearchParams } from 'react-router-dom';
 import { DeleteOutlined, PlusOutlined, EditOutlined, ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
 
@@ -31,11 +28,11 @@ import { DeleteOutlined, PlusOutlined, EditOutlined, ReloadOutlined, LoadingOutl
 // рефакторинг
 
 
-// должно соответствовать глубине запроса getModules
+// должно соответствовать глубине запроса getContentTree
 const maxSectionLevel = 5;
 
 
-const ModulesPage: FC = () => {
+const ContentTreePage: FC = () => {
   const navigate = useNavigate();
   const [params, setSearchParams] = useSearchParams();
 
@@ -57,7 +54,7 @@ const ModulesPage: FC = () => {
   const selectedGrade = selectedDiscipline?.attributes?.grades?.data
     ?.find(grade => grade.id === selectedGradeId);
 
-  const { loading, data, refetch, networkStatus } = useGetModulesQuery({
+  const { loading, data, refetch, networkStatus } = useGetContentTreeQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       publicationState,
@@ -88,22 +85,22 @@ const ModulesPage: FC = () => {
 
   const [ItemName, setItemName] = useState('');
 
-  const [createModule, createModuleStatus] = useCreateModuleMutation();
-  function onClickAddModule({
-    title,
+  const [createContent, createContentStatus] = useCreateContentMutation();
+  function onClickAddContent({
+    name,
     sectionId,
-    topicId
+    order,
   }: {
-    title: string,
+    name: string,
     sectionId?: string,
-    topicId?: string
+    order?: number,
   }) {
-    createModule({
+    createContent({
       variables: {
-        title,
+        name,
         content: {},
         sectionId,
-        topicId,
+        order,
       },
       onCompleted: r => {
         refetch();
@@ -114,36 +111,24 @@ const ModulesPage: FC = () => {
   const [createSection, createSectionStatus] = useCreateSectionMutation();
   function onClickAddSection({
     name,
-    topicId,
-    parentId
+    disciplineId,
+    gradeId,
+    parentId,
+    order,
   }: {
     name: string,
-    topicId?: string,
-    parentId?: string
+    disciplineId?: string,
+    gradeId?: string,
+    parentId?: string,
+    order?: number,
   }) {
     createSection({
       variables: {
         name,
-        topicId,
+        disciplineId,
+        gradeId,
         parentId,
-      },
-      onCompleted: r => {
-        refetch();
-      },
-    });
-  }
-
-  const [createTopic, createTopicStatus] = useCreateTopicMutation();
-  function onClickAddTopic({
-    name,
-  }: {
-    name: string,
-  }) {
-    createTopic({
-      variables: {
-        name,
-        disciplineId: selectedDisciplineId,
-        gradeId: selectedGradeId,
+        order,
       },
       onCompleted: r => {
         refetch();
@@ -153,30 +138,27 @@ const ModulesPage: FC = () => {
 
 
 
-  
 
-  const [updateModule, updateModuleStatus] = useUpdateModuleMutation();
-  function onClickUpdateModule({
+
+  const [updateContent, updateContentStatus] = useUpdateContentMutation();
+  function onClickUpdateContent({
     id,
-    topicId,
     sectionId,
-    title,
+    name,
     isDeleted,
     order,
   }: {
     id: string,
-    topicId?: string,
     sectionId?: string,
-    title?: string,
+    name?: string,
     isDeleted?: boolean,
     order?: number,
   }) {
-    updateModule({
+    updateContent({
       variables: {
         id,
-        topicId,
         sectionId,
-        title,
+        name,
         isDeleted,
         order,
       },
@@ -189,14 +171,12 @@ const ModulesPage: FC = () => {
   const [updateSection, updateSectionStatus] = useUpdateSectionMutation();
   function onClickUpdateSection({
     id,
-    topicId,
     parentId,
     name,
     isDeleted,
     order,
   }: {
     id: string,
-    topicId?: string,
     parentId?: string,
     name?: string,
     isDeleted?: boolean,
@@ -205,7 +185,6 @@ const ModulesPage: FC = () => {
     updateSection({
       variables: {
         id,
-        topicId,
         parentId,
         name,
         isDeleted,
@@ -217,30 +196,6 @@ const ModulesPage: FC = () => {
     });
   }
 
-  const [updateTopic, updateTopicStatus] = useUpdateTopicMutation();
-  function onClickUpdateTopic({
-    id,
-    name,
-    isDeleted,
-    order,
-  }: {
-    id: string,
-    name?: string,
-    isDeleted?: boolean,
-    order?: number,
-  }) {
-    updateTopic({
-      variables: {
-        id,
-        name,
-        isDeleted,
-        order,
-      },
-      onCompleted: r => {
-        refetch();
-      },
-    });
-  }
 
 
 
@@ -249,70 +204,74 @@ const ModulesPage: FC = () => {
 
 
 
-  const deletedNodes: any[] = [];
+  const { deletedNodes, contentTreeMapped } = useMemo(() => {
+    const deletedNodes: any[] = [];
 
-  const modulesTreeMapped = (
-    function mapModulesTreeRecursive( // замапить дерево модулей и выделить удаленные ноды в отдельный массив
-      nodes: (TopicEntity | SectionEntity | ModuleEntity)[],
-      level = 1,
-      parentNode
-    ) {
-      return nodes?.map((node, index) => {
-        const { id, attributes: attrs } = node;
-        const nodeMapped = {
-          ...attrs,
-          id,
-          // @ts-ignore
-          key: `${parentNode ? `${parentNode?.key}-` : ''}${index}`,
-          // @ts-ignore
-          title: attrs?.name ?? attrs?.title ?? id,
-          isLeaf: attrs?.__typename === 'Module',
-          level,
-          parentNode,
-          children: [],
-        }
-        // @ts-ignore
-        nodeMapped.children = mapModulesTreeRecursive(
-          [
+    const contentTreeMapped = (
+      function mapContentTreeRecursive( // замапить дерево модулей и выделить удаленные ноды в отдельный массив
+        nodes: (SectionEntity | ContentEntity)[],
+        level = 1,
+        parentNode
+      ) {
+        return nodes?.map((node, index) => {
+          const { id, attributes: attrs } = node;
+          const nodeMapped = {
+            ...attrs,
+            id,
             // @ts-ignore
-            ...(attrs?.sections?.data ?? []),
+            key: `${parentNode ? `${parentNode?.key}-` : ''}${index}`,
             // @ts-ignore
-            ...(attrs?.children?.data ?? []),
-            // @ts-ignore
-            ...(attrs?.modules?.data ?? [])
-          ],
-          level + 1,
+            title: attrs?.name ?? id,
+            isLeaf: attrs?.__typename === 'Content',
+            level,
+            parentNode,
+            children: [],
+          }
           // @ts-ignore
-          nodeMapped
-        )
+          nodeMapped.children = mapContentTreeRecursive(
+            [
+              // @ts-ignore
+              ...(attrs?.children?.data ?? []),
+              // @ts-ignore
+              ...(attrs?.contentList?.data ?? [])
+            ],
+            level + 1,
+            // @ts-ignore
+            nodeMapped
+          )
+          // @ts-ignore
+          .sort((a, b) => (a.order - b.order));;
+          return nodeMapped;
+        })
+        .filter(node => {
+          // @ts-ignore
+          if (node.isDeleted) {
+            deletedNodes.push(node);
+            return false;
+          }
+          return true;
+        })
         // @ts-ignore
-        .sort((a, b) => (a.order - b.order));;
-        return nodeMapped;
-      })
-      .filter(node => {
-        // @ts-ignore
-        if (node.isDeleted) {
-          deletedNodes.push(node);
-          return false;
-        }
-        return true;
-      })
-      // @ts-ignore
-      .sort((a, b) => (a.order - b.order));
-    }
-  )(data?.topics?.data ?? []);
+        .sort((a, b) => (a.order - b.order));
+      }
+    )(data?.sections?.data ?? []);
+
+    return { deletedNodes, contentTreeMapped };
+  }, [data]);
 
   const deletedNodesSorted = [...deletedNodes]
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
-  // console.log(modulesTreeMapped, deletedNodes, deletedNodesSorted);
-
-  type TreeNodeItemMapped = typeof modulesTreeMapped[number];
+  type TreeNodeItemMapped = typeof contentTreeMapped[number];
 
 
 
 
   const [replaceLoading, setReplaceLoading] = useState(false);
+  const [contentTreeMappedUpdated, setContentTreeMappedUpdated] = useState<any[] | null>(null);
+  const contentTreeWithOptimisticChange = contentTreeMappedUpdated ?? contentTreeMapped;
+
+  // console.log(contentTreeMapped, contentTreeMappedUpdated, contentTreeWithOptimisticChange);
 
   async function onDropNode ({
     dragNode,
@@ -332,20 +291,20 @@ const ModulesPage: FC = () => {
       dropPosition,
       node,
     });
-    const isDroppedInsideModule = node?.__typename === 'Module' && !dropToGap;
-    const targetParent = (dropToGap || isDroppedInsideModule)
+    const isDroppedInsideContent = node?.__typename === 'Content' && !dropToGap;
+    const targetParent = (dropToGap || isDroppedInsideContent)
       ? node?.parentNode
       : node;
     // @ts-ignore
     const targetParentChildren: any[] = [
-      ...targetParent // если нет родителя - это корень с темами
+      ...targetParent // если нет родителя - это корень дерева
         ? targetParent.children
-        : modulesTreeMapped
+        : contentTreeMapped
     ];
     let index = dropToGap
       ? dropPosition
-      : targetParentChildren.length;
-    if (isDroppedInsideModule) { // если дропнуто внутрь модуля - вставить после него
+      : 0;
+    if (isDroppedInsideContent) { // если дропнуто внутрь модуля - вставить после него
       index = dropPosition + 1;
     }
     targetParentChildren.splice(index, 0, dragNode);
@@ -353,12 +312,12 @@ const ModulesPage: FC = () => {
     const targetParentChildrenFiltered = targetParentChildren.filter((n, i) => ( 
       !(isSameNode(n, dragNode) && i !== index)
     )); 
-    const parentType = targetParent?.__typename;
+    const parentType = targetParent?.__typename; // если parentType === undefined, то это - корень
     const dragNodeType = dragNode?.__typename;
 
     // глубина вложенности перетаскиваемого объекта
     const dragNodeDepth = (function computeDepthRecursive(node = dragNode) {
-      if (node.__typename === 'Module') {
+      if (node.__typename === 'Content') {
         return 0;
       } else {
         return 1 + Math.max(
@@ -378,9 +337,8 @@ const ModulesPage: FC = () => {
     });
 
     if (
-      parentType === 'Module' // нельзя перетаскивать в модули
-      || (dragNodeType === 'Topic' && parentType) // темы можно перетаскивать только в корень
-      || (!targetParent && dragNodeType !== 'Topic') // в корень можно перетаскивать только темы
+      parentType === 'Content' // нельзя перетаскивать в содержание
+      || (!parentType && dragNodeType === 'Content') // содержание нельзя перетащить в корень
     ) {
       return;
     }
@@ -392,36 +350,49 @@ const ModulesPage: FC = () => {
       return;
     }
 
+    
+    // optimitic update
+    const contentTreeUpdated = !targetParent
+      ? targetParentChildrenFiltered
+      : (function replaceTargetParentChildrenRecursive(nodes = contentTreeMapped, skipFiltering = false): any[] {
+          return nodes
+            .filter(n => (!isSameNode(n, dragNode) || skipFiltering))
+            .map(n => {
+              return {
+                ...n,
+                children: isSameNode(n, targetParent)
+                  ? replaceTargetParentChildrenRecursive(targetParentChildrenFiltered, true)
+                  : n.children ? replaceTargetParentChildrenRecursive(n.children) : undefined
+              }
+            });
+        })();
+    setContentTreeMappedUpdated(contentTreeUpdated);
+
+
+
+
     setReplaceLoading(true);
 
     await Promise.allSettled(
       targetParentChildrenFiltered.map((node, order) => {
         const nodeType = node?.__typename;
         console.log(parentType, nodeType);
-        if (nodeType === 'Topic') {
-          return updateTopic({
-            variables: {
-              id: node?.id,
-              order,
-            },
-          });
-        }
         if (nodeType === 'Section') {
           return updateSection({
             variables: {
               id: node?.id,
-              topicId: parentType === 'Topic' ? targetParent?.id : null,
               parentId: parentType === 'Section' ? targetParent?.id : null,
+              disciplineId: !parentType ? selectedDisciplineId : null,
+              gradeId: !parentType ? selectedGradeId : null,
               order,
             },
           });
         }
-        if (nodeType === 'Module') {
-          return updateModule({
+        if (nodeType === 'Content') {
+          return updateContent({
             variables: {
               id: node?.id,
-              topicId: parentType === 'Topic' ? targetParent?.id : null,
-              sectionId: parentType === 'Section' ? targetParent?.id : null,
+              sectionId: targetParent?.id,
               order,
             },
           });
@@ -433,10 +404,9 @@ const ModulesPage: FC = () => {
     await refetch();
 
     setReplaceLoading(false);
+    setContentTreeMappedUpdated(null);
   }
 
-
-  const [isRecycleBinModalVisible, setIsRecycleBinModalVisible] = useState(false);
 
 
 
@@ -482,12 +452,15 @@ const ModulesPage: FC = () => {
           style={{ display: 'flex', marginLeft: 48 }}
           onClick={e => { e.stopPropagation(); }}
         >
-          {node?.__typename === 'Module' ? (
-            <Button
-              size='small'
-              icon={<EditOutlined size={16} />}
-              onClick={() => navigate(makeModuleUrl(node?.id))}
-            />
+          {node?.__typename === 'Content' ? (
+            <Tooltip placement="bottom" title="Редактировать">
+              <Button
+                size='small'
+                type="text"
+                icon={<EditOutlined size={16} />}
+                onClick={() => navigate(makeContentUrl(node?.id))}
+              />
+            </Tooltip>
           ): (
             <Popconfirm
               icon={null}
@@ -502,23 +475,24 @@ const ModulesPage: FC = () => {
                 </div>
               }
               onConfirm={() => {
-                const __typename = node?.__typename;
-                if (__typename === 'Topic') onClickUpdateTopic({ id: node?.id, name: itemName });
-                if (__typename === 'Section') onClickUpdateSection({ id: node?.id, name: itemName });
+                onClickUpdateSection({ id: node?.id, name: itemName });
               }}
               // onCancel={}
               okText="Переименовать"
               cancelText="Отмена"
             >
-              <Button
-                size='small'
-                icon={<EditOutlined size={16} />}
-                onClick={() => setItemName(node?.title)}
-              />
+              <Tooltip placement="bottom" title="Переименовать">
+                <Button
+                  size='small'
+                  type="text"
+                  icon={<EditOutlined size={16} />}
+                  onClick={() => setItemName(node?.title)}
+                />
+              </Tooltip>
             </Popconfirm>
           )}
 
-          {node?.__typename !== 'Module' && (
+          {node?.__typename !== 'Content' && (
             <Dropdown
               trigger={['click']}
               overlay={
@@ -538,7 +512,8 @@ const ModulesPage: FC = () => {
                       }
                       onConfirm={() => onClickAddSection({
                         name: itemName,
-                        [node?.__typename === 'Topic' ? 'topicId' : 'parentId']: node?.id
+                        parentId: node?.id,
+                        order: node?.children?.length,
                       })}
                       // onCancel={}
                       okText="Создать раздел"
@@ -556,7 +531,7 @@ const ModulesPage: FC = () => {
                     icon={null}
                     title={
                       <div>
-                        Название нового модуля:
+                        Название содержания:
                         <Input
                           autoFocus
                           defaultValue={itemName}
@@ -564,28 +539,32 @@ const ModulesPage: FC = () => {
                         />
                       </div>
                     }
-                    onConfirm={() => onClickAddModule({
-                      title: itemName,
-                      [node?.__typename === 'Topic' ? 'topicId' : 'sectionId']: node?.id
+                    onConfirm={() => onClickAddContent({
+                      name: itemName,
+                      sectionId: node?.id,
+                      order: node?.children?.length,
                     })}
                     // onCancel={}
-                    okText="Создать модуль"
+                    okText="Добавить содержание"
                     cancelText="Отмена"
                   >
                     <Menu.Item
                       key={2}
                       onClick={() => setItemName('')}
                     >
-                      Добавить модуль
+                      Добавить содержание
                     </Menu.Item>
                   </Popconfirm>
                 </Menu>
               }
             >
-              <Button
-                size='small'
-                icon={<PlusOutlined size={16} />}
-              />
+              <Tooltip placement="bottom" title="Добавить сущность">
+                <Button
+                  size='small'
+                  type="text"
+                  icon={<PlusOutlined size={16} />}
+                />
+              </Tooltip>
             </Dropdown>
           )}
 
@@ -593,18 +572,20 @@ const ModulesPage: FC = () => {
             title={`Удалить "${node?.title}"?`}
             onConfirm={() => {
               const __typename = node?.__typename;
-              if (__typename === 'Topic') onClickUpdateTopic({ id: node?.id, isDeleted: true });
               if (__typename === 'Section') onClickUpdateSection({ id: node?.id, isDeleted: true });
-              if (__typename === 'Module') onClickUpdateModule({ id: node?.id, isDeleted: true });
+              if (__typename === 'Content') onClickUpdateContent({ id: node?.id, isDeleted: true });
             }}
             // onCancel={}
             okText="Удалить"
             cancelText="Отмена"
           >
-            <Button
-              size='small'
-              icon={<DeleteOutlined size={16} style={{ color: 'red'  }} />}
-            />
+            <Tooltip placement="bottom" title="Удалить сущность">
+              <Button
+                size='small'
+                type="text"
+                icon={<DeleteOutlined size={16} style={{ color: 'red'  }} />}
+              />
+            </Tooltip>
           </Popconfirm>
         </div>
       </div>
@@ -612,13 +593,17 @@ const ModulesPage: FC = () => {
   }), [navigate]);
 
 
+  
+
+  const [isRecycleBinModalVisible, setIsRecycleBinModalVisible] = useState(false);
+
   return (
     <CommonLayout
-      // contentLoading={loading || loadingUser || createModuleStatus.loading}
+      // contentLoading={loading || loadingUser || createContentStatus.loading}
     >
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
         <Typography.Title style={{ width: '80%' }}>
-          Модули
+          Учебный контент
         </Typography.Title>
 
         <Button
@@ -661,18 +646,20 @@ const ModulesPage: FC = () => {
                       onConfirm={() => {
                         const __typename = node?.__typename;
                         addHighlightedNode(node);
-                        if (__typename === 'Topic') onClickUpdateTopic({ id: node?.id, isDeleted: false });
                         if (__typename === 'Section') onClickUpdateSection({ id: node?.id, isDeleted: false });
-                        if (__typename === 'Module') onClickUpdateModule({ id: node?.id, isDeleted: false });
+                        if (__typename === 'Content') onClickUpdateContent({ id: node?.id, isDeleted: false });
                       }}
                       // onCancel={}
                       okText="Восстановить"
                       cancelText="Отмена"
                     >
-                      <Button
-                        size='small'
-                        icon={<ReloadOutlined size={16} />}
-                      />
+                      <Tooltip placement="bottom" title="Восстановить сущность">
+                        <Button
+                          size='small'
+                          type="text"
+                          icon={<ReloadOutlined size={16} />}
+                        />
+                      </Tooltip>
                     </Popconfirm>
                   )}
                 </div>
@@ -689,7 +676,7 @@ const ModulesPage: FC = () => {
       {isTeacher && (
         <div className={styles.topPanel}>
           <div className={styles.publishingContainer}>
-            Только опубликованные модули: 
+            Только опубликованное содержание: 
             <Switch
               defaultChecked
               checked={onlyPublished}
@@ -740,7 +727,7 @@ const ModulesPage: FC = () => {
         icon={null}
         title={
           <div>
-            Название новой темы:
+            Название нового раздела:
             <Input
               autoFocus
               defaultValue={ItemName}
@@ -748,16 +735,21 @@ const ModulesPage: FC = () => {
             />
           </div>
         }
-        onConfirm={() => onClickAddTopic({ name: ItemName })}
+        onConfirm={() => onClickAddSection({
+          name: ItemName,
+          disciplineId: selectedDisciplineId,
+          gradeId: selectedGradeId,
+          order: contentTreeWithOptimisticChange.length,
+        })}
         // onCancel={}
-        okText="Создать тему"
+        okText="Создать раздел"
         cancelText="Отмена"
       >
         <Button
           style={{ marginTop: 32 }}
           onClick={() => setItemName('')}
         >
-          Добавить тему
+          Добавить раздел
         </Button>
       </Popconfirm>
 
@@ -786,14 +778,14 @@ const ModulesPage: FC = () => {
           </div>
         )}
 
-        {!modulesTreeMapped?.length ? (
+        {!contentTreeWithOptimisticChange?.length ? (
           <div style={{ marginTop: 16 }}>
-            Пока нет ни одной темы
+            Пока нет ни одного раздела
           </div>
         ) : (
           <Tree.DirectoryTree
             style={{ marginTop: 16, maxWidth: 500 }}
-            treeData={modulesTreeMapped}
+            treeData={contentTreeWithOptimisticChange}
             defaultExpandAll
             blockNode
             draggable
@@ -813,7 +805,7 @@ const ModulesPage: FC = () => {
   );
 };
 
-export default observer(ModulesPage);
+export default observer(ContentTreePage);
 
 
 

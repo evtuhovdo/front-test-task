@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router';
 
-import { EVENTS, MARKS, MODULES } from '../../../routes';
+import { EVENTS, MARKS, CONTENT_TREE } from '../../../routes';
 import styles from './SidebarMenu.module.scss';
 
 interface IProps {
@@ -27,8 +27,8 @@ export const SidebarMenu: FC<IProps> = React.memo(() => {
         <Menu.Item key={EVENTS} onClick={() => navigate(EVENTS)}>
           Календарь
         </Menu.Item>
-        <Menu.Item key={MODULES} onClick={() => navigate(MODULES)}>
-          Модули
+        <Menu.Item key={CONTENT_TREE} onClick={() => navigate(CONTENT_TREE)}>
+          Учебный контент
         </Menu.Item>
         <Menu.Item key={MARKS} onClick={() => navigate(MARKS)}>
           Оценки
