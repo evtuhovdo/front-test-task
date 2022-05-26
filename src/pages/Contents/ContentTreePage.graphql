@@ -1,0 +1,235 @@
+enum PublicationState {
+  PREVIEW
+  LIVE
+}
+
+fragment ContentFieldsFragment on ContentRelationResponseCollection {
+  data {
+    id
+    attributes {
+      name
+      isDeleted
+      order
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+fragment ContentListFragment on Section {
+  contentList (
+    sort: ["order"]
+    pagination: { limit: 1000000000 }
+    publicationState: $publicationState
+  ) {
+    ...ContentFieldsFragment
+  }
+}
+
+
+fragment SectionFieldsFragment on Section {
+  name
+  isDeleted
+  order
+  createdAt
+  updatedAt
+  ...ContentListFragment
+}
+
+query getContentTree (
+  $publicationState: PublicationState
+  $gradeId: ID!
+  $disciplineId: ID!
+) {
+  sections (
+    sort: ["order"]
+    filters: {
+      grade: {
+        id: { eq: $gradeId }
+      }
+      discipline: {
+        id: { eq: $disciplineId }
+      }
+    }
+	) {
+    data {
+      id
+      attributes {
+        ...SectionFieldsFragment
+        children (sort: ["order"]) {
+          data {
+            id
+            attributes {
+              ...SectionFieldsFragment
+              children (sort: ["order"]) {
+                data {
+                  id
+                  attributes {
+                    ...SectionFieldsFragment
+                    children (sort: ["order"]) {
+                      data {
+                        id
+                        attributes {
+                          ...SectionFieldsFragment
+                          children (sort: ["order"]) {
+                            data {
+                              id
+                              attributes {
+                                ...SectionFieldsFragment
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+query getDisciplinesGrades {
+  disciplines (
+    pagination: { pageSize: 1000 }
+  ) {
+    data {
+      id
+      attributes {
+        name
+        grades (
+          pagination: { pageSize: 1000 }
+          sort: ["grade"]
+        ) {
+          data {
+            id
+            attributes {
+              grade
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+mutation createSection (
+  $name: String!,
+  $parentId: ID,
+  $gradeId: ID,
+  $disciplineId: ID,
+  $order: Int,
+) {
+  createSection(
+    data: {
+      name: $name
+			grade: $gradeId
+      discipline: $disciplineId
+      parent: $parentId
+      order: $order
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+mutation createContent (
+  $name: String!,
+  $content: JSON!,
+  $sectionId: ID,
+  $order: Int,
+) {
+  createContent(
+    data: {
+      name: $name
+      content: $content
+      section: $sectionId
+      order: $order
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+        content
+      }
+    }
+  }
+}
+
+
+
+
+
+mutation updateSection (
+  $id: ID!,
+  $name: String,
+  $gradeId: ID,
+  $disciplineId: ID,
+  $parentId: ID,
+  $isDeleted: Boolean,
+  $order: Int,
+) {
+  updateSection (
+    id: $id
+    data: {
+      isDeleted: $isDeleted
+      name: $name
+      grade: $gradeId
+      discipline: $disciplineId
+      parent: $parentId
+      order: $order
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+
+
+mutation updateContent (
+  $id: ID!,
+  $name: String,
+  $content: JSON,
+  $sectionId: ID,
+  $isDeleted: Boolean,
+  $publishedAt: DateTime,
+  $order: Int,
+) {
+  updateContent (
+    id: $id
+    data: {
+      isDeleted: $isDeleted
+      name: $name
+      content: $content
+      section: $sectionId
+      publishedAt: $publishedAt,
+      order: $order
+    }
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}

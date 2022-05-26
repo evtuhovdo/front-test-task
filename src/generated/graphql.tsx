@@ -88,6 +88,64 @@ export type CalendarEventInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
+export type Content = {
+  __typename?: 'Content';
+  content?: Maybe<Scalars['JSON']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  isDeleted: Scalars['Boolean'];
+  name?: Maybe<Scalars['String']>;
+  order?: Maybe<Scalars['Int']>;
+  publishedAt?: Maybe<Scalars['DateTime']>;
+  section?: Maybe<SectionEntityResponse>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type ContentEntity = {
+  __typename?: 'ContentEntity';
+  attributes?: Maybe<Content>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type ContentEntityResponse = {
+  __typename?: 'ContentEntityResponse';
+  data?: Maybe<ContentEntity>;
+};
+
+export type ContentEntityResponseCollection = {
+  __typename?: 'ContentEntityResponseCollection';
+  data: Array<ContentEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type ContentFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ContentFiltersInput>>>;
+  content?: InputMaybe<JsonFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  isDeleted?: InputMaybe<BooleanFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<ContentFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<ContentFiltersInput>>>;
+  order?: InputMaybe<IntFilterInput>;
+  publishedAt?: InputMaybe<DateTimeFilterInput>;
+  section?: InputMaybe<SectionFiltersInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type ContentInput = {
+  content?: InputMaybe<Scalars['JSON']>;
+  isDeleted?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['Int']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
+  section?: InputMaybe<Scalars['ID']>;
+};
+
+export type ContentRelationResponseCollection = {
+  __typename?: 'ContentRelationResponseCollection';
+  data: Array<ContentEntity>;
+};
+
 export type DateTimeFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
   between?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
@@ -116,7 +174,7 @@ export type Discipline = {
   createdAt?: Maybe<Scalars['DateTime']>;
   grades?: Maybe<GradeRelationResponseCollection>;
   name: Scalars['String'];
-  topics?: Maybe<TopicRelationResponseCollection>;
+  sections?: Maybe<SectionRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -128,8 +186,8 @@ export type DisciplineGradesArgs = {
 };
 
 
-export type DisciplineTopicsArgs = {
-  filters?: InputMaybe<TopicFiltersInput>;
+export type DisciplineSectionsArgs = {
+  filters?: InputMaybe<SectionFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -159,14 +217,14 @@ export type DisciplineFiltersInput = {
   name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<DisciplineFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<DisciplineFiltersInput>>>;
-  topics?: InputMaybe<TopicFiltersInput>;
+  sections?: InputMaybe<SectionFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type DisciplineInput = {
   grades?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   name?: InputMaybe<Scalars['String']>;
-  topics?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  sections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type DisciplineRelationResponseCollection = {
@@ -203,14 +261,14 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = CalendarEvent | Discipline | Grade | I18NLocale | Mark | Module | Section | Topic | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = CalendarEvent | Content | Discipline | Grade | I18NLocale | Mark | Section | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
 
 export type Grade = {
   __typename?: 'Grade';
   createdAt?: Maybe<Scalars['DateTime']>;
   disciplines?: Maybe<DisciplineRelationResponseCollection>;
   grade?: Maybe<Scalars['Int']>;
-  topics?: Maybe<TopicRelationResponseCollection>;
+  sections?: Maybe<SectionRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -222,8 +280,8 @@ export type GradeDisciplinesArgs = {
 };
 
 
-export type GradeTopicsArgs = {
-  filters?: InputMaybe<TopicFiltersInput>;
+export type GradeSectionsArgs = {
+  filters?: InputMaybe<SectionFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -253,14 +311,14 @@ export type GradeFiltersInput = {
   id?: InputMaybe<IdFilterInput>;
   not?: InputMaybe<GradeFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<GradeFiltersInput>>>;
-  topics?: InputMaybe<TopicFiltersInput>;
+  sections?: InputMaybe<SectionFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type GradeInput = {
   disciplines?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   grade?: InputMaybe<Scalars['Int']>;
-  topics?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  sections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type GradeRelationResponseCollection = {
@@ -438,85 +496,25 @@ export type MarkInput = {
   teacher?: InputMaybe<Scalars['ID']>;
 };
 
-export type Module = {
-  __typename?: 'Module';
-  content?: Maybe<Scalars['JSON']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  isDeleted?: Maybe<Scalars['Boolean']>;
-  publishedAt?: Maybe<Scalars['DateTime']>;
-  section?: Maybe<SectionEntityResponse>;
-  title?: Maybe<Scalars['String']>;
-  topic?: Maybe<TopicEntityResponse>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-};
-
-export type ModuleEntity = {
-  __typename?: 'ModuleEntity';
-  attributes?: Maybe<Module>;
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type ModuleEntityResponse = {
-  __typename?: 'ModuleEntityResponse';
-  data?: Maybe<ModuleEntity>;
-};
-
-export type ModuleEntityResponseCollection = {
-  __typename?: 'ModuleEntityResponseCollection';
-  data: Array<ModuleEntity>;
-  meta: ResponseCollectionMeta;
-};
-
-export type ModuleFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<ModuleFiltersInput>>>;
-  content?: InputMaybe<JsonFilterInput>;
-  createdAt?: InputMaybe<DateTimeFilterInput>;
-  id?: InputMaybe<IdFilterInput>;
-  isDeleted?: InputMaybe<BooleanFilterInput>;
-  not?: InputMaybe<ModuleFiltersInput>;
-  or?: InputMaybe<Array<InputMaybe<ModuleFiltersInput>>>;
-  publishedAt?: InputMaybe<DateTimeFilterInput>;
-  section?: InputMaybe<SectionFiltersInput>;
-  title?: InputMaybe<StringFilterInput>;
-  topic?: InputMaybe<TopicFiltersInput>;
-  updatedAt?: InputMaybe<DateTimeFilterInput>;
-};
-
-export type ModuleInput = {
-  content?: InputMaybe<Scalars['JSON']>;
-  isDeleted?: InputMaybe<Scalars['Boolean']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']>;
-  section?: InputMaybe<Scalars['ID']>;
-  title?: InputMaybe<Scalars['String']>;
-  topic?: InputMaybe<Scalars['ID']>;
-};
-
-export type ModuleRelationResponseCollection = {
-  __typename?: 'ModuleRelationResponseCollection';
-  data: Array<ModuleEntity>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  createContent?: Maybe<ContentEntityResponse>;
   createDiscipline?: Maybe<DisciplineEntityResponse>;
   createGrade?: Maybe<GradeEntityResponse>;
   createMark?: Maybe<MarkEntityResponse>;
-  createModule?: Maybe<ModuleEntityResponse>;
   createSection?: Maybe<SectionEntityResponse>;
-  createTopic?: Maybe<TopicEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
   deleteCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  deleteContent?: Maybe<ContentEntityResponse>;
   deleteDiscipline?: Maybe<DisciplineEntityResponse>;
   deleteGrade?: Maybe<GradeEntityResponse>;
   deleteMark?: Maybe<MarkEntityResponse>;
-  deleteModule?: Maybe<ModuleEntityResponse>;
   deleteSection?: Maybe<SectionEntityResponse>;
-  deleteTopic?: Maybe<TopicEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
@@ -534,13 +532,12 @@ export type Mutation = {
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
   updateCalendarEvent?: Maybe<CalendarEventEntityResponse>;
+  updateContent?: Maybe<ContentEntityResponse>;
   updateDiscipline?: Maybe<DisciplineEntityResponse>;
   updateFileInfo: UploadFileEntityResponse;
   updateGrade?: Maybe<GradeEntityResponse>;
   updateMark?: Maybe<MarkEntityResponse>;
-  updateModule?: Maybe<ModuleEntityResponse>;
   updateSection?: Maybe<SectionEntityResponse>;
-  updateTopic?: Maybe<TopicEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
@@ -552,6 +549,11 @@ export type Mutation = {
 
 export type MutationCreateCalendarEventArgs = {
   data: CalendarEventInput;
+};
+
+
+export type MutationCreateContentArgs = {
+  data: ContentInput;
 };
 
 
@@ -570,18 +572,8 @@ export type MutationCreateMarkArgs = {
 };
 
 
-export type MutationCreateModuleArgs = {
-  data: ModuleInput;
-};
-
-
 export type MutationCreateSectionArgs = {
   data: SectionInput;
-};
-
-
-export type MutationCreateTopicArgs = {
-  data: TopicInput;
 };
 
 
@@ -605,6 +597,11 @@ export type MutationDeleteCalendarEventArgs = {
 };
 
 
+export type MutationDeleteContentArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationDeleteDisciplineArgs = {
   id: Scalars['ID'];
 };
@@ -620,17 +617,7 @@ export type MutationDeleteMarkArgs = {
 };
 
 
-export type MutationDeleteModuleArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type MutationDeleteSectionArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationDeleteTopicArgs = {
   id: Scalars['ID'];
 };
 
@@ -696,6 +683,12 @@ export type MutationUpdateCalendarEventArgs = {
 };
 
 
+export type MutationUpdateContentArgs = {
+  data: ContentInput;
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpdateDisciplineArgs = {
   data: DisciplineInput;
   id: Scalars['ID'];
@@ -720,20 +713,8 @@ export type MutationUpdateMarkArgs = {
 };
 
 
-export type MutationUpdateModuleArgs = {
-  data: ModuleInput;
-  id: Scalars['ID'];
-};
-
-
 export type MutationUpdateSectionArgs = {
   data: SectionInput;
-  id: Scalars['ID'];
-};
-
-
-export type MutationUpdateTopicArgs = {
-  data: TopicInput;
   id: Scalars['ID'];
 };
 
@@ -788,6 +769,8 @@ export type Query = {
   __typename?: 'Query';
   calendarEvent?: Maybe<CalendarEventEntityResponse>;
   calendarEvents?: Maybe<CalendarEventEntityResponseCollection>;
+  content?: Maybe<ContentEntityResponse>;
+  contents?: Maybe<ContentEntityResponseCollection>;
   discipline?: Maybe<DisciplineEntityResponse>;
   disciplines?: Maybe<DisciplineEntityResponseCollection>;
   grade?: Maybe<GradeEntityResponse>;
@@ -797,12 +780,8 @@ export type Query = {
   mark?: Maybe<MarkEntityResponse>;
   marks?: Maybe<MarkEntityResponseCollection>;
   me?: Maybe<UsersPermissionsMe>;
-  module?: Maybe<ModuleEntityResponse>;
-  modules?: Maybe<ModuleEntityResponseCollection>;
   section?: Maybe<SectionEntityResponse>;
   sections?: Maybe<SectionEntityResponseCollection>;
-  topic?: Maybe<TopicEntityResponse>;
-  topics?: Maybe<TopicEntityResponseCollection>;
   uploadFile?: Maybe<UploadFileEntityResponse>;
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>;
   usersPermissionsRole?: Maybe<UsersPermissionsRoleEntityResponse>;
@@ -820,6 +799,19 @@ export type QueryCalendarEventArgs = {
 export type QueryCalendarEventsArgs = {
   filters?: InputMaybe<CalendarEventFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryContentArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryContentsArgs = {
+  filters?: InputMaybe<ContentFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
@@ -872,19 +864,6 @@ export type QueryMarksArgs = {
 };
 
 
-export type QueryModuleArgs = {
-  id?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type QueryModulesArgs = {
-  filters?: InputMaybe<ModuleFiltersInput>;
-  pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-};
-
-
 export type QuerySectionArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
@@ -892,18 +871,6 @@ export type QuerySectionArgs = {
 
 export type QuerySectionsArgs = {
   filters?: InputMaybe<SectionFiltersInput>;
-  pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-};
-
-
-export type QueryTopicArgs = {
-  id?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type QueryTopicsArgs = {
-  filters?: InputMaybe<TopicFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -952,12 +919,14 @@ export type ResponseCollectionMeta = {
 export type Section = {
   __typename?: 'Section';
   children?: Maybe<SectionRelationResponseCollection>;
+  contentList?: Maybe<ContentRelationResponseCollection>;
   createdAt?: Maybe<Scalars['DateTime']>;
-  isDeleted?: Maybe<Scalars['Boolean']>;
-  modules?: Maybe<ModuleRelationResponseCollection>;
+  discipline?: Maybe<DisciplineEntityResponse>;
+  grade?: Maybe<GradeEntityResponse>;
+  isDeleted: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
+  order?: Maybe<Scalars['Int']>;
   parent?: Maybe<SectionEntityResponse>;
-  topic?: Maybe<TopicEntityResponse>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -969,8 +938,8 @@ export type SectionChildrenArgs = {
 };
 
 
-export type SectionModulesArgs = {
-  filters?: InputMaybe<ModuleFiltersInput>;
+export type SectionContentListArgs = {
+  filters?: InputMaybe<ContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   publicationState?: InputMaybe<PublicationState>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
@@ -996,25 +965,29 @@ export type SectionEntityResponseCollection = {
 export type SectionFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<SectionFiltersInput>>>;
   children?: InputMaybe<SectionFiltersInput>;
+  contentList?: InputMaybe<ContentFiltersInput>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
+  discipline?: InputMaybe<DisciplineFiltersInput>;
+  grade?: InputMaybe<GradeFiltersInput>;
   id?: InputMaybe<IdFilterInput>;
   isDeleted?: InputMaybe<BooleanFilterInput>;
-  modules?: InputMaybe<ModuleFiltersInput>;
   name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<SectionFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<SectionFiltersInput>>>;
+  order?: InputMaybe<IntFilterInput>;
   parent?: InputMaybe<SectionFiltersInput>;
-  topic?: InputMaybe<TopicFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type SectionInput = {
   children?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  contentList?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  discipline?: InputMaybe<Scalars['ID']>;
+  grade?: InputMaybe<Scalars['ID']>;
   isDeleted?: InputMaybe<Scalars['Boolean']>;
-  modules?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   name?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['Int']>;
   parent?: InputMaybe<Scalars['ID']>;
-  topic?: InputMaybe<Scalars['ID']>;
 };
 
 export type SectionRelationResponseCollection = {
@@ -1043,79 +1016,6 @@ export type StringFilterInput = {
   null?: InputMaybe<Scalars['Boolean']>;
   or?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   startsWith?: InputMaybe<Scalars['String']>;
-};
-
-export type Topic = {
-  __typename?: 'Topic';
-  createdAt?: Maybe<Scalars['DateTime']>;
-  discipline?: Maybe<DisciplineEntityResponse>;
-  grade?: Maybe<GradeEntityResponse>;
-  isDeleted?: Maybe<Scalars['Boolean']>;
-  modules?: Maybe<ModuleRelationResponseCollection>;
-  name: Scalars['String'];
-  sections?: Maybe<SectionRelationResponseCollection>;
-  updatedAt?: Maybe<Scalars['DateTime']>;
-};
-
-
-export type TopicModulesArgs = {
-  filters?: InputMaybe<ModuleFiltersInput>;
-  pagination?: InputMaybe<PaginationArg>;
-  publicationState?: InputMaybe<PublicationState>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-};
-
-
-export type TopicSectionsArgs = {
-  filters?: InputMaybe<SectionFiltersInput>;
-  pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-};
-
-export type TopicEntity = {
-  __typename?: 'TopicEntity';
-  attributes?: Maybe<Topic>;
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type TopicEntityResponse = {
-  __typename?: 'TopicEntityResponse';
-  data?: Maybe<TopicEntity>;
-};
-
-export type TopicEntityResponseCollection = {
-  __typename?: 'TopicEntityResponseCollection';
-  data: Array<TopicEntity>;
-  meta: ResponseCollectionMeta;
-};
-
-export type TopicFiltersInput = {
-  and?: InputMaybe<Array<InputMaybe<TopicFiltersInput>>>;
-  createdAt?: InputMaybe<DateTimeFilterInput>;
-  discipline?: InputMaybe<DisciplineFiltersInput>;
-  grade?: InputMaybe<GradeFiltersInput>;
-  id?: InputMaybe<IdFilterInput>;
-  isDeleted?: InputMaybe<BooleanFilterInput>;
-  modules?: InputMaybe<ModuleFiltersInput>;
-  name?: InputMaybe<StringFilterInput>;
-  not?: InputMaybe<TopicFiltersInput>;
-  or?: InputMaybe<Array<InputMaybe<TopicFiltersInput>>>;
-  sections?: InputMaybe<SectionFiltersInput>;
-  updatedAt?: InputMaybe<DateTimeFilterInput>;
-};
-
-export type TopicInput = {
-  discipline?: InputMaybe<Scalars['ID']>;
-  grade?: InputMaybe<Scalars['ID']>;
-  isDeleted?: InputMaybe<Scalars['Boolean']>;
-  modules?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  name?: InputMaybe<Scalars['String']>;
-  sections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-};
-
-export type TopicRelationResponseCollection = {
-  __typename?: 'TopicRelationResponseCollection';
-  data: Array<TopicEntity>;
 };
 
 export type UploadFile = {
@@ -1460,6 +1360,80 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword?: { __typename?: 'UsersPermissionsLoginPayload', jwt?: string | null, user: { __typename?: 'UsersPermissionsMe', id: string, blocked?: boolean | null } } | null };
 
+export type GetContentQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetContentQuery = { __typename?: 'Query', content?: { __typename?: 'ContentEntityResponse', data?: { __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', createdAt?: any | null, name?: string | null, content?: any | null, publishedAt?: any | null } | null } | null } | null };
+
+export type ContentFieldsFragmentFragment = { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> };
+
+export type ContentListFragmentFragment = { __typename?: 'Section', contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null };
+
+export type SectionFieldsFragmentFragment = { __typename?: 'Section', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null, contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null };
+
+export type GetContentTreeQueryVariables = Exact<{
+  publicationState?: InputMaybe<PublicationState>;
+  gradeId: Scalars['ID'];
+  disciplineId: Scalars['ID'];
+}>;
+
+
+export type GetContentTreeQuery = { __typename?: 'Query', sections?: { __typename?: 'SectionEntityResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null, children?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null, children?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null, children?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null, children?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null, contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null } | null }> } | null, contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null } | null }> } | null, contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null } | null }> } | null, contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null } | null }> } | null, contentList?: { __typename?: 'ContentRelationResponseCollection', data: Array<{ __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, isDeleted: boolean, order?: number | null, createdAt?: any | null, updatedAt?: any | null } | null }> } | null } | null }> } | null };
+
+export type GetDisciplinesGradesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDisciplinesGradesQuery = { __typename?: 'Query', disciplines?: { __typename?: 'DisciplineEntityResponseCollection', data: Array<{ __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string, grades?: { __typename?: 'GradeRelationResponseCollection', data: Array<{ __typename?: 'GradeEntity', id?: string | null, attributes?: { __typename?: 'Grade', grade?: number | null } | null }> } | null } | null }> } | null };
+
+export type CreateSectionMutationVariables = Exact<{
+  name: Scalars['String'];
+  parentId?: InputMaybe<Scalars['ID']>;
+  gradeId?: InputMaybe<Scalars['ID']>;
+  disciplineId?: InputMaybe<Scalars['ID']>;
+  order?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type CreateSectionMutation = { __typename?: 'Mutation', createSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null } | null } | null } | null };
+
+export type CreateContentMutationVariables = Exact<{
+  name: Scalars['String'];
+  content: Scalars['JSON'];
+  sectionId?: InputMaybe<Scalars['ID']>;
+  order?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type CreateContentMutation = { __typename?: 'Mutation', createContent?: { __typename?: 'ContentEntityResponse', data?: { __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null, content?: any | null } | null } | null } | null };
+
+export type UpdateSectionMutationVariables = Exact<{
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  gradeId?: InputMaybe<Scalars['ID']>;
+  disciplineId?: InputMaybe<Scalars['ID']>;
+  parentId?: InputMaybe<Scalars['ID']>;
+  isDeleted?: InputMaybe<Scalars['Boolean']>;
+  order?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null } | null } | null } | null };
+
+export type UpdateContentMutationVariables = Exact<{
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['JSON']>;
+  sectionId?: InputMaybe<Scalars['ID']>;
+  isDeleted?: InputMaybe<Scalars['Boolean']>;
+  publishedAt?: InputMaybe<Scalars['DateTime']>;
+  order?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UpdateContentMutation = { __typename?: 'Mutation', updateContent?: { __typename?: 'ContentEntityResponse', data?: { __typename?: 'ContentEntity', id?: string | null, attributes?: { __typename?: 'Content', name?: string | null } | null } | null } | null };
+
 export type GetCalendarEventsQueryVariables = Exact<{
   gte: Scalars['DateTime'];
   lte: Scalars['DateTime'];
@@ -1487,125 +1461,41 @@ export type GetDisciplinesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetDisciplinesQuery = { __typename?: 'Query', disciplines?: { __typename?: 'DisciplineEntityResponseCollection', data: Array<{ __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null }> } | null };
 
-export type GetModuleQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type GetModuleQuery = { __typename?: 'Query', module?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', createdAt?: any | null, title?: string | null, content?: any | null, publishedAt?: any | null } | null } | null } | null };
-
-export type UpdateModuleMutationVariables = Exact<{
-  id: Scalars['ID'];
-  title?: InputMaybe<Scalars['String']>;
-  content?: InputMaybe<Scalars['JSON']>;
-  publishedAt?: InputMaybe<Scalars['DateTime']>;
-}>;
-
-
-export type UpdateModuleMutation = { __typename?: 'Mutation', updateModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null, content?: any | null, publishedAt?: any | null } | null } | null } | null };
-
-export type ModulesFragmentFragment = { __typename?: 'Section', modules?: { __typename?: 'ModuleRelationResponseCollection', data: Array<{ __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null } | null }> } | null };
-
-export type GetModulesQueryVariables = Exact<{
-  publicationState?: InputMaybe<PublicationState>;
-  gradeId: Scalars['ID'];
-  disciplineId: Scalars['ID'];
-}>;
-
-
-export type GetModulesQuery = { __typename?: 'Query', topics?: { __typename?: 'TopicEntityResponseCollection', data: Array<{ __typename?: 'TopicEntity', id?: string | null, attributes?: { __typename?: 'Topic', name: string, modules?: { __typename?: 'ModuleRelationResponseCollection', data: Array<{ __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null } | null }> } | null, sections?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, children?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, children?: { __typename?: 'SectionRelationResponseCollection', data: Array<{ __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, modules?: { __typename?: 'ModuleRelationResponseCollection', data: Array<{ __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null } | null }> } | null } | null }> } | null, modules?: { __typename?: 'ModuleRelationResponseCollection', data: Array<{ __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null } | null }> } | null } | null }> } | null, modules?: { __typename?: 'ModuleRelationResponseCollection', data: Array<{ __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null } | null }> } | null } | null }> } | null } | null }> } | null };
-
-export type GetDisciplinesGradesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetDisciplinesGradesQuery = { __typename?: 'Query', disciplines?: { __typename?: 'DisciplineEntityResponseCollection', data: Array<{ __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string, grades?: { __typename?: 'GradeRelationResponseCollection', data: Array<{ __typename?: 'GradeEntity', id?: string | null, attributes?: { __typename?: 'Grade', grade?: number | null } | null }> } | null } | null }> } | null };
-
-export type CreateTopicMutationVariables = Exact<{
-  name: Scalars['String'];
-  gradeId: Scalars['ID'];
-  disciplineId: Scalars['ID'];
-}>;
-
-
-export type CreateTopicMutation = { __typename?: 'Mutation', createTopic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null, attributes?: { __typename?: 'Topic', name: string } | null } | null } | null };
-
-export type CreateSectionMutationVariables = Exact<{
-  name: Scalars['String'];
-  topicId?: InputMaybe<Scalars['ID']>;
-  parentId?: InputMaybe<Scalars['ID']>;
-}>;
-
-
-export type CreateSectionMutation = { __typename?: 'Mutation', createSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null } | null } | null } | null };
-
-export type CreateModuleMutationVariables = Exact<{
-  title: Scalars['String'];
-  content: Scalars['JSON'];
-  sectionId?: InputMaybe<Scalars['ID']>;
-  topicId?: InputMaybe<Scalars['ID']>;
-}>;
-
-
-export type CreateModuleMutation = { __typename?: 'Mutation', createModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null, content?: any | null } | null } | null } | null };
-
-export type UpdateTopicMutationVariables = Exact<{
-  id: Scalars['ID'];
-  name?: InputMaybe<Scalars['String']>;
-  gradeId?: InputMaybe<Scalars['ID']>;
-  disciplineId?: InputMaybe<Scalars['ID']>;
-}>;
-
-
-export type UpdateTopicMutation = { __typename?: 'Mutation', updateTopic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null, attributes?: { __typename?: 'Topic', name: string } | null } | null } | null };
-
-export type UpdateSectionMutationVariables = Exact<{
-  id: Scalars['ID'];
-  name?: InputMaybe<Scalars['String']>;
-  topicId?: InputMaybe<Scalars['ID']>;
-  parentId?: InputMaybe<Scalars['ID']>;
-}>;
-
-
-export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null } | null } | null } | null };
-
-export type DeleteTopicMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type DeleteTopicMutation = { __typename?: 'Mutation', updateTopic?: { __typename?: 'TopicEntityResponse', data?: { __typename?: 'TopicEntity', id?: string | null, attributes?: { __typename?: 'Topic', name: string, isDeleted?: boolean | null } | null } | null } | null };
-
-export type DeleteSectionMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type DeleteSectionMutation = { __typename?: 'Mutation', updateSection?: { __typename?: 'SectionEntityResponse', data?: { __typename?: 'SectionEntity', id?: string | null, attributes?: { __typename?: 'Section', name?: string | null, isDeleted?: boolean | null } | null } | null } | null };
-
-export type DeleteModuleMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type DeleteModuleMutation = { __typename?: 'Mutation', updateModule?: { __typename?: 'ModuleEntityResponse', data?: { __typename?: 'ModuleEntity', id?: string | null, attributes?: { __typename?: 'Module', title?: string | null, isDeleted?: boolean | null } | null } | null } | null };
-
-export const ModulesFragmentFragmentDoc = gql`
-    fragment ModulesFragment on Section {
-  modules(
-    filters: {or: [{isDeleted: {eq: false}}, {isDeleted: {eq: null}}]}
-    sort: ["createdAt:desc"]
-    pagination: {limit: 1000000000}
-    publicationState: $publicationState
-  ) {
-    data {
-      id
-      attributes {
-        title
-      }
+export const ContentFieldsFragmentFragmentDoc = gql`
+    fragment ContentFieldsFragment on ContentRelationResponseCollection {
+  data {
+    id
+    attributes {
+      name
+      isDeleted
+      order
+      createdAt
+      updatedAt
     }
   }
 }
     `;
+export const ContentListFragmentFragmentDoc = gql`
+    fragment ContentListFragment on Section {
+  contentList(
+    sort: ["order"]
+    pagination: {limit: 1000000000}
+    publicationState: $publicationState
+  ) {
+    ...ContentFieldsFragment
+  }
+}
+    ${ContentFieldsFragmentFragmentDoc}`;
+export const SectionFieldsFragmentFragmentDoc = gql`
+    fragment SectionFieldsFragment on Section {
+  name
+  isDeleted
+  order
+  createdAt
+  updatedAt
+  ...ContentListFragment
+}
+    ${ContentListFragmentFragmentDoc}`;
 export const GetMeDocument = gql`
     query getMe {
   me {
@@ -1760,6 +1650,355 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const GetContentDocument = gql`
+    query getContent($id: ID!) {
+  content(id: $id) {
+    data {
+      id
+      attributes {
+        createdAt
+        name
+        content
+        publishedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetContentQuery__
+ *
+ * To run a query within a React component, call `useGetContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetContentQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetContentQuery(baseOptions: Apollo.QueryHookOptions<GetContentQuery, GetContentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetContentQuery, GetContentQueryVariables>(GetContentDocument, options);
+      }
+export function useGetContentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContentQuery, GetContentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetContentQuery, GetContentQueryVariables>(GetContentDocument, options);
+        }
+export type GetContentQueryHookResult = ReturnType<typeof useGetContentQuery>;
+export type GetContentLazyQueryHookResult = ReturnType<typeof useGetContentLazyQuery>;
+export type GetContentQueryResult = Apollo.QueryResult<GetContentQuery, GetContentQueryVariables>;
+export const GetContentTreeDocument = gql`
+    query getContentTree($publicationState: PublicationState, $gradeId: ID!, $disciplineId: ID!) {
+  sections(
+    sort: ["order"]
+    filters: {grade: {id: {eq: $gradeId}}, discipline: {id: {eq: $disciplineId}}}
+  ) {
+    data {
+      id
+      attributes {
+        ...SectionFieldsFragment
+        children(sort: ["order"]) {
+          data {
+            id
+            attributes {
+              ...SectionFieldsFragment
+              children(sort: ["order"]) {
+                data {
+                  id
+                  attributes {
+                    ...SectionFieldsFragment
+                    children(sort: ["order"]) {
+                      data {
+                        id
+                        attributes {
+                          ...SectionFieldsFragment
+                          children(sort: ["order"]) {
+                            data {
+                              id
+                              attributes {
+                                ...SectionFieldsFragment
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    ${SectionFieldsFragmentFragmentDoc}`;
+
+/**
+ * __useGetContentTreeQuery__
+ *
+ * To run a query within a React component, call `useGetContentTreeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContentTreeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetContentTreeQuery({
+ *   variables: {
+ *      publicationState: // value for 'publicationState'
+ *      gradeId: // value for 'gradeId'
+ *      disciplineId: // value for 'disciplineId'
+ *   },
+ * });
+ */
+export function useGetContentTreeQuery(baseOptions: Apollo.QueryHookOptions<GetContentTreeQuery, GetContentTreeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetContentTreeQuery, GetContentTreeQueryVariables>(GetContentTreeDocument, options);
+      }
+export function useGetContentTreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContentTreeQuery, GetContentTreeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetContentTreeQuery, GetContentTreeQueryVariables>(GetContentTreeDocument, options);
+        }
+export type GetContentTreeQueryHookResult = ReturnType<typeof useGetContentTreeQuery>;
+export type GetContentTreeLazyQueryHookResult = ReturnType<typeof useGetContentTreeLazyQuery>;
+export type GetContentTreeQueryResult = Apollo.QueryResult<GetContentTreeQuery, GetContentTreeQueryVariables>;
+export const GetDisciplinesGradesDocument = gql`
+    query getDisciplinesGrades {
+  disciplines(pagination: {pageSize: 1000}) {
+    data {
+      id
+      attributes {
+        name
+        grades(pagination: {pageSize: 1000}, sort: ["grade"]) {
+          data {
+            id
+            attributes {
+              grade
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDisciplinesGradesQuery__
+ *
+ * To run a query within a React component, call `useGetDisciplinesGradesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDisciplinesGradesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDisciplinesGradesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDisciplinesGradesQuery(baseOptions?: Apollo.QueryHookOptions<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>(GetDisciplinesGradesDocument, options);
+      }
+export function useGetDisciplinesGradesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>(GetDisciplinesGradesDocument, options);
+        }
+export type GetDisciplinesGradesQueryHookResult = ReturnType<typeof useGetDisciplinesGradesQuery>;
+export type GetDisciplinesGradesLazyQueryHookResult = ReturnType<typeof useGetDisciplinesGradesLazyQuery>;
+export type GetDisciplinesGradesQueryResult = Apollo.QueryResult<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>;
+export const CreateSectionDocument = gql`
+    mutation createSection($name: String!, $parentId: ID, $gradeId: ID, $disciplineId: ID, $order: Int) {
+  createSection(
+    data: {name: $name, grade: $gradeId, discipline: $disciplineId, parent: $parentId, order: $order}
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+    `;
+export type CreateSectionMutationFn = Apollo.MutationFunction<CreateSectionMutation, CreateSectionMutationVariables>;
+
+/**
+ * __useCreateSectionMutation__
+ *
+ * To run a mutation, you first call `useCreateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSectionMutation, { data, loading, error }] = useCreateSectionMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      parentId: // value for 'parentId'
+ *      gradeId: // value for 'gradeId'
+ *      disciplineId: // value for 'disciplineId'
+ *      order: // value for 'order'
+ *   },
+ * });
+ */
+export function useCreateSectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSectionMutation, CreateSectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSectionMutation, CreateSectionMutationVariables>(CreateSectionDocument, options);
+      }
+export type CreateSectionMutationHookResult = ReturnType<typeof useCreateSectionMutation>;
+export type CreateSectionMutationResult = Apollo.MutationResult<CreateSectionMutation>;
+export type CreateSectionMutationOptions = Apollo.BaseMutationOptions<CreateSectionMutation, CreateSectionMutationVariables>;
+export const CreateContentDocument = gql`
+    mutation createContent($name: String!, $content: JSON!, $sectionId: ID, $order: Int) {
+  createContent(
+    data: {name: $name, content: $content, section: $sectionId, order: $order}
+  ) {
+    data {
+      id
+      attributes {
+        name
+        content
+      }
+    }
+  }
+}
+    `;
+export type CreateContentMutationFn = Apollo.MutationFunction<CreateContentMutation, CreateContentMutationVariables>;
+
+/**
+ * __useCreateContentMutation__
+ *
+ * To run a mutation, you first call `useCreateContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateContentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createContentMutation, { data, loading, error }] = useCreateContentMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      content: // value for 'content'
+ *      sectionId: // value for 'sectionId'
+ *      order: // value for 'order'
+ *   },
+ * });
+ */
+export function useCreateContentMutation(baseOptions?: Apollo.MutationHookOptions<CreateContentMutation, CreateContentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateContentMutation, CreateContentMutationVariables>(CreateContentDocument, options);
+      }
+export type CreateContentMutationHookResult = ReturnType<typeof useCreateContentMutation>;
+export type CreateContentMutationResult = Apollo.MutationResult<CreateContentMutation>;
+export type CreateContentMutationOptions = Apollo.BaseMutationOptions<CreateContentMutation, CreateContentMutationVariables>;
+export const UpdateSectionDocument = gql`
+    mutation updateSection($id: ID!, $name: String, $gradeId: ID, $disciplineId: ID, $parentId: ID, $isDeleted: Boolean, $order: Int) {
+  updateSection(
+    id: $id
+    data: {isDeleted: $isDeleted, name: $name, grade: $gradeId, discipline: $disciplineId, parent: $parentId, order: $order}
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+    `;
+export type UpdateSectionMutationFn = Apollo.MutationFunction<UpdateSectionMutation, UpdateSectionMutationVariables>;
+
+/**
+ * __useUpdateSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSectionMutation, { data, loading, error }] = useUpdateSectionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      gradeId: // value for 'gradeId'
+ *      disciplineId: // value for 'disciplineId'
+ *      parentId: // value for 'parentId'
+ *      isDeleted: // value for 'isDeleted'
+ *      order: // value for 'order'
+ *   },
+ * });
+ */
+export function useUpdateSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSectionMutation, UpdateSectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSectionMutation, UpdateSectionMutationVariables>(UpdateSectionDocument, options);
+      }
+export type UpdateSectionMutationHookResult = ReturnType<typeof useUpdateSectionMutation>;
+export type UpdateSectionMutationResult = Apollo.MutationResult<UpdateSectionMutation>;
+export type UpdateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateSectionMutation, UpdateSectionMutationVariables>;
+export const UpdateContentDocument = gql`
+    mutation updateContent($id: ID!, $name: String, $content: JSON, $sectionId: ID, $isDeleted: Boolean, $publishedAt: DateTime, $order: Int) {
+  updateContent(
+    id: $id
+    data: {isDeleted: $isDeleted, name: $name, content: $content, section: $sectionId, publishedAt: $publishedAt, order: $order}
+  ) {
+    data {
+      id
+      attributes {
+        name
+      }
+    }
+  }
+}
+    `;
+export type UpdateContentMutationFn = Apollo.MutationFunction<UpdateContentMutation, UpdateContentMutationVariables>;
+
+/**
+ * __useUpdateContentMutation__
+ *
+ * To run a mutation, you first call `useUpdateContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateContentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateContentMutation, { data, loading, error }] = useUpdateContentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      content: // value for 'content'
+ *      sectionId: // value for 'sectionId'
+ *      isDeleted: // value for 'isDeleted'
+ *      publishedAt: // value for 'publishedAt'
+ *      order: // value for 'order'
+ *   },
+ * });
+ */
+export function useUpdateContentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateContentMutation, UpdateContentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateContentMutation, UpdateContentMutationVariables>(UpdateContentDocument, options);
+      }
+export type UpdateContentMutationHookResult = ReturnType<typeof useUpdateContentMutation>;
+export type UpdateContentMutationResult = Apollo.MutationResult<UpdateContentMutation>;
+export type UpdateContentMutationOptions = Apollo.BaseMutationOptions<UpdateContentMutation, UpdateContentMutationVariables>;
 export const GetCalendarEventsDocument = gql`
     query getCalendarEvents($gte: DateTime!, $lte: DateTime!) {
   calendarEvents(filters: {dateTime: {gte: $gte, lte: $lte}}) {
@@ -1931,549 +2170,3 @@ export function useGetDisciplinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetDisciplinesQueryHookResult = ReturnType<typeof useGetDisciplinesQuery>;
 export type GetDisciplinesLazyQueryHookResult = ReturnType<typeof useGetDisciplinesLazyQuery>;
 export type GetDisciplinesQueryResult = Apollo.QueryResult<GetDisciplinesQuery, GetDisciplinesQueryVariables>;
-export const GetModuleDocument = gql`
-    query getModule($id: ID!) {
-  module(id: $id) {
-    data {
-      id
-      attributes {
-        createdAt
-        title
-        content
-        publishedAt
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetModuleQuery__
- *
- * To run a query within a React component, call `useGetModuleQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetModuleQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetModuleQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetModuleQuery(baseOptions: Apollo.QueryHookOptions<GetModuleQuery, GetModuleQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetModuleQuery, GetModuleQueryVariables>(GetModuleDocument, options);
-      }
-export function useGetModuleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModuleQuery, GetModuleQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetModuleQuery, GetModuleQueryVariables>(GetModuleDocument, options);
-        }
-export type GetModuleQueryHookResult = ReturnType<typeof useGetModuleQuery>;
-export type GetModuleLazyQueryHookResult = ReturnType<typeof useGetModuleLazyQuery>;
-export type GetModuleQueryResult = Apollo.QueryResult<GetModuleQuery, GetModuleQueryVariables>;
-export const UpdateModuleDocument = gql`
-    mutation updateModule($id: ID!, $title: String, $content: JSON, $publishedAt: DateTime) {
-  updateModule(
-    id: $id
-    data: {title: $title, content: $content, publishedAt: $publishedAt}
-  ) {
-    data {
-      id
-      attributes {
-        title
-        content
-        publishedAt
-      }
-    }
-  }
-}
-    `;
-export type UpdateModuleMutationFn = Apollo.MutationFunction<UpdateModuleMutation, UpdateModuleMutationVariables>;
-
-/**
- * __useUpdateModuleMutation__
- *
- * To run a mutation, you first call `useUpdateModuleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateModuleMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateModuleMutation, { data, loading, error }] = useUpdateModuleMutation({
- *   variables: {
- *      id: // value for 'id'
- *      title: // value for 'title'
- *      content: // value for 'content'
- *      publishedAt: // value for 'publishedAt'
- *   },
- * });
- */
-export function useUpdateModuleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateModuleMutation, UpdateModuleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateModuleMutation, UpdateModuleMutationVariables>(UpdateModuleDocument, options);
-      }
-export type UpdateModuleMutationHookResult = ReturnType<typeof useUpdateModuleMutation>;
-export type UpdateModuleMutationResult = Apollo.MutationResult<UpdateModuleMutation>;
-export type UpdateModuleMutationOptions = Apollo.BaseMutationOptions<UpdateModuleMutation, UpdateModuleMutationVariables>;
-export const GetModulesDocument = gql`
-    query getModules($publicationState: PublicationState, $gradeId: ID!, $disciplineId: ID!) {
-  topics(
-    filters: {or: [{isDeleted: {eq: false}}, {isDeleted: {eq: null}}], grade: {id: {eq: $gradeId}}, discipline: {id: {eq: $disciplineId}}}
-  ) {
-    data {
-      id
-      attributes {
-        name
-        modules(
-          filters: {or: [{isDeleted: {eq: false}}, {isDeleted: {eq: null}}]}
-          sort: ["createdAt:desc"]
-          pagination: {limit: 1000000000}
-          publicationState: $publicationState
-        ) {
-          data {
-            id
-            attributes {
-              title
-            }
-          }
-        }
-        sections(filters: {or: [{isDeleted: {eq: false}}, {isDeleted: {eq: null}}]}) {
-          data {
-            id
-            attributes {
-              name
-              ...ModulesFragment
-              children(filters: {or: [{isDeleted: {eq: false}}, {isDeleted: {eq: null}}]}) {
-                data {
-                  id
-                  attributes {
-                    name
-                    ...ModulesFragment
-                    children(filters: {or: [{isDeleted: {eq: false}}, {isDeleted: {eq: null}}]}) {
-                      data {
-                        id
-                        attributes {
-                          name
-                          ...ModulesFragment
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    ${ModulesFragmentFragmentDoc}`;
-
-/**
- * __useGetModulesQuery__
- *
- * To run a query within a React component, call `useGetModulesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetModulesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetModulesQuery({
- *   variables: {
- *      publicationState: // value for 'publicationState'
- *      gradeId: // value for 'gradeId'
- *      disciplineId: // value for 'disciplineId'
- *   },
- * });
- */
-export function useGetModulesQuery(baseOptions: Apollo.QueryHookOptions<GetModulesQuery, GetModulesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetModulesQuery, GetModulesQueryVariables>(GetModulesDocument, options);
-      }
-export function useGetModulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModulesQuery, GetModulesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetModulesQuery, GetModulesQueryVariables>(GetModulesDocument, options);
-        }
-export type GetModulesQueryHookResult = ReturnType<typeof useGetModulesQuery>;
-export type GetModulesLazyQueryHookResult = ReturnType<typeof useGetModulesLazyQuery>;
-export type GetModulesQueryResult = Apollo.QueryResult<GetModulesQuery, GetModulesQueryVariables>;
-export const GetDisciplinesGradesDocument = gql`
-    query getDisciplinesGrades {
-  disciplines(pagination: {pageSize: 1000}) {
-    data {
-      id
-      attributes {
-        name
-        grades(pagination: {pageSize: 1000}, sort: ["grade"]) {
-          data {
-            id
-            attributes {
-              grade
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetDisciplinesGradesQuery__
- *
- * To run a query within a React component, call `useGetDisciplinesGradesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDisciplinesGradesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetDisciplinesGradesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetDisciplinesGradesQuery(baseOptions?: Apollo.QueryHookOptions<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>(GetDisciplinesGradesDocument, options);
-      }
-export function useGetDisciplinesGradesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>(GetDisciplinesGradesDocument, options);
-        }
-export type GetDisciplinesGradesQueryHookResult = ReturnType<typeof useGetDisciplinesGradesQuery>;
-export type GetDisciplinesGradesLazyQueryHookResult = ReturnType<typeof useGetDisciplinesGradesLazyQuery>;
-export type GetDisciplinesGradesQueryResult = Apollo.QueryResult<GetDisciplinesGradesQuery, GetDisciplinesGradesQueryVariables>;
-export const CreateTopicDocument = gql`
-    mutation createTopic($name: String!, $gradeId: ID!, $disciplineId: ID!) {
-  createTopic(data: {name: $name, grade: $gradeId, discipline: $disciplineId}) {
-    data {
-      id
-      attributes {
-        name
-      }
-    }
-  }
-}
-    `;
-export type CreateTopicMutationFn = Apollo.MutationFunction<CreateTopicMutation, CreateTopicMutationVariables>;
-
-/**
- * __useCreateTopicMutation__
- *
- * To run a mutation, you first call `useCreateTopicMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateTopicMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createTopicMutation, { data, loading, error }] = useCreateTopicMutation({
- *   variables: {
- *      name: // value for 'name'
- *      gradeId: // value for 'gradeId'
- *      disciplineId: // value for 'disciplineId'
- *   },
- * });
- */
-export function useCreateTopicMutation(baseOptions?: Apollo.MutationHookOptions<CreateTopicMutation, CreateTopicMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateTopicMutation, CreateTopicMutationVariables>(CreateTopicDocument, options);
-      }
-export type CreateTopicMutationHookResult = ReturnType<typeof useCreateTopicMutation>;
-export type CreateTopicMutationResult = Apollo.MutationResult<CreateTopicMutation>;
-export type CreateTopicMutationOptions = Apollo.BaseMutationOptions<CreateTopicMutation, CreateTopicMutationVariables>;
-export const CreateSectionDocument = gql`
-    mutation createSection($name: String!, $topicId: ID, $parentId: ID) {
-  createSection(data: {name: $name, topic: $topicId, parent: $parentId}) {
-    data {
-      id
-      attributes {
-        name
-      }
-    }
-  }
-}
-    `;
-export type CreateSectionMutationFn = Apollo.MutationFunction<CreateSectionMutation, CreateSectionMutationVariables>;
-
-/**
- * __useCreateSectionMutation__
- *
- * To run a mutation, you first call `useCreateSectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSectionMutation, { data, loading, error }] = useCreateSectionMutation({
- *   variables: {
- *      name: // value for 'name'
- *      topicId: // value for 'topicId'
- *      parentId: // value for 'parentId'
- *   },
- * });
- */
-export function useCreateSectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSectionMutation, CreateSectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSectionMutation, CreateSectionMutationVariables>(CreateSectionDocument, options);
-      }
-export type CreateSectionMutationHookResult = ReturnType<typeof useCreateSectionMutation>;
-export type CreateSectionMutationResult = Apollo.MutationResult<CreateSectionMutation>;
-export type CreateSectionMutationOptions = Apollo.BaseMutationOptions<CreateSectionMutation, CreateSectionMutationVariables>;
-export const CreateModuleDocument = gql`
-    mutation createModule($title: String!, $content: JSON!, $sectionId: ID, $topicId: ID) {
-  createModule(
-    data: {title: $title, content: $content, section: $sectionId, topic: $topicId}
-  ) {
-    data {
-      id
-      attributes {
-        title
-        content
-      }
-    }
-  }
-}
-    `;
-export type CreateModuleMutationFn = Apollo.MutationFunction<CreateModuleMutation, CreateModuleMutationVariables>;
-
-/**
- * __useCreateModuleMutation__
- *
- * To run a mutation, you first call `useCreateModuleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateModuleMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createModuleMutation, { data, loading, error }] = useCreateModuleMutation({
- *   variables: {
- *      title: // value for 'title'
- *      content: // value for 'content'
- *      sectionId: // value for 'sectionId'
- *      topicId: // value for 'topicId'
- *   },
- * });
- */
-export function useCreateModuleMutation(baseOptions?: Apollo.MutationHookOptions<CreateModuleMutation, CreateModuleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateModuleMutation, CreateModuleMutationVariables>(CreateModuleDocument, options);
-      }
-export type CreateModuleMutationHookResult = ReturnType<typeof useCreateModuleMutation>;
-export type CreateModuleMutationResult = Apollo.MutationResult<CreateModuleMutation>;
-export type CreateModuleMutationOptions = Apollo.BaseMutationOptions<CreateModuleMutation, CreateModuleMutationVariables>;
-export const UpdateTopicDocument = gql`
-    mutation updateTopic($id: ID!, $name: String, $gradeId: ID, $disciplineId: ID) {
-  updateTopic(
-    id: $id
-    data: {name: $name, grade: $gradeId, discipline: $disciplineId}
-  ) {
-    data {
-      id
-      attributes {
-        name
-      }
-    }
-  }
-}
-    `;
-export type UpdateTopicMutationFn = Apollo.MutationFunction<UpdateTopicMutation, UpdateTopicMutationVariables>;
-
-/**
- * __useUpdateTopicMutation__
- *
- * To run a mutation, you first call `useUpdateTopicMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTopicMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateTopicMutation, { data, loading, error }] = useUpdateTopicMutation({
- *   variables: {
- *      id: // value for 'id'
- *      name: // value for 'name'
- *      gradeId: // value for 'gradeId'
- *      disciplineId: // value for 'disciplineId'
- *   },
- * });
- */
-export function useUpdateTopicMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTopicMutation, UpdateTopicMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateTopicMutation, UpdateTopicMutationVariables>(UpdateTopicDocument, options);
-      }
-export type UpdateTopicMutationHookResult = ReturnType<typeof useUpdateTopicMutation>;
-export type UpdateTopicMutationResult = Apollo.MutationResult<UpdateTopicMutation>;
-export type UpdateTopicMutationOptions = Apollo.BaseMutationOptions<UpdateTopicMutation, UpdateTopicMutationVariables>;
-export const UpdateSectionDocument = gql`
-    mutation updateSection($id: ID!, $name: String, $topicId: ID, $parentId: ID) {
-  updateSection(id: $id, data: {name: $name, topic: $topicId, parent: $parentId}) {
-    data {
-      id
-      attributes {
-        name
-      }
-    }
-  }
-}
-    `;
-export type UpdateSectionMutationFn = Apollo.MutationFunction<UpdateSectionMutation, UpdateSectionMutationVariables>;
-
-/**
- * __useUpdateSectionMutation__
- *
- * To run a mutation, you first call `useUpdateSectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSectionMutation, { data, loading, error }] = useUpdateSectionMutation({
- *   variables: {
- *      id: // value for 'id'
- *      name: // value for 'name'
- *      topicId: // value for 'topicId'
- *      parentId: // value for 'parentId'
- *   },
- * });
- */
-export function useUpdateSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSectionMutation, UpdateSectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateSectionMutation, UpdateSectionMutationVariables>(UpdateSectionDocument, options);
-      }
-export type UpdateSectionMutationHookResult = ReturnType<typeof useUpdateSectionMutation>;
-export type UpdateSectionMutationResult = Apollo.MutationResult<UpdateSectionMutation>;
-export type UpdateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateSectionMutation, UpdateSectionMutationVariables>;
-export const DeleteTopicDocument = gql`
-    mutation deleteTopic($id: ID!) {
-  updateTopic(id: $id, data: {isDeleted: true}) {
-    data {
-      id
-      attributes {
-        name
-        isDeleted
-      }
-    }
-  }
-}
-    `;
-export type DeleteTopicMutationFn = Apollo.MutationFunction<DeleteTopicMutation, DeleteTopicMutationVariables>;
-
-/**
- * __useDeleteTopicMutation__
- *
- * To run a mutation, you first call `useDeleteTopicMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteTopicMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteTopicMutation, { data, loading, error }] = useDeleteTopicMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteTopicMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTopicMutation, DeleteTopicMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteTopicMutation, DeleteTopicMutationVariables>(DeleteTopicDocument, options);
-      }
-export type DeleteTopicMutationHookResult = ReturnType<typeof useDeleteTopicMutation>;
-export type DeleteTopicMutationResult = Apollo.MutationResult<DeleteTopicMutation>;
-export type DeleteTopicMutationOptions = Apollo.BaseMutationOptions<DeleteTopicMutation, DeleteTopicMutationVariables>;
-export const DeleteSectionDocument = gql`
-    mutation deleteSection($id: ID!) {
-  updateSection(id: $id, data: {isDeleted: true}) {
-    data {
-      id
-      attributes {
-        name
-        isDeleted
-      }
-    }
-  }
-}
-    `;
-export type DeleteSectionMutationFn = Apollo.MutationFunction<DeleteSectionMutation, DeleteSectionMutationVariables>;
-
-/**
- * __useDeleteSectionMutation__
- *
- * To run a mutation, you first call `useDeleteSectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteSectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteSectionMutation, { data, loading, error }] = useDeleteSectionMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteSectionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSectionMutation, DeleteSectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteSectionMutation, DeleteSectionMutationVariables>(DeleteSectionDocument, options);
-      }
-export type DeleteSectionMutationHookResult = ReturnType<typeof useDeleteSectionMutation>;
-export type DeleteSectionMutationResult = Apollo.MutationResult<DeleteSectionMutation>;
-export type DeleteSectionMutationOptions = Apollo.BaseMutationOptions<DeleteSectionMutation, DeleteSectionMutationVariables>;
-export const DeleteModuleDocument = gql`
-    mutation deleteModule($id: ID!) {
-  updateModule(id: $id, data: {isDeleted: true}) {
-    data {
-      id
-      attributes {
-        title
-        isDeleted
-      }
-    }
-  }
-}
-    `;
-export type DeleteModuleMutationFn = Apollo.MutationFunction<DeleteModuleMutation, DeleteModuleMutationVariables>;
-
-/**
- * __useDeleteModuleMutation__
- *
- * To run a mutation, you first call `useDeleteModuleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteModuleMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteModuleMutation, { data, loading, error }] = useDeleteModuleMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteModuleMutation(baseOptions?: Apollo.MutationHookOptions<DeleteModuleMutation, DeleteModuleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteModuleMutation, DeleteModuleMutationVariables>(DeleteModuleDocument, options);
-      }
-export type DeleteModuleMutationHookResult = ReturnType<typeof useDeleteModuleMutation>;
-export type DeleteModuleMutationResult = Apollo.MutationResult<DeleteModuleMutation>;
-export type DeleteModuleMutationOptions = Apollo.BaseMutationOptions<DeleteModuleMutation, DeleteModuleMutationVariables>;
