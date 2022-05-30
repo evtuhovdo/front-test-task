@@ -1,12 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Header } from 'antd/lib/layout/layout';
 import { Dropdown, Menu, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 import { useGetMeQuery } from '../../../generated/graphql';
-import { LOGOUT } from '../../../routes';
+import { LOGOUT,PROFILE } from '../../../routes';
 import styles from './HeaderCustom.module.scss';
 import logo from '../../../logo.png';
+import { number } from 'yup';
 
 
 interface IProps {
@@ -24,7 +25,10 @@ export const HeaderCustom: FC<IProps> = React.memo(() => {
         <Dropdown
           overlay={
             <Menu>
-              <Menu.Item onClick={() => navigate(LOGOUT)}>
+              <Menu.Item key={1} onClick={() => navigate(PROFILE)}>
+                Профиль
+              </Menu.Item>
+              <Menu.Item key={2}  onClick={() => navigate(LOGOUT)}>
                 Выйти
               </Menu.Item>
             </Menu>

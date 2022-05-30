@@ -16,6 +16,7 @@ export const MARKS = '/marks';
 export const LOGIN = '/login';
 export const ABOUT = '/about';
 export const LOGOUT = '/logout';
+export const PROFILE = '/profile';
 export const FORGET_PASSWORD = '/forget_password';
 export const RESET_PASSWORD = '/reset_password';
 

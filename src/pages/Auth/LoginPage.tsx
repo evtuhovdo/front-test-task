@@ -54,6 +54,10 @@ const LoginPage: FC = () => {
       }
 
       store.auth.setToken(jwt);
+      localStorage.setItem('userId', userId)
+      
+      
+     
 
       navigate(INDEX);
     } catch (error: any) {
