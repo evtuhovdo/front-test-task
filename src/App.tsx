@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { provider, useInstance } from 'react-ioc';
 import { observer } from 'mobx-react-lite';
-import { ApolloClient, ApolloProvider} from '@apollo/client';
+import { ApolloClient, ApolloProvider } from '@apollo/client';
 
 import './App.scss';
 
@@ -15,7 +15,7 @@ import StoreDI from './model/store/StoreDI';
 import ApolloClientDI from './model/graphql/ApolloClientDI';
 import { Store } from './model/store/Store';
 import ScrollToTop from './components/common/ScrollToTop';
-import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN,PROFILE, LOGOUT, MARKS, CONTENT, CONTENT_TREE, NOT_FOUND, RESET_PASSWORD } from './routes';
+import { EVENTS, FORGET_PASSWORD, INDEX, LOGIN, PROFILE, LOGOUT, MARKS, CONTENT, CONTENT_TREE, NOT_FOUND, RESET_PASSWORD } from './routes';
 import NotFound from './pages/NotFound';
 import LoginPage from './pages/Auth/LoginPage';
 import ForgetPasswordPage from './pages/Auth/ForgetPasswordPage';
@@ -37,21 +37,14 @@ import ProfilePage from './pages/Profile/ProfilePage';
 
 moment.locale('ru');
 
-
-
-
-
 const App: FC = () => {
   const store = useInstance(Store);
   const { hydrated, auth } = store;
   const { hasAuthToken } = auth;
   const apolloClient = useInstance(ApolloClient);
-  
 
   if (!hydrated) return <div>Загрузка...</div>;
-
-
-  
+ 
   return (
     <ConfigProvider locale={ruRU}>
       <ApolloProvider client={apolloClient}>
@@ -62,7 +55,6 @@ const App: FC = () => {
               {!hasAuthToken && (
                 <React.Fragment>
                   <Route path={LOGIN} element={<LoginPage/>}/>
-                 
                   <Route path={FORGET_PASSWORD} element={<ForgetPasswordPage/>}/>
                   <Route path={RESET_PASSWORD} element={<ResetPasswordPage/>}/>
                   <Route path="*" element={<Navigate to={LOGIN}/>}/>

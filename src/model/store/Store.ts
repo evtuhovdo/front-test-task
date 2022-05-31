@@ -14,8 +14,7 @@ export class Store {
       {
         jsonify: true,
         whitelist: [ // перечисление ключей хранилища которые надо сохранять между сессиями
-          'auth',
-          "id"
+          'auth'
         ],
       },
     ).finally(() => {

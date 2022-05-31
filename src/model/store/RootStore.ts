@@ -4,7 +4,7 @@ import { AuthStore } from './AuthStore';
 export const RootStore = t
   .model({
     hydrated: t.optional(t.boolean, false), // метка что состояние хранилища восстановлено из сохраненного в localstorage
-    auth: t.optional(AuthStore, {}),
+    auth: t.optional(AuthStore, {})
   })
   .actions(self => ({
     setHydrated: (value: boolean) => {

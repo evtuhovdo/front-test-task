@@ -1,13 +1,12 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Header } from 'antd/lib/layout/layout';
 import { Dropdown, Menu, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
-
 import { useGetMeQuery } from '../../../generated/graphql';
-import { LOGOUT,PROFILE } from '../../../routes';
+import { LOGOUT, PROFILE } from '../../../routes';
 import styles from './HeaderCustom.module.scss';
 import logo from '../../../logo.png';
-import { number } from 'yup';
+
 
 
 interface IProps {

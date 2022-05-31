@@ -21,6 +21,55 @@ export type Scalars = {
   Upload: any;
 };
 
+export type Answer = {
+  __typename?: 'Answer';
+  answers?: Maybe<Scalars['JSON']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  test?: Maybe<TestEntityResponse>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user?: Maybe<UsersPermissionsUserEntityResponse>;
+};
+
+export type AnswerEntity = {
+  __typename?: 'AnswerEntity';
+  attributes?: Maybe<Answer>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type AnswerEntityResponse = {
+  __typename?: 'AnswerEntityResponse';
+  data?: Maybe<AnswerEntity>;
+};
+
+export type AnswerEntityResponseCollection = {
+  __typename?: 'AnswerEntityResponseCollection';
+  data: Array<AnswerEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type AnswerFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<AnswerFiltersInput>>>;
+  answers?: InputMaybe<JsonFilterInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  not?: InputMaybe<AnswerFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<AnswerFiltersInput>>>;
+  test?: InputMaybe<TestFiltersInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+  user?: InputMaybe<UsersPermissionsUserFiltersInput>;
+};
+
+export type AnswerInput = {
+  answers?: InputMaybe<Scalars['JSON']>;
+  test?: InputMaybe<Scalars['ID']>;
+  user?: InputMaybe<Scalars['ID']>;
+};
+
+export type AnswerRelationResponseCollection = {
+  __typename?: 'AnswerRelationResponseCollection';
+  data: Array<AnswerEntity>;
+};
+
 export type BooleanFilterInput = {
   and?: InputMaybe<Array<InputMaybe<Scalars['Boolean']>>>;
   between?: InputMaybe<Array<InputMaybe<Scalars['Boolean']>>>;
@@ -97,7 +146,15 @@ export type Content = {
   order?: Maybe<Scalars['Int']>;
   publishedAt?: Maybe<Scalars['DateTime']>;
   section?: Maybe<SectionEntityResponse>;
+  tests?: Maybe<TestRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type ContentTestsArgs = {
+  filters?: InputMaybe<TestFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export type ContentEntity = {
@@ -129,6 +186,7 @@ export type ContentFiltersInput = {
   order?: InputMaybe<IntFilterInput>;
   publishedAt?: InputMaybe<DateTimeFilterInput>;
   section?: InputMaybe<SectionFiltersInput>;
+  tests?: InputMaybe<TestFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
@@ -139,6 +197,7 @@ export type ContentInput = {
   order?: InputMaybe<Scalars['Int']>;
   publishedAt?: InputMaybe<Scalars['DateTime']>;
   section?: InputMaybe<Scalars['ID']>;
+  tests?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type ContentRelationResponseCollection = {
@@ -175,6 +234,7 @@ export type Discipline = {
   grades?: Maybe<GradeRelationResponseCollection>;
   name: Scalars['String'];
   sections?: Maybe<SectionRelationResponseCollection>;
+  tests?: Maybe<TestRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -188,6 +248,13 @@ export type DisciplineGradesArgs = {
 
 export type DisciplineSectionsArgs = {
   filters?: InputMaybe<SectionFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type DisciplineTestsArgs = {
+  filters?: InputMaybe<TestFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -218,6 +285,7 @@ export type DisciplineFiltersInput = {
   not?: InputMaybe<DisciplineFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<DisciplineFiltersInput>>>;
   sections?: InputMaybe<SectionFiltersInput>;
+  tests?: InputMaybe<TestFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
@@ -225,12 +293,20 @@ export type DisciplineInput = {
   grades?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   name?: InputMaybe<Scalars['String']>;
   sections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  tests?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type DisciplineRelationResponseCollection = {
   __typename?: 'DisciplineRelationResponseCollection';
   data: Array<DisciplineEntity>;
 };
+
+export enum Enum_Video_Postprocessstatus {
+  InProcess = 'IN_PROCESS',
+  NeedProcess = 'NEED_PROCESS',
+  ProcessDone = 'PROCESS_DONE',
+  ProcessError = 'PROCESS_ERROR'
+}
 
 export type FileInfoInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
@@ -261,7 +337,7 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']>;
 };
 
-export type GenericMorph = CalendarEvent | Content | Discipline | Grade | I18NLocale | Mark | Section | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser;
+export type GenericMorph = Answer | CalendarEvent | Content | Discipline | Grade | I18NLocale | Mark | Section | Test | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser | Video;
 
 export type Grade = {
   __typename?: 'Grade';
@@ -269,6 +345,7 @@ export type Grade = {
   disciplines?: Maybe<DisciplineRelationResponseCollection>;
   grade?: Maybe<Scalars['Int']>;
   sections?: Maybe<SectionRelationResponseCollection>;
+  tests?: Maybe<TestRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -282,6 +359,13 @@ export type GradeDisciplinesArgs = {
 
 export type GradeSectionsArgs = {
   filters?: InputMaybe<SectionFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type GradeTestsArgs = {
+  filters?: InputMaybe<TestFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -312,6 +396,7 @@ export type GradeFiltersInput = {
   not?: InputMaybe<GradeFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<GradeFiltersInput>>>;
   sections?: InputMaybe<SectionFiltersInput>;
+  tests?: InputMaybe<TestFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
@@ -319,6 +404,7 @@ export type GradeInput = {
   disciplines?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   grade?: InputMaybe<Scalars['Int']>;
   sections?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  tests?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type GradeRelationResponseCollection = {
@@ -498,28 +584,34 @@ export type MarkInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createAnswer?: Maybe<AnswerEntityResponse>;
   createCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   createContent?: Maybe<ContentEntityResponse>;
   createDiscipline?: Maybe<DisciplineEntityResponse>;
   createGrade?: Maybe<GradeEntityResponse>;
   createMark?: Maybe<MarkEntityResponse>;
   createSection?: Maybe<SectionEntityResponse>;
+  createTest?: Maybe<TestEntityResponse>;
   createUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>;
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse;
+  createVideo?: Maybe<VideoEntityResponse>;
+  deleteAnswer?: Maybe<AnswerEntityResponse>;
   deleteCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   deleteContent?: Maybe<ContentEntityResponse>;
   deleteDiscipline?: Maybe<DisciplineEntityResponse>;
   deleteGrade?: Maybe<GradeEntityResponse>;
   deleteMark?: Maybe<MarkEntityResponse>;
   deleteSection?: Maybe<SectionEntityResponse>;
+  deleteTest?: Maybe<TestEntityResponse>;
   deleteUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Delete an existing role */
   deleteUsersPermissionsRole?: Maybe<UsersPermissionsDeleteRolePayload>;
   /** Update an existing user */
   deleteUsersPermissionsUser: UsersPermissionsUserEntityResponse;
+  deleteVideo?: Maybe<VideoEntityResponse>;
   /** Confirm an email users email address */
   emailConfirmation?: Maybe<UsersPermissionsLoginPayload>;
   /** Request a reset password token */
@@ -531,6 +623,7 @@ export type Mutation = {
   removeFile?: Maybe<UploadFileEntityResponse>;
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>;
+  updateAnswer?: Maybe<AnswerEntityResponse>;
   updateCalendarEvent?: Maybe<CalendarEventEntityResponse>;
   updateContent?: Maybe<ContentEntityResponse>;
   updateDiscipline?: Maybe<DisciplineEntityResponse>;
@@ -538,12 +631,19 @@ export type Mutation = {
   updateGrade?: Maybe<GradeEntityResponse>;
   updateMark?: Maybe<MarkEntityResponse>;
   updateSection?: Maybe<SectionEntityResponse>;
+  updateTest?: Maybe<TestEntityResponse>;
   updateUploadFile?: Maybe<UploadFileEntityResponse>;
   /** Update an existing role */
   updateUsersPermissionsRole?: Maybe<UsersPermissionsUpdateRolePayload>;
   /** Update an existing user */
   updateUsersPermissionsUser: UsersPermissionsUserEntityResponse;
+  updateVideo?: Maybe<VideoEntityResponse>;
   upload: UploadFileEntityResponse;
+};
+
+
+export type MutationCreateAnswerArgs = {
+  data: AnswerInput;
 };
 
 
@@ -577,6 +677,11 @@ export type MutationCreateSectionArgs = {
 };
 
 
+export type MutationCreateTestArgs = {
+  data: TestInput;
+};
+
+
 export type MutationCreateUploadFileArgs = {
   data: UploadFileInput;
 };
@@ -589,6 +694,16 @@ export type MutationCreateUsersPermissionsRoleArgs = {
 
 export type MutationCreateUsersPermissionsUserArgs = {
   data: UsersPermissionsUserInput;
+};
+
+
+export type MutationCreateVideoArgs = {
+  data: VideoInput;
+};
+
+
+export type MutationDeleteAnswerArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -622,6 +737,11 @@ export type MutationDeleteSectionArgs = {
 };
 
 
+export type MutationDeleteTestArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationDeleteUploadFileArgs = {
   id: Scalars['ID'];
 };
@@ -633,6 +753,11 @@ export type MutationDeleteUsersPermissionsRoleArgs = {
 
 
 export type MutationDeleteUsersPermissionsUserArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteVideoArgs = {
   id: Scalars['ID'];
 };
 
@@ -674,6 +799,12 @@ export type MutationResetPasswordArgs = {
   code: Scalars['String'];
   password: Scalars['String'];
   passwordConfirmation: Scalars['String'];
+};
+
+
+export type MutationUpdateAnswerArgs = {
+  data: AnswerInput;
+  id: Scalars['ID'];
 };
 
 
@@ -719,6 +850,12 @@ export type MutationUpdateSectionArgs = {
 };
 
 
+export type MutationUpdateTestArgs = {
+  data: TestInput;
+  id: Scalars['ID'];
+};
+
+
 export type MutationUpdateUploadFileArgs = {
   data: UploadFileInput;
   id: Scalars['ID'];
@@ -733,6 +870,12 @@ export type MutationUpdateUsersPermissionsRoleArgs = {
 
 export type MutationUpdateUsersPermissionsUserArgs = {
   data: UsersPermissionsUserInput;
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateVideoArgs = {
+  data: VideoInput;
   id: Scalars['ID'];
 };
 
@@ -767,6 +910,8 @@ export enum PublicationState {
 
 export type Query = {
   __typename?: 'Query';
+  answer?: Maybe<AnswerEntityResponse>;
+  answers?: Maybe<AnswerEntityResponseCollection>;
   calendarEvent?: Maybe<CalendarEventEntityResponse>;
   calendarEvents?: Maybe<CalendarEventEntityResponseCollection>;
   content?: Maybe<ContentEntityResponse>;
@@ -782,12 +927,28 @@ export type Query = {
   me?: Maybe<UsersPermissionsMe>;
   section?: Maybe<SectionEntityResponse>;
   sections?: Maybe<SectionEntityResponseCollection>;
+  test?: Maybe<TestEntityResponse>;
+  tests?: Maybe<TestEntityResponseCollection>;
   uploadFile?: Maybe<UploadFileEntityResponse>;
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>;
   usersPermissionsRole?: Maybe<UsersPermissionsRoleEntityResponse>;
   usersPermissionsRoles?: Maybe<UsersPermissionsRoleEntityResponseCollection>;
   usersPermissionsUser?: Maybe<UsersPermissionsUserEntityResponse>;
   usersPermissionsUsers?: Maybe<UsersPermissionsUserEntityResponseCollection>;
+  video?: Maybe<VideoEntityResponse>;
+  videos?: Maybe<VideoEntityResponseCollection>;
+};
+
+
+export type QueryAnswerArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryAnswersArgs = {
+  filters?: InputMaybe<AnswerFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 
@@ -876,6 +1037,18 @@ export type QuerySectionsArgs = {
 };
 
 
+export type QueryTestArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryTestsArgs = {
+  filters?: InputMaybe<TestFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
 export type QueryUploadFileArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
@@ -907,6 +1080,18 @@ export type QueryUsersPermissionsUserArgs = {
 
 export type QueryUsersPermissionsUsersArgs = {
   filters?: InputMaybe<UsersPermissionsUserFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryVideoArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryVideosArgs = {
+  filters?: InputMaybe<VideoFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -1016,6 +1201,74 @@ export type StringFilterInput = {
   null?: InputMaybe<Scalars['Boolean']>;
   or?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   startsWith?: InputMaybe<Scalars['String']>;
+};
+
+export type Test = {
+  __typename?: 'Test';
+  answers?: Maybe<AnswerRelationResponseCollection>;
+  content?: Maybe<ContentEntityResponse>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  discipline?: Maybe<DisciplineEntityResponse>;
+  grade?: Maybe<GradeEntityResponse>;
+  isDeleted: Scalars['Boolean'];
+  name?: Maybe<Scalars['String']>;
+  questions?: Maybe<Scalars['JSON']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type TestAnswersArgs = {
+  filters?: InputMaybe<AnswerFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type TestEntity = {
+  __typename?: 'TestEntity';
+  attributes?: Maybe<Test>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type TestEntityResponse = {
+  __typename?: 'TestEntityResponse';
+  data?: Maybe<TestEntity>;
+};
+
+export type TestEntityResponseCollection = {
+  __typename?: 'TestEntityResponseCollection';
+  data: Array<TestEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type TestFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<TestFiltersInput>>>;
+  answers?: InputMaybe<AnswerFiltersInput>;
+  content?: InputMaybe<ContentFiltersInput>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  discipline?: InputMaybe<DisciplineFiltersInput>;
+  grade?: InputMaybe<GradeFiltersInput>;
+  id?: InputMaybe<IdFilterInput>;
+  isDeleted?: InputMaybe<BooleanFilterInput>;
+  name?: InputMaybe<StringFilterInput>;
+  not?: InputMaybe<TestFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<TestFiltersInput>>>;
+  questions?: InputMaybe<JsonFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type TestInput = {
+  answers?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  content?: InputMaybe<Scalars['ID']>;
+  discipline?: InputMaybe<Scalars['ID']>;
+  grade?: InputMaybe<Scalars['ID']>;
+  isDeleted?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  questions?: InputMaybe<Scalars['JSON']>;
+};
+
+export type TestRelationResponseCollection = {
+  __typename?: 'TestRelationResponseCollection';
+  data: Array<TestEntity>;
 };
 
 export type UploadFile = {
@@ -1248,6 +1501,7 @@ export type UsersPermissionsUpdateRolePayload = {
 
 export type UsersPermissionsUser = {
   __typename?: 'UsersPermissionsUser';
+  answers?: Maybe<AnswerRelationResponseCollection>;
   blocked?: Maybe<Scalars['Boolean']>;
   confirmed?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -1261,6 +1515,13 @@ export type UsersPermissionsUser = {
   tutors?: Maybe<UsersPermissionsUserRelationResponseCollection>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   username: Scalars['String'];
+};
+
+
+export type UsersPermissionsUserAnswersArgs = {
+  filters?: InputMaybe<AnswerFiltersInput>;
+  pagination?: InputMaybe<PaginationArg>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 
@@ -1289,6 +1550,7 @@ export type UsersPermissionsUserEntityResponseCollection = {
 
 export type UsersPermissionsUserFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<UsersPermissionsUserFiltersInput>>>;
+  answers?: InputMaybe<AnswerFiltersInput>;
   blocked?: InputMaybe<BooleanFilterInput>;
   confirmationToken?: InputMaybe<StringFilterInput>;
   confirmed?: InputMaybe<BooleanFilterInput>;
@@ -1311,6 +1573,7 @@ export type UsersPermissionsUserFiltersInput = {
 };
 
 export type UsersPermissionsUserInput = {
+  answers?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   blocked?: InputMaybe<Scalars['Boolean']>;
   confirmationToken?: InputMaybe<Scalars['String']>;
   confirmed?: InputMaybe<Scalars['Boolean']>;
@@ -1330,6 +1593,59 @@ export type UsersPermissionsUserInput = {
 export type UsersPermissionsUserRelationResponseCollection = {
   __typename?: 'UsersPermissionsUserRelationResponseCollection';
   data: Array<UsersPermissionsUserEntity>;
+};
+
+export type Video = {
+  __typename?: 'Video';
+  createdAt?: Maybe<Scalars['DateTime']>;
+  filename: Scalars['String'];
+  hls: Scalars['String'];
+  originalVideoUri: Scalars['String'];
+  postProcessStatus: Enum_Video_Postprocessstatus;
+  shortCode: Scalars['String'];
+  thumb: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type VideoEntity = {
+  __typename?: 'VideoEntity';
+  attributes?: Maybe<Video>;
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type VideoEntityResponse = {
+  __typename?: 'VideoEntityResponse';
+  data?: Maybe<VideoEntity>;
+};
+
+export type VideoEntityResponseCollection = {
+  __typename?: 'VideoEntityResponseCollection';
+  data: Array<VideoEntity>;
+  meta: ResponseCollectionMeta;
+};
+
+export type VideoFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<VideoFiltersInput>>>;
+  createdAt?: InputMaybe<DateTimeFilterInput>;
+  filename?: InputMaybe<StringFilterInput>;
+  hls?: InputMaybe<StringFilterInput>;
+  id?: InputMaybe<IdFilterInput>;
+  not?: InputMaybe<VideoFiltersInput>;
+  or?: InputMaybe<Array<InputMaybe<VideoFiltersInput>>>;
+  originalVideoUri?: InputMaybe<StringFilterInput>;
+  postProcessStatus?: InputMaybe<StringFilterInput>;
+  shortCode?: InputMaybe<StringFilterInput>;
+  thumb?: InputMaybe<StringFilterInput>;
+  updatedAt?: InputMaybe<DateTimeFilterInput>;
+};
+
+export type VideoInput = {
+  filename?: InputMaybe<Scalars['String']>;
+  hls?: InputMaybe<Scalars['String']>;
+  originalVideoUri?: InputMaybe<Scalars['String']>;
+  postProcessStatus?: InputMaybe<Enum_Video_Postprocessstatus>;
+  shortCode?: InputMaybe<Scalars['String']>;
+  thumb?: InputMaybe<Scalars['String']>;
 };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1460,6 +1776,21 @@ export type GetDisciplinesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetDisciplinesQuery = { __typename?: 'Query', disciplines?: { __typename?: 'DisciplineEntityResponseCollection', data: Array<{ __typename?: 'DisciplineEntity', id?: string | null, attributes?: { __typename?: 'Discipline', name: string } | null }> } | null };
+
+export type GetAllDataUserQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetAllDataUserQuery = { __typename?: 'Query', usersPermissionsUser?: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', lastname: string, firstname: string } | null } | null } | null, me?: { __typename?: 'UsersPermissionsMe', id: string, email?: string | null, username: string, role?: { __typename?: 'UsersPermissionsMeRole', id: string, name: string, description?: string | null } | null } | null };
+
+export type ChangeUserProfileMutationVariables = Exact<{
+  id: Scalars['ID'];
+  data: UsersPermissionsUserInput;
+}>;
+
+
+export type ChangeUserProfileMutation = { __typename?: 'Mutation', updateUsersPermissionsUser: { __typename?: 'UsersPermissionsUserEntityResponse', data?: { __typename?: 'UsersPermissionsUserEntity', id?: string | null, attributes?: { __typename?: 'UsersPermissionsUser', firstname: string } | null } | null } };
 
 export const ContentFieldsFragmentFragmentDoc = gql`
     fragment ContentFieldsFragment on ContentRelationResponseCollection {
@@ -2170,3 +2501,93 @@ export function useGetDisciplinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetDisciplinesQueryHookResult = ReturnType<typeof useGetDisciplinesQuery>;
 export type GetDisciplinesLazyQueryHookResult = ReturnType<typeof useGetDisciplinesLazyQuery>;
 export type GetDisciplinesQueryResult = Apollo.QueryResult<GetDisciplinesQuery, GetDisciplinesQueryVariables>;
+export const GetAllDataUserDocument = gql`
+    query getAllDataUser($id: ID!) {
+  usersPermissionsUser(id: $id) {
+    data {
+      id
+      attributes {
+        lastname
+        firstname
+      }
+    }
+  }
+  me {
+    id
+    email
+    username
+    role {
+      id
+      name
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllDataUserQuery__
+ *
+ * To run a query within a React component, call `useGetAllDataUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllDataUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllDataUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetAllDataUserQuery(baseOptions: Apollo.QueryHookOptions<GetAllDataUserQuery, GetAllDataUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllDataUserQuery, GetAllDataUserQueryVariables>(GetAllDataUserDocument, options);
+      }
+export function useGetAllDataUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllDataUserQuery, GetAllDataUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllDataUserQuery, GetAllDataUserQueryVariables>(GetAllDataUserDocument, options);
+        }
+export type GetAllDataUserQueryHookResult = ReturnType<typeof useGetAllDataUserQuery>;
+export type GetAllDataUserLazyQueryHookResult = ReturnType<typeof useGetAllDataUserLazyQuery>;
+export type GetAllDataUserQueryResult = Apollo.QueryResult<GetAllDataUserQuery, GetAllDataUserQueryVariables>;
+export const ChangeUserProfileDocument = gql`
+    mutation changeUserProfile($id: ID!, $data: UsersPermissionsUserInput!) {
+  updateUsersPermissionsUser(id: $id, data: $data) {
+    data {
+      id
+      attributes {
+        firstname
+      }
+    }
+  }
+}
+    `;
+export type ChangeUserProfileMutationFn = Apollo.MutationFunction<ChangeUserProfileMutation, ChangeUserProfileMutationVariables>;
+
+/**
+ * __useChangeUserProfileMutation__
+ *
+ * To run a mutation, you first call `useChangeUserProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeUserProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeUserProfileMutation, { data, loading, error }] = useChangeUserProfileMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useChangeUserProfileMutation(baseOptions?: Apollo.MutationHookOptions<ChangeUserProfileMutation, ChangeUserProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeUserProfileMutation, ChangeUserProfileMutationVariables>(ChangeUserProfileDocument, options);
+      }
+export type ChangeUserProfileMutationHookResult = ReturnType<typeof useChangeUserProfileMutation>;
+export type ChangeUserProfileMutationResult = Apollo.MutationResult<ChangeUserProfileMutation>;
+export type ChangeUserProfileMutationOptions = Apollo.BaseMutationOptions<ChangeUserProfileMutation, ChangeUserProfileMutationVariables>;

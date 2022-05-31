@@ -6,7 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { observer } from 'mobx-react-lite';
 import styles from './ProfilePage.module.scss';
 import * as yup from 'yup';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useInstance } from 'react-ioc';
+import { Store } from '../../model/store/Store';
+import { useGetAllDataUserQuery, useChangeUserProfileMutation } from '../../generated/graphql';
 
 const schema = yup
   .object({
@@ -19,60 +21,25 @@ interface IProfile {
 
 }
 
-export const getAllData = gql`
-  query getMe($id: ID!) {
-    usersPermissionsUser(id: $id) {
-      data {
-        id
-        attributes {
-          lastname
-          firstname
-        }
-      }
-    }
-    me {
-      id
-      email
-      username
-      role {
-        id
-        name
-        description
-      }
-    }
-  }
-`;
-
-export const changeUserData = gql`
-  mutation changeUserProfile($id: ID!, $data: UsersPermissionsUserInput!) {
-    updateUsersPermissionsUser(id: $id, data: $data) {
-      data {
-        id
-        attributes {
-          firstname
-        }
-      }
-    }
-  }
-`;
 
 const ProfilePage: FC<IProfile> = () => {
   const [openForm, setOpenForm] = useState(false);
-
-  const userId = localStorage.getItem('userId');
-  const { loading, data } = useQuery(getAllData, {
+  const store = useInstance(Store);
+  const userId = store.auth.userId;
+ 
+  const { loading, data } = useGetAllDataUserQuery({
     variables: {
-      id: userId,
+      id:userId??''
     },
   });
 
-  const [chageData] = useMutation(changeUserData);
+  const [chageData] = useChangeUserProfileMutation();
 
   useEffect(() => {
     setOpenForm((prev) => !prev);
   }, []);
 
-  const handleOpenForm = () => {
+  const toggleOpenForm = () => {
     setOpenForm((prev) => !prev);
   };
 
@@ -96,7 +63,7 @@ const ProfilePage: FC<IProfile> = () => {
     try {
       const res = await chageData({
         variables: {
-          id: userId,
+          id: userId!,
           data: {
             firstname: values.firstname,
             lastname: values.lastname,
@@ -104,7 +71,7 @@ const ProfilePage: FC<IProfile> = () => {
         },
       });
       message.info('Данные изменены!');
-      handleOpenForm();
+      toggleOpenForm();
     } catch (error: any) {
       console.error(error);
       if (error.message === 'Failed to fetch') {
@@ -117,13 +84,13 @@ const ProfilePage: FC<IProfile> = () => {
   return (
     <CommonLayout>
       <Typography.Title>Профиль</Typography.Title>
-      {openForm ? (
+      {openForm && (
         <div className={styles.userData}>
           <Avatar className={styles.avatar} size={82}>
-            {data?.me?.email.charAt(0)}
+            {data?.me?.email?.charAt(0)}
           </Avatar>
           <div className={styles.row}>
-            <Space size="small" style={{ alignItems: 'baseline' }}>
+            <Space size="small" className={styles.space}>
               <Typography.Title level={5}>Имя: </Typography.Title>
               <Typography.Text>
                 {loading
@@ -133,7 +100,7 @@ const ProfilePage: FC<IProfile> = () => {
             </Space>
           </div>
           <div className={styles.row}>
-            <Space size="small" style={{ alignItems: 'baseline' }}>
+            <Space size="small" className={styles.space}>
               <Typography.Title level={5}>Фамилия: </Typography.Title>
               <Typography.Paragraph>
                 {loading
@@ -143,7 +110,7 @@ const ProfilePage: FC<IProfile> = () => {
             </Space>
           </div>
           <div className={styles.row}>
-            <Space size="small" style={{ alignItems: 'baseline' }}>
+            <Space size="small" className={styles.space}>
               <Typography.Title level={5}>Роль: </Typography.Title>
               <Typography.Paragraph>
                 {loading ? 'Загрузка...' : ` ${data?.me?.role?.description}`}
@@ -151,22 +118,25 @@ const ProfilePage: FC<IProfile> = () => {
             </Space>
           </div>
           <div className={styles.row}>
-            <Space size="small" style={{ alignItems: 'baseline' }}>
+            <Space size="small" className={styles.space}>
               <Typography.Title level={5}>Email: </Typography.Title>
               <Typography.Paragraph>
                 {loading ? 'Загрузка...' : ` ${data?.me?.email}`}
               </Typography.Paragraph>
             </Space>
           </div>
-          <Button type="primary" className={styles.changeDataBtn} onClick={() => handleOpenForm()}>
+          <Button type="primary" className={styles.changeDataBtn} onClick={toggleOpenForm}>
             Изменить данные
           </Button>
         </div>
-      ) : (
+      )}  
+      
+
+      {(!openForm &&
         <div>
-          <Space direction="vertical" size={20} style={{ width: '50%', marginTop: "50px" }}>
-            <Space direction="vertical" size={10} style={{ width: '50%' }}>
-              <div style={{ textAlign: 'left' }}>Имя</div>
+          <Space direction="vertical" size={20} className={styles.formSpace}>
+            <Space direction="vertical" size={10}>
+              <div>Имя</div>
               <Controller
                 name="firstname"
                 control={control}
@@ -177,16 +147,14 @@ const ProfilePage: FC<IProfile> = () => {
                 }) => (
                   <React.Fragment>
                     <Input placeholder="Введите Имя" size="large" {...field} />
-                 
                     {(submitCount > 0 || isTouched) && !!error && error.message}
-                    
                   </React.Fragment>
                 )}
               />
             </Space>
 
-            <Space direction="vertical" size={10} style={{ width: '50%' }}>
-              <div style={{ textAlign: 'left' }}>Фамилия</div>
+            <Space direction="vertical" size={10}>
+              <div>Фамилия</div>
               <Controller
                 name="lastname"
                 control={control}
@@ -202,8 +170,8 @@ const ProfilePage: FC<IProfile> = () => {
                 )}
               />
             </Space>
-            <Space size="small" style={{ alignItems: 'baseline' }}>
-              <Button type="default" size="middle" onClick={() => handleOpenForm()}>
+            <Space size="small" className={styles.space}>
+              <Button type="default" size="middle" onClick={toggleOpenForm}>
                 Назад
               </Button>
               <Button
